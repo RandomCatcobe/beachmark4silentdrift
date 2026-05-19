@@ -1,0 +1,1 @@
+{"created": true, "payload": {"nickname": null}, "pydantic_version": "1.10.15"}

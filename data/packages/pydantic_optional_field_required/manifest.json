@@ -1,0 +1,12 @@
+{
+  "task_id": "pydantic_optional_field_required",
+  "case_id": "pydantic_optional_field_required",
+  "candidate_id": "pydantic-optional-field-required",
+  "levels": [
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "public_dir": "public",
+  "reproduction_result": "reproduction_result.json"
+}

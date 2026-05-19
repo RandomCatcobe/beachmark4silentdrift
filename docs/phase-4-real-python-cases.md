@@ -28,6 +28,17 @@
 - Package: `data/packages/pandas_str_replace_regex_default/`
 - Audit: `data/audit/pandas_str_replace_regex_default.json`
 
+- `pydantic_optional_field_required`
+- Source: https://pydantic.dev/docs/validation/2.11/get-started/migration/
+- Version pair: `pydantic==1.10.15` -> `pydantic==2.7.4`
+- Stabilizer: `Python 3.10`
+- Observed diff:
+  - old: model creation succeeds with `{"nickname": null}`
+  - new: model creation fails with `nickname` missing
+- Result: `data/reproductions/pydantic-optional-field-required/attempt_001/result.json`
+- Package: `data/packages/pydantic_optional_field_required/`
+- Audit: `data/audit/pydantic_optional_field_required.json`
+
 ## CLI/API 形状（CLI/API Shape）
 
 ```bash

@@ -1,0 +1,8 @@
+{
+  "case_id": "pydantic_optional_field_required",
+  "candidate_id": "pydantic-optional-field-required",
+  "keep": true,
+  "diff_summary": "stdout changed",
+  "old_stdout": "{\"created\": true, \"payload\": {\"nickname\": null}, \"pydantic_version\": \"1.10.15\"}\n",
+  "new_stdout": "{\"created\": false, \"errors\": [{\"loc\": [\"nickname\"], \"type\": \"missing\"}], \"pydantic_version\": \"2.7.4\"}\n"
+}

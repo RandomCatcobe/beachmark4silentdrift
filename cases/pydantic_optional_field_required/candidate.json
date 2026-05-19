@@ -1,0 +1,25 @@
+{
+  "case_id": "pydantic_optional_field_required",
+  "candidate_id": "pydantic-optional-field-required",
+  "library": "pydantic",
+  "ecosystem": "python",
+  "version_old": "1.10.15",
+  "version_new": "2.7.4",
+  "category": "default_shift",
+  "confidence": "uncertain_silence",
+  "api_surface": [
+    "pydantic.BaseModel"
+  ],
+  "source_url": "https://pydantic.dev/docs/validation/2.11/get-started/migration/",
+  "source_type": "migration_guide",
+  "retrieved_at": "2026-05-19",
+  "excerpt": "A field annotated as typing.Optional[T] will be required, and will allow for a value of None. It does not mean that the field has a default value of None. (This is a breaking change from V1.)",
+  "review_notes": "Same public model definition; omitting a field annotated Optional[str] succeeds with an implicit None in V1 and fails as missing in V2.",
+  "client_file": "client.py",
+  "reproduction_command": "py310=\"$(uv python find 3.10)\" && silent-drift-miner reproduce plan --candidate-id pydantic-optional-field-required --library pydantic --old-version 1.10.15 --new-version 2.7.4 --client-file cases/pydantic_optional_field_required/client.py --old-python-executable \"$py310\" --new-python-executable \"$py310\" --out data/reproductions/pydantic-optional-field-required/spec.json && silent-drift-miner reproduce run --spec data/reproductions/pydantic-optional-field-required/spec.json --out data/reproductions/pydantic-optional-field-required --install --venv-root .repro_venvs --build-timeout 300 --timeout 60",
+  "observed_diff": {
+    "old_stdout": "{\"created\": true, \"payload\": {\"nickname\": null}, \"pydantic_version\": \"1.10.15\"}",
+    "new_stdout": "{\"created\": false, \"errors\": [{\"loc\": [\"nickname\"], \"type\": \"missing\"}], \"pydantic_version\": \"2.7.4\"}",
+    "result_path": "data/reproductions/pydantic-optional-field-required/attempt_001/result.json"
+  }
+}

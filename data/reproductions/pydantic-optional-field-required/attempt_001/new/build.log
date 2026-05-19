@@ -1,0 +1,26 @@
+isolated install requested; creating a virtual environment
+venv_dir: .repro_venvs\pydantic-optional-field-required\new-pydantic-2.7.4
+base_python: C:\Users\canglan\AppData\Roaming\uv\python\cpython-3.10-windows-x86_64-none\python.exe
+venv create command: C:\Users\canglan\AppData\Roaming\uv\python\cpython-3.10-windows-x86_64-none\python.exe -m venv .repro_venvs\pydantic-optional-field-required\new-pydantic-2.7.4
+venv create exit_code: 0
+
+
+install command: .repro_venvs\pydantic-optional-field-required\new-pydantic-2.7.4\Scripts\python.exe -m pip install pydantic==2.7.4
+install exit_code: 0
+Collecting pydantic==2.7.4
+  Downloading pydantic-2.7.4-py3-none-any.whl (409 kB)
+     -------------------------------------- 409.0/409.0 kB 2.6 MB/s eta 0:00:00
+Collecting typing-extensions>=4.6.1
+  Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Collecting annotated-types>=0.4.0
+  Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Collecting pydantic-core==2.18.4
+  Downloading pydantic_core-2.18.4-cp310-none-win_amd64.whl (1.9 MB)
+     ---------------------------------------- 1.9/1.9 MB 3.9 MB/s eta 0:00:00
+Installing collected packages: typing-extensions, annotated-types, pydantic-core, pydantic
+Successfully installed annotated-types-0.7.0 pydantic-2.7.4 pydantic-core-2.18.4 typing-extensions-4.15.0
+
+
+[notice] A new release of pip is available: 23.0.1 -> 26.1.1
+[notice] To update, run: D:\myproject\beach\.repro_venvs\pydantic-optional-field-required\new-pydantic-2.7.4\Scripts\python.exe -m pip install --upgrade pip
+

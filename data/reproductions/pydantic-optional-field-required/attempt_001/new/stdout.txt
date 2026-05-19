@@ -1,0 +1,1 @@
+{"created": false, "errors": [{"loc": ["nickname"], "type": "missing"}], "pydantic_version": "2.7.4"}

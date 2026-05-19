@@ -1,0 +1,1 @@
+command: .repro_venvs\pydantic-optional-field-required\new-pydantic-2.7.4\Scripts\python.exe cases\pydantic_optional_field_required\client.py
