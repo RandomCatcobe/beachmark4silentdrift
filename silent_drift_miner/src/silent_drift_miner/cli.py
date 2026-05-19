@@ -45,6 +45,7 @@ class Target:
     use_releases_api: bool = True
     use_changelog_file: bool = False
     max_releases: int = 30
+    enabled: bool = True
 
 
 def _load_yaml(path: Path) -> dict:
@@ -107,6 +108,7 @@ def load_targets(config_path: Path) -> list[Target]:
             use_releases_api=item.get("use_releases_api", True),
             use_changelog_file=item.get("use_changelog_file", False),
             max_releases=int(item.get("max_releases", 30)),
+            enabled=item.get("enabled", True),
         ))
     return out
 
@@ -204,6 +206,11 @@ def cmd_mine(args: argparse.Namespace) -> int:
         if not targets:
             print(f"library {args.library!r} not in config", file=sys.stderr)
             return 2
+    else:
+        disabled = [t.library for t in targets if not t.enabled]
+        targets = [t for t in targets if t.enabled]
+        if disabled:
+            print(f"[config] skipping disabled targets: {', '.join(disabled)}", file=sys.stderr)
 
     cache_dir = Path(args.cache_dir)
     out_dir = Path(args.out_dir)
@@ -242,6 +249,51 @@ def cmd_stats(args: argparse.Namespace) -> int:
         all_c.extend(load_candidates_jsonl(p))
     s = summarize(all_c)
     print(json.dumps(s, indent=2, ensure_ascii=False))
+    return 0
+
+
+def cmd_validate(args: argparse.Namespace) -> int:
+    path = Path(args.path)
+    if not path.exists():
+        print(f"file not found: {path}", file=sys.stderr)
+        return 2
+
+    errors: list[str] = []
+    seen_ids: set[str] = set()
+    total = 0
+    with path.open("r", encoding="utf-8") as f:
+        for lineno, raw in enumerate(f, 1):
+            raw = raw.strip()
+            if not raw:
+                continue
+            total += 1
+            try:
+                c = DriftCandidate.from_jsonl(raw)
+            except Exception as e:
+                errors.append(f"line {lineno}: parse error — {e}")
+                continue
+            if c.candidate_id in seen_ids:
+                errors.append(f"line {lineno}: duplicate candidate_id {c.candidate_id!r}")
+            seen_ids.add(c.candidate_id)
+            if not c.library:
+                errors.append(f"line {lineno}: missing library")
+            if not c.title:
+                errors.append(f"line {lineno}: missing title")
+            # round-trip check
+            try:
+                rt = DriftCandidate.from_jsonl(c.to_jsonl())
+                if rt.candidate_id != c.candidate_id:
+                    errors.append(f"line {lineno}: round-trip id mismatch")
+            except Exception as e:
+                errors.append(f"line {lineno}: round-trip error — {e}")
+
+    if errors:
+        for msg in errors:
+            print(f"ERROR {msg}", file=sys.stderr)
+        print(f"\n{len(errors)} error(s) in {total} candidates — {path}", file=sys.stderr)
+        return 1
+
+    print(f"OK — {total} candidates validated in {path}")
     return 0
 
 
@@ -284,8 +336,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_mine.add_argument("--out-dir", default="data/candidates")
     p_mine.add_argument("--threshold", type=int, default=4,
                         help="rule score threshold to emit a WEAK candidate")
-    p_mine.add_argument("--use-llm", action="store_true",
-                        help="enable LLM refinement (needs ANTHROPIC_API_KEY)")
+    llm_group = p_mine.add_mutually_exclusive_group()
+    llm_group.add_argument("--use-llm", action="store_true", default=False,
+                           help="enable LLM refinement (needs ANTHROPIC_API_KEY)")
+    llm_group.add_argument("--no-llm", dest="use_llm", action="store_false",
+                           help="disable LLM refinement (default)")
     p_mine.set_defaults(func=cmd_mine)
 
     p_stats = sub.add_parser("stats", help="print summary over all candidates")
@@ -300,6 +355,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_show.add_argument("--min-confidence", default=None,
                         choices=["weak", "uncertain_silence", "high"])
     p_show.set_defaults(func=cmd_show)
+
+    p_validate = sub.add_parser("validate-candidates",
+                                help="validate JSONL schema and round-trip for a candidates file")
+    p_validate.add_argument("path", help="path to a candidates .jsonl file")
+    p_validate.set_defaults(func=cmd_validate)
 
     args = p.parse_args(argv)
     return args.func(args)

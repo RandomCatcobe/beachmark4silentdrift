@@ -5,15 +5,16 @@
 # Tips:
 # - prefer use_releases_api: true for repos that ship structured releases
 # - flip to use_changelog_file when the repo keeps a monolithic CHANGELOG.md
-# - JVM libraries are useful drift-mining targets, but repro verification
-#   may need a dedicated Layer 2 harness.
+# - enabled: false marks targets deferred until the Python pipeline is stable
+#   (see docs/deferred.md)
 
 targets:
-  # --- JVM ecosystem (Java/Kotlin) ---
+  # --- JVM ecosystem (Java/Kotlin) — DEFERRED until Python pipeline stable ---
   - library: spring-boot
     owner: spring-projects
     repo: spring-boot
     ecosystem: jvm
+    enabled: false
     use_releases_api: true
     use_changelog_file: false
     max_releases: 40
@@ -22,6 +23,7 @@ targets:
     owner: hibernate
     repo: hibernate-orm
     ecosystem: jvm
+    enabled: false
     use_releases_api: true
     use_changelog_file: false
     max_releases: 30
@@ -30,6 +32,7 @@ targets:
     owner: FasterXML
     repo: jackson-databind
     ecosystem: jvm
+    enabled: false
     use_releases_api: true
     use_changelog_file: true
     max_releases: 30
@@ -38,11 +41,12 @@ targets:
     owner: apache
     repo: kafka
     ecosystem: jvm
+    enabled: false
     use_releases_api: true
     use_changelog_file: false
     max_releases: 30
 
-  # --- Python ecosystem (sanity-check ground) ---
+  # --- Python ecosystem (active) ---
   - library: requests
     owner: psf
     repo: requests
@@ -75,20 +79,22 @@ targets:
     use_changelog_file: true
     max_releases: 30
 
-  # --- Go ecosystem ---
+  # --- Go ecosystem — DEFERRED until Python pipeline stable ---
   - library: kubernetes
     owner: kubernetes
     repo: kubernetes
     ecosystem: go
+    enabled: false
     use_releases_api: true
     use_changelog_file: false
     max_releases: 20
 
-  # --- Rust ecosystem ---
+  # --- Rust ecosystem — DEFERRED until Python pipeline stable ---
   - library: tokio
     owner: tokio-rs
     repo: tokio
     ecosystem: rust
+    enabled: false
     use_releases_api: true
     use_changelog_file: false
     max_releases: 30
