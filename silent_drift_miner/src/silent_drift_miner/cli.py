@@ -34,6 +34,20 @@ from .adapters.js import JsAdapter
 from .adapters.jvm import JvmAdapter
 from .adapters.php import PhpAdapter
 from .adapters.ruby import RubyAdapter
+from .autodiscovery import (
+    AcceptedCard,
+    DEFAULT_IDEA_BANK,
+    DEFAULT_RUN_LOG,
+    IdeaCard,
+    RejectedCard,
+    RunLogEntry,
+    append_accepted,
+    append_idea,
+    append_rejected,
+    append_run_log,
+    build_avoid_summary,
+    init_memory,
+)
 from .bench import create_benchmark_package
 from .client_generation import write_client_generation_artifacts
 from .curation import CurationDecision, create_curated_case, write_curated_case
@@ -1046,6 +1060,96 @@ def cmd_python_status(args: argparse.Namespace) -> int:
     return 0 if report.pass_ else 1
 
 
+def cmd_autodiscovery_init(args: argparse.Namespace) -> int:
+    init_memory(Path(args.idea_bank), Path(args.run_log))
+    print(f"initialized autodiscovery markdown memory -> {args.idea_bank}, {args.run_log}")
+    return 0
+
+
+def cmd_autodiscovery_idea(args: argparse.Namespace) -> int:
+    card = IdeaCard(
+        title=args.title,
+        package=args.package,
+        api_surface=args.api_surface,
+        versions=args.versions,
+        source_url=args.source_url,
+        source_section=args.source_section,
+        evidence=args.evidence,
+        behavior_hypothesis=args.behavior_hypothesis,
+        silent_drift_reason=args.silent_drift_reason,
+        reproduction_sketch=args.reproduction_sketch,
+        duplicate_similar_to=args.duplicate_similar_to,
+        duplicate_different_because=args.duplicate_different_because,
+        risk_notes=args.risk_note,
+        next_action=args.next_action,
+    )
+    card_id = append_idea(Path(args.idea_bank), card, card_id=args.id)
+    print(f"appended idea card -> {card_id}")
+    return 0
+
+
+def cmd_autodiscovery_reject(args: argparse.Namespace) -> int:
+    card = RejectedCard(
+        title=args.title,
+        package=args.package,
+        api_surface=args.api_surface,
+        source=args.source,
+        tried_because=args.tried_because,
+        rejected_because=args.rejected_because,
+        future_avoid=args.future_avoid,
+        future_may_try=args.future_may_try,
+    )
+    card_id = append_rejected(Path(args.idea_bank), card, card_id=args.id)
+    print(f"appended rejected card -> {card_id}")
+    return 0
+
+
+def cmd_autodiscovery_accept(args: argparse.Namespace) -> int:
+    card = AcceptedCard(
+        case_id=args.case_id,
+        package=args.package,
+        api_surface=args.api_surface,
+        versions=args.versions,
+        source=args.source,
+        reproduction_path=args.reproduction_path,
+        oracle_path=args.oracle_path,
+        package_path=args.package_path,
+        audit_path=args.audit_path,
+        why_non_duplicate=args.why_non_duplicate,
+        follow_up_ideas=args.follow_up_idea,
+    )
+    card_id = append_accepted(Path(args.idea_bank), card, card_id=args.id)
+    print(f"appended accepted card -> {card_id}")
+    return 0
+
+
+def cmd_autodiscovery_log(args: argparse.Namespace) -> int:
+    entry = RunLogEntry(
+        title=args.title,
+        model_or_operator=args.model_or_operator,
+        search_budget=args.search_budget,
+        packages_searched=args.package_searched,
+        ideas_added=args.idea_added,
+        ideas_rejected=args.idea_rejected,
+        promoted=args.promoted,
+        accepted=args.accepted,
+        notes=args.note,
+    )
+    append_run_log(Path(args.run_log), entry)
+    print(f"appended autodiscovery run log -> {args.run_log}")
+    return 0
+
+
+def cmd_autodiscovery_avoid(args: argparse.Namespace) -> int:
+    text = build_avoid_summary(Path(args.idea_bank))
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text + "\n", encoding="utf-8")
+    print(text)
+    return 0
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -1402,6 +1506,89 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_python_status.add_argument("--min-cases", type=int, default=3)
     p_python_status.add_argument("--out", default=None)
     p_python_status.set_defaults(func=cmd_python_status)
+
+    p_autodiscovery = sub.add_parser(
+        "autodiscovery",
+        help="maintain Markdown memory for Python drift discovery",
+    )
+    autodiscovery_sub = p_autodiscovery.add_subparsers(dest="autodiscovery_cmd", required=True)
+
+    p_autodiscovery_init = autodiscovery_sub.add_parser(
+        "init",
+        help="create the Markdown idea bank and run log if missing",
+    )
+    p_autodiscovery_init.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
+    p_autodiscovery_init.add_argument("--run-log", default=str(DEFAULT_RUN_LOG))
+    p_autodiscovery_init.set_defaults(func=cmd_autodiscovery_init)
+
+    p_autodiscovery_idea = autodiscovery_sub.add_parser("idea", help="append a discovered idea card")
+    p_autodiscovery_idea.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
+    p_autodiscovery_idea.add_argument("--id", default=None, help="optional stable card id")
+    p_autodiscovery_idea.add_argument("--title", required=True)
+    p_autodiscovery_idea.add_argument("--package", default="")
+    p_autodiscovery_idea.add_argument("--api-surface", default="")
+    p_autodiscovery_idea.add_argument("--versions", default="")
+    p_autodiscovery_idea.add_argument("--source-url", default="")
+    p_autodiscovery_idea.add_argument("--source-section", default="")
+    p_autodiscovery_idea.add_argument("--evidence", default="")
+    p_autodiscovery_idea.add_argument("--behavior-hypothesis", default="")
+    p_autodiscovery_idea.add_argument("--silent-drift-reason", default="")
+    p_autodiscovery_idea.add_argument("--reproduction-sketch", default="")
+    p_autodiscovery_idea.add_argument("--duplicate-similar-to", default="")
+    p_autodiscovery_idea.add_argument("--duplicate-different-because", default="")
+    p_autodiscovery_idea.add_argument("--risk-note", action="append", default=[])
+    p_autodiscovery_idea.add_argument("--next-action", default="")
+    p_autodiscovery_idea.set_defaults(func=cmd_autodiscovery_idea)
+
+    p_autodiscovery_reject = autodiscovery_sub.add_parser("reject", help="append a rejected idea card")
+    p_autodiscovery_reject.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
+    p_autodiscovery_reject.add_argument("--id", default=None, help="optional stable card id")
+    p_autodiscovery_reject.add_argument("--title", required=True)
+    p_autodiscovery_reject.add_argument("--package", default="")
+    p_autodiscovery_reject.add_argument("--api-surface", default="")
+    p_autodiscovery_reject.add_argument("--source", default="")
+    p_autodiscovery_reject.add_argument("--tried-because", default="")
+    p_autodiscovery_reject.add_argument("--rejected-because", action="append", default=[])
+    p_autodiscovery_reject.add_argument("--future-avoid", default="")
+    p_autodiscovery_reject.add_argument("--future-may-try", default="")
+    p_autodiscovery_reject.set_defaults(func=cmd_autodiscovery_reject)
+
+    p_autodiscovery_accept = autodiscovery_sub.add_parser("accept", help="append an accepted case anchor")
+    p_autodiscovery_accept.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
+    p_autodiscovery_accept.add_argument("--id", default=None, help="optional stable card id")
+    p_autodiscovery_accept.add_argument("--case-id", required=True)
+    p_autodiscovery_accept.add_argument("--package", default="")
+    p_autodiscovery_accept.add_argument("--api-surface", default="")
+    p_autodiscovery_accept.add_argument("--versions", default="")
+    p_autodiscovery_accept.add_argument("--source", default="")
+    p_autodiscovery_accept.add_argument("--reproduction-path", default="")
+    p_autodiscovery_accept.add_argument("--oracle-path", default="")
+    p_autodiscovery_accept.add_argument("--package-path", default="")
+    p_autodiscovery_accept.add_argument("--audit-path", default="")
+    p_autodiscovery_accept.add_argument("--why-non-duplicate", default="")
+    p_autodiscovery_accept.add_argument("--follow-up-idea", action="append", default=[])
+    p_autodiscovery_accept.set_defaults(func=cmd_autodiscovery_accept)
+
+    p_autodiscovery_log = autodiscovery_sub.add_parser("log", help="append a batch-level run note")
+    p_autodiscovery_log.add_argument("--run-log", default=str(DEFAULT_RUN_LOG))
+    p_autodiscovery_log.add_argument("--title", required=True)
+    p_autodiscovery_log.add_argument("--model-or-operator", default="")
+    p_autodiscovery_log.add_argument("--search-budget", default="")
+    p_autodiscovery_log.add_argument("--package-searched", action="append", default=[])
+    p_autodiscovery_log.add_argument("--idea-added", action="append", default=[])
+    p_autodiscovery_log.add_argument("--idea-rejected", action="append", default=[])
+    p_autodiscovery_log.add_argument("--promoted", action="append", default=[])
+    p_autodiscovery_log.add_argument("--accepted", action="append", default=[])
+    p_autodiscovery_log.add_argument("--note", action="append", default=[])
+    p_autodiscovery_log.set_defaults(func=cmd_autodiscovery_log)
+
+    p_autodiscovery_avoid = autodiscovery_sub.add_parser(
+        "avoid-list",
+        help="summarize packages, APIs, accepted anchors, and rejection lessons from the idea bank",
+    )
+    p_autodiscovery_avoid.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
+    p_autodiscovery_avoid.add_argument("--out", default=None)
+    p_autodiscovery_avoid.set_defaults(func=cmd_autodiscovery_avoid)
 
     args = p.parse_args(argv)
     return args.func(args)
