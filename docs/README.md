@@ -35,6 +35,13 @@ raw_note
 
 暂缓项见 [暂缓事项（Deferred Work）](deferred.md)。
 
+## 使用指南（Guides）
+
+| 指南 | 目标读者 | 内容 |
+| --- | --- | --- |
+| [人工指南（Guide for Humans）](guide-for-humans.md) | 真实用户，中文 | 怎么发现和提交合适的案例 |
+| [Agent 指南（Guide for Agents）](guide-for-agents.md) | LLM / 自动化 agent | 精确判定标准、CLI 序列、拒绝规则 |
+
 ## 总执行原则（Implementation Rule）
 
 在 `candidate -> reproduction -> curation -> oracle -> package -> audit` 链路打通前，不要提前追论文评测（Paper Evaluation）、多语言覆盖（Multi-Ecosystem Coverage）或大规模样本数（Large-Scale Sample Count）。
