@@ -28,7 +28,13 @@ from .artifacts import ArtifactStore
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .extractors.rules import extract_candidates
 from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
-from .reproduction import create_reproduction_spec, write_reproduction_spec
+from .reproduction import (
+    create_reproduction_spec,
+    load_reproduction_result,
+    load_reproduction_spec,
+    run_reproduction_spec,
+    write_reproduction_spec,
+)
 from .sources.github_changelog import (
     GitHubFetcher,
     ReleaseDoc,
@@ -526,9 +532,46 @@ def cmd_reproduce_plan(args: argparse.Namespace) -> int:
         old_version=args.old_version,
         new_version=args.new_version,
         client_file=client_file,
+        old_package_path=args.old_package_path,
+        new_package_path=args.new_package_path,
     )
     write_reproduction_spec(spec, out_path)
     print(f"wrote reproduction spec -> {out_path}")
+    return 0
+
+
+def cmd_reproduce_run(args: argparse.Namespace) -> int:
+    spec_path = artifact_path(args.spec, args.artifact_root)
+    out_path = artifact_path(args.out, args.artifact_root)
+    try:
+        spec = load_reproduction_spec(spec_path)
+        result = run_reproduction_spec(spec, out_path, timeout_s=args.timeout)
+    except Exception as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    print(f"wrote reproduction result -> {Path(result.attempt_dir) / 'result.json'}")
+    print(json.dumps({
+        "keep": result.keep,
+        "drop_reason": result.drop_reason.value if result.drop_reason else None,
+        "summary": result.diff.summary,
+    }, ensure_ascii=False))
+    return 0
+
+
+def cmd_reproduce_summarize(args: argparse.Namespace) -> int:
+    result_path = artifact_path(args.result, args.artifact_root)
+    try:
+        result = load_reproduction_result(result_path)
+    except Exception as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    print(json.dumps({
+        "candidate_id": result.candidate_id,
+        "attempt_dir": result.attempt_dir,
+        "keep": result.keep,
+        "drop_reason": result.drop_reason.value if result.drop_reason else None,
+        "diff_summary": result.diff.summary,
+    }, indent=2, ensure_ascii=False))
     return 0
 
 
@@ -631,8 +674,26 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_reproduce_plan.add_argument("--old-version", required=True)
     p_reproduce_plan.add_argument("--new-version", required=True)
     p_reproduce_plan.add_argument("--client-file", required=True)
+    p_reproduce_plan.add_argument("--old-package-path", default=None,
+                                  help="offline package directory added to PYTHONPATH for old run")
+    p_reproduce_plan.add_argument("--new-package-path", default=None,
+                                  help="offline package directory added to PYTHONPATH for new run")
     p_reproduce_plan.add_argument("--out", required=True)
     p_reproduce_plan.set_defaults(func=cmd_reproduce_plan)
+
+    p_reproduce_run = reproduce_sub.add_parser("run", help="run old/new clients from a spec")
+    p_reproduce_run.add_argument("--artifact-root", default=None,
+                                 help="artifact root; output cannot escape this directory")
+    p_reproduce_run.add_argument("--spec", required=True)
+    p_reproduce_run.add_argument("--out", required=True)
+    p_reproduce_run.add_argument("--timeout", type=int, default=30)
+    p_reproduce_run.set_defaults(func=cmd_reproduce_run)
+
+    p_reproduce_summarize = reproduce_sub.add_parser("summarize", help="summarize a reproduction result")
+    p_reproduce_summarize.add_argument("--artifact-root", default=None,
+                                       help="artifact root; result path must stay inside this directory")
+    p_reproduce_summarize.add_argument("--result", required=True)
+    p_reproduce_summarize.set_defaults(func=cmd_reproduce_summarize)
 
     args = p.parse_args(argv)
     return args.func(args)

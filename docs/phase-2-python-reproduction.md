@@ -9,10 +9,10 @@
 - 增加 Python 复现模式（Reproduction Schema），覆盖规格（Spec）、运行（Run）、结果（Result）和差异（Diff）。✓
 - 从已接受候选（Accepted Candidate）和人工 `client.py` 生成复现计划（Reproduction Plan）。✓
 - 为同一库与版本对（Version Pair）生成旧/新环境定义（Old/New Environment Definitions）。✓
-- 分别捕获 stdout、stderr、退出码（Exit Code）、运行日志（Run Logs）和构建日志（Build Logs）。
-- 为 stdout/stderr/退出码差异生成摘要（Diff Summary）。
-- 运行多次时创建 `attempt_001`、`attempt_002`，不能覆盖旧尝试（Attempt）。
-- 记录结构化丢弃原因（Drop Reasons）。
+- 分别捕获 stdout、stderr、退出码（Exit Code）、运行日志（Run Logs）和构建日志（Build Logs）。✓
+- 为 stdout/stderr/退出码差异生成摘要（Diff Summary）。✓
+- 运行多次时创建 `attempt_001`、`attempt_002`，不能覆盖旧尝试（Attempt）。✓
+- 记录结构化丢弃原因（Drop Reasons）。✓
 
 ## CLI/API 形状（CLI/API Shape）
 
