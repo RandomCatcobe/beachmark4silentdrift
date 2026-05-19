@@ -1,0 +1,75 @@
+{
+  "ecosystem": "python",
+  "audited_case_count": 3,
+  "min_audited_cases": 3,
+  "cases": [
+    {
+      "case_id": "pandas_str_replace_regex_default",
+      "candidate_id": "pandas-str-replace-regex-default",
+      "library": "pandas",
+      "version_old": "1.5.3",
+      "version_new": "2.0.3",
+      "source_url": "https://pandas.pydata.org/pandas-docs/version/2.0/whatsnew/v2.0.0.html",
+      "package_dir": "data\\packages\\pandas_str_replace_regex_default",
+      "audit_pass": true,
+      "client_compiles": true,
+      "reproduction_result_exists": true,
+      "candidate_manifest_exists": true,
+      "readme_exists": true
+    },
+    {
+      "case_id": "pydantic_field_alias_none",
+      "candidate_id": "pydantic-field-alias-none",
+      "library": "pydantic",
+      "version_old": "1.10.15",
+      "version_new": "2.7.4",
+      "source_url": "https://pydantic.dev/docs/validation/2.11/get-started/migration/",
+      "package_dir": "data\\packages\\pydantic_field_alias_none",
+      "audit_pass": true,
+      "client_compiles": true,
+      "reproduction_result_exists": true,
+      "candidate_manifest_exists": true,
+      "readme_exists": true
+    },
+    {
+      "case_id": "pydantic_optional_field_required",
+      "candidate_id": "pydantic-optional-field-required",
+      "library": "pydantic",
+      "version_old": "1.10.15",
+      "version_new": "2.7.4",
+      "source_url": "https://pydantic.dev/docs/validation/2.11/get-started/migration/",
+      "package_dir": "data\\packages\\pydantic_optional_field_required",
+      "audit_pass": true,
+      "client_compiles": true,
+      "reproduction_result_exists": true,
+      "candidate_manifest_exists": true,
+      "readme_exists": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "min_audited_real_cases",
+      "pass": true,
+      "message": "3 complete audited Python case(s); 3 required"
+    },
+    {
+      "name": "all_packages_audit_pass",
+      "pass": true,
+      "message": "all discovered Python packages pass live audit"
+    },
+    {
+      "name": "all_case_sources_present",
+      "pass": true,
+      "message": "each package has matching cases/<case_id>/candidate.json and README.md"
+    },
+    {
+      "name": "all_clients_compile",
+      "pass": true,
+      "message": "each hand-authored client.py compiles"
+    }
+  ],
+  "findings": [],
+  "schema_version": "1",
+  "created_at": "2026-05-19T08:06:25.735798",
+  "pass": true
+}

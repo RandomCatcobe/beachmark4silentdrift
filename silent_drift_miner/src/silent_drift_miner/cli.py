@@ -34,6 +34,7 @@ from .ecosystems import check_ecosystem_environment, evaluate_adapter_gates
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .oracle import generate_pytest_oracle, validate_pytest_oracle
 from .extractors.rules import extract_candidates
+from .python_status import build_python_status_report
 from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
 from .reproduction import (
     create_reproduction_spec,
@@ -724,6 +725,21 @@ def cmd_ecosystem_env_check(args: argparse.Namespace) -> int:
     return 0 if report.pass_ else 1
 
 
+def cmd_python_status(args: argparse.Namespace) -> int:
+    report = build_python_status_report(
+        cases_root=Path(args.cases),
+        packages_root=Path(args.packages),
+        min_audited_cases=args.min_cases,
+    )
+    text = report.to_json()
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text + "\n", encoding="utf-8")
+    print(text)
+    return 0 if report.pass_ else 1
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -956,6 +972,16 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_ecosystem_env.add_argument("--target", required=True, help="target ecosystem, e.g. jvm")
     p_ecosystem_env.add_argument("--out", default=None)
     p_ecosystem_env.set_defaults(func=cmd_ecosystem_env_check)
+
+    p_python = sub.add_parser("python", help="inspect Python-only benchmark lifecycle status")
+    python_sub = p_python.add_subparsers(dest="python_cmd", required=True)
+
+    p_python_status = python_sub.add_parser("status", help="report Python lifecycle completion")
+    p_python_status.add_argument("--cases", default="cases")
+    p_python_status.add_argument("--packages", default="data/packages")
+    p_python_status.add_argument("--min-cases", type=int, default=3)
+    p_python_status.add_argument("--out", default=None)
+    p_python_status.set_defaults(func=cmd_python_status)
 
     args = p.parse_args(argv)
     return args.func(args)

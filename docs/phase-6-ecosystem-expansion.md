@@ -22,7 +22,7 @@ silent-drift-miner ecosystem gates \
   --min-python-cases 3
 ```
 
-当前有 3 个已审计真实 Python 案例，因此 JVM gate 已通过。下一步可以开始一个最小、确定性的 JVM adapter，但仍然一次只增加一个生态。
+当前有 3 个已审计真实 Python 案例，因此 JVM gate 已通过。不过当前执行范围仍是 Python-only；不要开始 JVM/Go/Rust adapter，除非用户明确重新打开多语言迁移。
 
 本机 JVM 环境还需要单独检查：
 

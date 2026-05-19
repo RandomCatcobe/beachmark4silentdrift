@@ -41,6 +41,7 @@ raw_note
 | --- | --- | --- |
 | [人工指南（Guide for Humans）](guide-for-humans.md) | 真实用户，中文 | 怎么发现和提交合适的案例 |
 | [Agent 指南（Guide for Agents）](guide-for-agents.md) | LLM / 自动化 agent | 精确判定标准、CLI 序列、拒绝规则 |
+| [Python 完成报告（Python Completion Report）](python-completion-report.md) | 项目维护者 | 当前 Python-only 里程碑的机械验收状态 |
 
 ## 总执行原则（Implementation Rule）
 
