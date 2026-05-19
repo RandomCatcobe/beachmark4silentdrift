@@ -1,0 +1,94 @@
+# Initial target list. Mix of high-velocity libraries known to ship
+# behavior-change defaults across the ecosystems we care about.
+# Tune max_releases per repo to control token / API budget.
+#
+# Tips:
+# - prefer use_releases_api: true for repos that ship structured releases
+# - flip to use_changelog_file when the repo keeps a monolithic CHANGELOG.md
+# - JVM libraries are useful drift-mining targets, but repro verification
+#   may need a dedicated Layer 2 harness.
+
+targets:
+  # --- JVM ecosystem (Java/Kotlin) ---
+  - library: spring-boot
+    owner: spring-projects
+    repo: spring-boot
+    ecosystem: jvm
+    use_releases_api: true
+    use_changelog_file: false
+    max_releases: 40
+
+  - library: hibernate-orm
+    owner: hibernate
+    repo: hibernate-orm
+    ecosystem: jvm
+    use_releases_api: true
+    use_changelog_file: false
+    max_releases: 30
+
+  - library: jackson-databind
+    owner: FasterXML
+    repo: jackson-databind
+    ecosystem: jvm
+    use_releases_api: true
+    use_changelog_file: true
+    max_releases: 30
+
+  - library: kafka
+    owner: apache
+    repo: kafka
+    ecosystem: jvm
+    use_releases_api: true
+    use_changelog_file: false
+    max_releases: 30
+
+  # --- Python ecosystem (sanity-check ground) ---
+  - library: requests
+    owner: psf
+    repo: requests
+    ecosystem: python
+    use_releases_api: true
+    use_changelog_file: true
+    max_releases: 30
+
+  - library: pandas
+    owner: pandas-dev
+    repo: pandas
+    ecosystem: python
+    use_releases_api: true
+    use_changelog_file: false
+    max_releases: 30
+
+  - library: sqlalchemy
+    owner: sqlalchemy
+    repo: sqlalchemy
+    ecosystem: python
+    use_releases_api: true
+    use_changelog_file: false
+    max_releases: 30
+
+  - library: httpx
+    owner: encode
+    repo: httpx
+    ecosystem: python
+    use_releases_api: true
+    use_changelog_file: true
+    max_releases: 30
+
+  # --- Go ecosystem ---
+  - library: kubernetes
+    owner: kubernetes
+    repo: kubernetes
+    ecosystem: go
+    use_releases_api: true
+    use_changelog_file: false
+    max_releases: 20
+
+  # --- Rust ecosystem ---
+  - library: tokio
+    owner: tokio-rs
+    repo: tokio
+    ecosystem: rust
+    use_releases_api: true
+    use_changelog_file: false
+    max_releases: 30
