@@ -1,0 +1,23 @@
+{
+  "target_ecosystem": "jvm",
+  "required_tools": [
+    {
+      "name": "java",
+      "found": false,
+      "path": null
+    }
+  ],
+  "optional_tools": [
+    {
+      "name": "mvn",
+      "found": false,
+      "path": null
+    },
+    {
+      "name": "gradle",
+      "found": false,
+      "path": null
+    }
+  ],
+  "pass": false
+}

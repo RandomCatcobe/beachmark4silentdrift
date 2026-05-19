@@ -30,7 +30,7 @@ from .audit import audit_package, write_audit_report
 from .bench import create_benchmark_package
 from .client_generation import write_client_generation_artifacts
 from .curation import CurationDecision, create_curated_case, write_curated_case
-from .ecosystems import evaluate_adapter_gates
+from .ecosystems import check_ecosystem_environment, evaluate_adapter_gates
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .oracle import generate_pytest_oracle, validate_pytest_oracle
 from .extractors.rules import extract_candidates
@@ -713,6 +713,17 @@ def cmd_ecosystem_gates(args: argparse.Namespace) -> int:
     return 0 if report.pass_ else 1
 
 
+def cmd_ecosystem_env_check(args: argparse.Namespace) -> int:
+    report = check_ecosystem_environment(args.target)
+    text = report.to_json()
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text + "\n", encoding="utf-8")
+    print(text)
+    return 0 if report.pass_ else 1
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -940,6 +951,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_ecosystem_gates.add_argument("--min-python-cases", type=int, default=3)
     p_ecosystem_gates.add_argument("--out", default=None)
     p_ecosystem_gates.set_defaults(func=cmd_ecosystem_gates)
+
+    p_ecosystem_env = ecosystem_sub.add_parser("env-check", help="check local tools for an ecosystem adapter")
+    p_ecosystem_env.add_argument("--target", required=True, help="target ecosystem, e.g. jvm")
+    p_ecosystem_env.add_argument("--out", default=None)
+    p_ecosystem_env.set_defaults(func=cmd_ecosystem_env_check)
 
     args = p.parse_args(argv)
     return args.func(args)

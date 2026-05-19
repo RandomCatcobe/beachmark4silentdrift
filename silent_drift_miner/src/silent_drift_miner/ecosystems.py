@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,31 @@ class AdapterGateReport:
         payload = asdict(self)
         payload["pass"] = payload.pop("pass_")
         return json.dumps(payload, indent=2, ensure_ascii=False)
+
+
+@dataclass
+class EcosystemEnvReport:
+    target_ecosystem: str
+    pass_: bool
+    required_tools: list[dict[str, Any]] = field(default_factory=list)
+    optional_tools: list[dict[str, Any]] = field(default_factory=list)
+
+    def to_json(self) -> str:
+        payload = asdict(self)
+        payload["pass"] = payload.pop("pass_")
+        return json.dumps(payload, indent=2, ensure_ascii=False)
+
+
+ECOSYSTEM_TOOLS = {
+    "jvm": {
+        "required": ["java"],
+        "optional": ["mvn", "gradle"],
+    },
+    "python": {
+        "required": ["python"],
+        "optional": [],
+    },
+}
 
 
 def evaluate_adapter_gates(
@@ -72,6 +98,19 @@ def evaluate_adapter_gates(
     )
 
 
+def check_ecosystem_environment(target_ecosystem: str) -> EcosystemEnvReport:
+    target = target_ecosystem.lower()
+    tools = ECOSYSTEM_TOOLS.get(target, {"required": [], "optional": []})
+    required = [_tool_status(tool) for tool in tools["required"]]
+    optional = [_tool_status(tool) for tool in tools["optional"]]
+    return EcosystemEnvReport(
+        target_ecosystem=target,
+        pass_=all(item["found"] for item in required),
+        required_tools=required,
+        optional_tools=optional,
+    )
+
+
 def count_audited_python_cases(packages_root: Path, audit_root: Path) -> int:
     count = 0
     if not audit_root.exists():
@@ -120,3 +159,12 @@ def _has_real_case_provenance(case) -> bool:
             getattr(case, "api_surface", None),
         ]
     )
+
+
+def _tool_status(tool: str) -> dict[str, Any]:
+    path = shutil.which(tool)
+    return {
+        "name": tool,
+        "found": path is not None,
+        "path": path,
+    }

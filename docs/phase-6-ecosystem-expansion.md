@@ -24,6 +24,16 @@ silent-drift-miner ecosystem gates \
 
 当前有 3 个已审计真实 Python 案例，因此 JVM gate 已通过。下一步可以开始一个最小、确定性的 JVM adapter，但仍然一次只增加一个生态。
 
+本机 JVM 环境还需要单独检查：
+
+```bash
+silent-drift-miner ecosystem env-check \
+  --target jvm \
+  --out data/ecosystem_gates/jvm_env.json
+```
+
+如果 `java` 不存在，先记录 blocked 状态，不创建不可验证的 adapter。
+
 ## CLI/API 形状（CLI/API Shape）
 
 外部 CLI 应保持一致：
