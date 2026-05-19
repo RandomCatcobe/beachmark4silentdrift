@@ -1,0 +1,10 @@
+{
+  "candidate_id": "dotnet-toy-drift",
+  "ecosystem": "dotnet",
+  "library": "toy-drift",
+  "old_version": "1.0.0",
+  "new_version": "2.0.0",
+  "client_file": "client",
+  "old_package_path": "old",
+  "new_package_path": "new"
+}

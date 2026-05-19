@@ -27,7 +27,13 @@ from typing import Optional
 
 from .artifacts import ArtifactStore
 from .audit import audit_package, write_audit_report
-from .adapter_contracts import adapter_contract_report_json
+from .adapter_contracts import AdapterPlanRequest, AdapterRunRequest, adapter_contract_report_json
+from .adapters.dotnet import DotnetAdapter
+from .adapters.go import GoAdapter
+from .adapters.js import JsAdapter
+from .adapters.jvm import JvmAdapter
+from .adapters.php import PhpAdapter
+from .adapters.ruby import RubyAdapter
 from .bench import create_benchmark_package
 from .client_generation import write_client_generation_artifacts
 from .curation import CurationDecision, create_curated_case, write_curated_case
@@ -535,6 +541,234 @@ def cmd_reproduce_plan(args: argparse.Namespace) -> int:
         return 2
 
     out_path = artifact_path(args.out, args.artifact_root)
+    ecosystem = getattr(args, "ecosystem", "python").lower()
+    if ecosystem == "jvm":
+        if not args.old_source_path or not args.new_source_path:
+            print("ERROR JVM reproduction requires --old-source-path and --new-source-path", file=sys.stderr)
+            return 2
+        metadata = {
+            "old_source_paths": args.old_source_path,
+            "new_source_paths": args.new_source_path,
+            "classpath": args.classpath,
+            "old_classpath": args.old_classpath,
+            "new_classpath": args.new_classpath,
+            "resource_paths": args.resource_path,
+            "old_resource_paths": args.old_resource_path,
+            "new_resource_paths": args.new_resource_path,
+            "jvm_args": args.jvm_arg,
+            "old_jvm_args": args.old_jvm_arg,
+            "new_jvm_args": args.new_jvm_arg,
+            "program_args": args.program_arg,
+            "old_program_args": args.old_program_arg,
+            "new_program_args": args.new_program_arg,
+            "main_class": args.main_class,
+            "java_executable": args.java_executable,
+            "javac_executable": args.javac_executable,
+        }
+        try:
+            JvmAdapter().plan(
+                AdapterPlanRequest(
+                    candidate_id=args.candidate_id,
+                    ecosystem="jvm",
+                    library=args.library,
+                    old_version=args.old_version,
+                    new_version=args.new_version,
+                    client_file=str(client_file),
+                    out_path=str(out_path),
+                    metadata=metadata,
+                )
+            )
+        except Exception as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"wrote JVM reproduction spec -> {out_path}")
+        return 0
+    if ecosystem == "js":
+        if not args.old_package_path or not args.new_package_path:
+            print("ERROR JS reproduction requires --old-package-path and --new-package-path", file=sys.stderr)
+            return 2
+        metadata = {
+            "old_package_path": args.old_package_path,
+            "new_package_path": args.new_package_path,
+            "module_paths": args.module_path,
+            "old_module_paths": args.old_module_path,
+            "new_module_paths": args.new_module_path,
+            "node_args": args.node_arg,
+            "old_node_args": args.old_node_arg,
+            "new_node_args": args.new_node_arg,
+            "program_args": args.program_arg,
+            "old_program_args": args.old_program_arg,
+            "new_program_args": args.new_program_arg,
+            "node_executable": args.node_executable,
+        }
+        try:
+            JsAdapter().plan(
+                AdapterPlanRequest(
+                    candidate_id=args.candidate_id,
+                    ecosystem="js",
+                    library=args.library,
+                    old_version=args.old_version,
+                    new_version=args.new_version,
+                    client_file=str(client_file),
+                    out_path=str(out_path),
+                    metadata=metadata,
+                )
+            )
+        except Exception as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"wrote JS reproduction spec -> {out_path}")
+        return 0
+    if ecosystem == "php":
+        if not args.old_package_path or not args.new_package_path:
+            print("ERROR PHP reproduction requires --old-package-path and --new-package-path", file=sys.stderr)
+            return 2
+        metadata = {
+            "old_package_path": args.old_package_path,
+            "new_package_path": args.new_package_path,
+            "include_paths": args.include_path,
+            "old_include_paths": args.old_include_path,
+            "new_include_paths": args.new_include_path,
+            "php_args": args.php_arg,
+            "old_php_args": args.old_php_arg,
+            "new_php_args": args.new_php_arg,
+            "program_args": args.program_arg,
+            "old_program_args": args.old_program_arg,
+            "new_program_args": args.new_program_arg,
+            "php_executable": args.php_executable,
+        }
+        try:
+            PhpAdapter().plan(
+                AdapterPlanRequest(
+                    candidate_id=args.candidate_id,
+                    ecosystem="php",
+                    library=args.library,
+                    old_version=args.old_version,
+                    new_version=args.new_version,
+                    client_file=str(client_file),
+                    out_path=str(out_path),
+                    metadata=metadata,
+                )
+            )
+        except Exception as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"wrote PHP reproduction spec -> {out_path}")
+        return 0
+    if ecosystem == "ruby":
+        if not args.old_package_path or not args.new_package_path:
+            print("ERROR Ruby reproduction requires --old-package-path and --new-package-path", file=sys.stderr)
+            return 2
+        metadata = {
+            "old_package_path": args.old_package_path,
+            "new_package_path": args.new_package_path,
+            "load_paths": args.load_path,
+            "old_load_paths": args.old_load_path,
+            "new_load_paths": args.new_load_path,
+            "ruby_args": args.ruby_arg,
+            "old_ruby_args": args.old_ruby_arg,
+            "new_ruby_args": args.new_ruby_arg,
+            "program_args": args.program_arg,
+            "old_program_args": args.old_program_arg,
+            "new_program_args": args.new_program_arg,
+            "ruby_executable": args.ruby_executable,
+        }
+        try:
+            RubyAdapter().plan(
+                AdapterPlanRequest(
+                    candidate_id=args.candidate_id,
+                    ecosystem="ruby",
+                    library=args.library,
+                    old_version=args.old_version,
+                    new_version=args.new_version,
+                    client_file=str(client_file),
+                    out_path=str(out_path),
+                    metadata=metadata,
+                )
+            )
+        except Exception as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"wrote Ruby reproduction spec -> {out_path}")
+        return 0
+    if ecosystem == "dotnet":
+        if not args.old_package_path or not args.new_package_path:
+            print("ERROR .NET reproduction requires --old-package-path and --new-package-path", file=sys.stderr)
+            return 2
+        metadata = {
+            "old_package_path": args.old_package_path,
+            "new_package_path": args.new_package_path,
+            "reference_paths": args.reference_path,
+            "old_reference_paths": args.old_reference_path,
+            "new_reference_paths": args.new_reference_path,
+            "dotnet_args": args.dotnet_arg,
+            "old_dotnet_args": args.old_dotnet_arg,
+            "new_dotnet_args": args.new_dotnet_arg,
+            "program_args": args.program_arg,
+            "old_program_args": args.old_program_arg,
+            "new_program_args": args.new_program_arg,
+            "dotnet_executable": args.dotnet_executable,
+            "no_restore": not args.dotnet_restore,
+        }
+        try:
+            DotnetAdapter().plan(
+                AdapterPlanRequest(
+                    candidate_id=args.candidate_id,
+                    ecosystem="dotnet",
+                    library=args.library,
+                    old_version=args.old_version,
+                    new_version=args.new_version,
+                    client_file=str(client_file),
+                    out_path=str(out_path),
+                    metadata=metadata,
+                )
+            )
+        except Exception as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"wrote .NET reproduction spec -> {out_path}")
+        return 0
+    if ecosystem == "go":
+        if not args.old_package_path or not args.new_package_path:
+            print("ERROR Go reproduction requires --old-package-path and --new-package-path", file=sys.stderr)
+            return 2
+        metadata = {
+            "old_package_path": args.old_package_path,
+            "new_package_path": args.new_package_path,
+            "module_paths": args.go_module_path,
+            "old_module_paths": args.old_go_module_path,
+            "new_module_paths": args.new_go_module_path,
+            "go_args": args.go_arg,
+            "old_go_args": args.old_go_arg,
+            "new_go_args": args.new_go_arg,
+            "program_args": args.program_arg,
+            "old_program_args": args.old_program_arg,
+            "new_program_args": args.new_program_arg,
+            "go_executable": args.go_executable,
+            "no_network": not args.go_network,
+        }
+        try:
+            GoAdapter().plan(
+                AdapterPlanRequest(
+                    candidate_id=args.candidate_id,
+                    ecosystem="go",
+                    library=args.library,
+                    old_version=args.old_version,
+                    new_version=args.new_version,
+                    client_file=str(client_file),
+                    out_path=str(out_path),
+                    metadata=metadata,
+                )
+            )
+        except Exception as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"wrote Go reproduction spec -> {out_path}")
+        return 0
+    if ecosystem != "python":
+        print(f"ERROR unsupported reproduction ecosystem: {args.ecosystem}", file=sys.stderr)
+        return 2
+
     spec = create_reproduction_spec(
         candidate_id=args.candidate_id,
         library=args.library,
@@ -558,16 +792,73 @@ def cmd_reproduce_run(args: argparse.Namespace) -> int:
     spec_path = artifact_path(args.spec, args.artifact_root)
     out_path = artifact_path(args.out, args.artifact_root)
     try:
-        spec = load_reproduction_spec(spec_path)
-        venv_root = Path(args.venv_root) if args.venv_root else None
-        result = run_reproduction_spec(
-            spec,
-            out_path,
-            timeout_s=args.timeout,
-            install=args.install,
-            venv_root=venv_root,
-            build_timeout_s=args.build_timeout,
-        )
+        spec_payload = json.loads(spec_path.read_text(encoding="utf-8"))
+        if spec_payload.get("ecosystem") == "jvm":
+            result_path = JvmAdapter().run(
+                AdapterRunRequest(
+                    spec_path=str(spec_path),
+                    out_dir=str(out_path),
+                    timeout_s=args.timeout,
+                    metadata={"build_timeout_s": args.build_timeout},
+                )
+            )
+            result = load_reproduction_result(result_path)
+        elif spec_payload.get("ecosystem") == "js":
+            result_path = JsAdapter().run(
+                AdapterRunRequest(
+                    spec_path=str(spec_path),
+                    out_dir=str(out_path),
+                    timeout_s=args.timeout,
+                )
+            )
+            result = load_reproduction_result(result_path)
+        elif spec_payload.get("ecosystem") == "php":
+            result_path = PhpAdapter().run(
+                AdapterRunRequest(
+                    spec_path=str(spec_path),
+                    out_dir=str(out_path),
+                    timeout_s=args.timeout,
+                )
+            )
+            result = load_reproduction_result(result_path)
+        elif spec_payload.get("ecosystem") == "ruby":
+            result_path = RubyAdapter().run(
+                AdapterRunRequest(
+                    spec_path=str(spec_path),
+                    out_dir=str(out_path),
+                    timeout_s=args.timeout,
+                )
+            )
+            result = load_reproduction_result(result_path)
+        elif spec_payload.get("ecosystem") == "dotnet":
+            result_path = DotnetAdapter().run(
+                AdapterRunRequest(
+                    spec_path=str(spec_path),
+                    out_dir=str(out_path),
+                    timeout_s=args.timeout,
+                )
+            )
+            result = load_reproduction_result(result_path)
+        elif spec_payload.get("ecosystem") == "go":
+            result_path = GoAdapter().run(
+                AdapterRunRequest(
+                    spec_path=str(spec_path),
+                    out_dir=str(out_path),
+                    timeout_s=args.timeout,
+                )
+            )
+            result = load_reproduction_result(result_path)
+        else:
+            spec = load_reproduction_spec(spec_path)
+            venv_root = Path(args.venv_root) if args.venv_root else None
+            result = run_reproduction_spec(
+                spec,
+                out_path,
+                timeout_s=args.timeout,
+                install=args.install,
+                venv_root=venv_root,
+                build_timeout_s=args.build_timeout,
+            )
     except Exception as exc:
         print(f"ERROR {exc}", file=sys.stderr)
         return 1
@@ -843,12 +1134,17 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_triage_export.add_argument("--include-undecided", action="store_true")
     p_triage_export.set_defaults(func=cmd_triage_export)
 
-    p_reproduce = sub.add_parser("reproduce", help="plan and run Python reproductions")
+    p_reproduce = sub.add_parser("reproduce", help="plan and run reproductions")
     reproduce_sub = p_reproduce.add_subparsers(dest="reproduce_cmd", required=True)
 
-    p_reproduce_plan = reproduce_sub.add_parser("plan", help="create a Python reproduction spec")
+    p_reproduce_plan = reproduce_sub.add_parser("plan", help="create a reproduction spec")
     p_reproduce_plan.add_argument("--artifact-root", default=None,
                                   help="artifact root; output cannot escape this directory")
+    p_reproduce_plan.add_argument(
+        "--ecosystem",
+        default="python",
+        choices=["python", "jvm", "js", "php", "ruby", "dotnet", "go"],
+    )
     p_reproduce_plan.add_argument("--candidate-id", required=True)
     p_reproduce_plan.add_argument("--library", required=True)
     p_reproduce_plan.add_argument("--old-version", required=True)
@@ -868,6 +1164,107 @@ def main(argv: Optional[list[str]] = None) -> int:
                                   help="additional package spec installed only before the old library version")
     p_reproduce_plan.add_argument("--new-extra-package", action="append", default=[],
                                   help="additional package spec installed only before the new library version")
+    p_reproduce_plan.add_argument("--old-source-path", action="append", default=[],
+                                  help="JVM old source root or source file; repeat for multiple roots")
+    p_reproduce_plan.add_argument("--new-source-path", action="append", default=[],
+                                  help="JVM new source root or source file; repeat for multiple roots")
+    p_reproduce_plan.add_argument("--classpath", action="append", default=[],
+                                  help="JVM shared classpath entry, such as a local JAR")
+    p_reproduce_plan.add_argument("--old-classpath", action="append", default=[],
+                                  help="JVM old-only classpath entry")
+    p_reproduce_plan.add_argument("--new-classpath", action="append", default=[],
+                                  help="JVM new-only classpath entry")
+    p_reproduce_plan.add_argument("--resource-path", action="append", default=[],
+                                  help="JVM shared resource directory placed on the runtime classpath")
+    p_reproduce_plan.add_argument("--old-resource-path", action="append", default=[],
+                                  help="JVM old-only resource directory")
+    p_reproduce_plan.add_argument("--new-resource-path", action="append", default=[],
+                                  help="JVM new-only resource directory")
+    p_reproduce_plan.add_argument("--jvm-arg", action="append", default=[],
+                                  help="JVM argument passed before -cp, such as -Dkey=value")
+    p_reproduce_plan.add_argument("--old-jvm-arg", action="append", default=[],
+                                  help="JVM old-only argument")
+    p_reproduce_plan.add_argument("--new-jvm-arg", action="append", default=[],
+                                  help="JVM new-only argument")
+    p_reproduce_plan.add_argument("--program-arg", action="append", default=[],
+                                  help="argument passed to the JVM client main class")
+    p_reproduce_plan.add_argument("--old-program-arg", action="append", default=[],
+                                  help="old-only argument passed to the JVM client main class")
+    p_reproduce_plan.add_argument("--new-program-arg", action="append", default=[],
+                                  help="new-only argument passed to the JVM client main class")
+    p_reproduce_plan.add_argument("--main-class", default="DriftClient",
+                                  help="JVM client main class")
+    p_reproduce_plan.add_argument("--java-executable", default="java")
+    p_reproduce_plan.add_argument("--javac-executable", default="javac")
+    p_reproduce_plan.add_argument("--module-path", action="append", default=[],
+                                  help="JS shared module path added to NODE_PATH")
+    p_reproduce_plan.add_argument("--old-module-path", action="append", default=[],
+                                  help="JS old-only module path added to NODE_PATH")
+    p_reproduce_plan.add_argument("--new-module-path", action="append", default=[],
+                                  help="JS new-only module path added to NODE_PATH")
+    p_reproduce_plan.add_argument("--node-arg", action="append", default=[],
+                                  help="JS shared node argument passed before the client file")
+    p_reproduce_plan.add_argument("--old-node-arg", action="append", default=[],
+                                  help="JS old-only node argument")
+    p_reproduce_plan.add_argument("--new-node-arg", action="append", default=[],
+                                  help="JS new-only node argument")
+    p_reproduce_plan.add_argument("--node-executable", default="node")
+    p_reproduce_plan.add_argument("--include-path", action="append", default=[],
+                                  help="PHP shared include path")
+    p_reproduce_plan.add_argument("--old-include-path", action="append", default=[],
+                                  help="PHP old-only include path")
+    p_reproduce_plan.add_argument("--new-include-path", action="append", default=[],
+                                  help="PHP new-only include path")
+    p_reproduce_plan.add_argument("--php-arg", action="append", default=[],
+                                  help="PHP shared argument passed before -d include_path")
+    p_reproduce_plan.add_argument("--old-php-arg", action="append", default=[],
+                                  help="PHP old-only argument")
+    p_reproduce_plan.add_argument("--new-php-arg", action="append", default=[],
+                                  help="PHP new-only argument")
+    p_reproduce_plan.add_argument("--php-executable", default="php")
+    p_reproduce_plan.add_argument("--load-path", action="append", default=[],
+                                  help="Ruby shared load path added to RUBYLIB/-I")
+    p_reproduce_plan.add_argument("--old-load-path", action="append", default=[],
+                                  help="Ruby old-only load path added to RUBYLIB/-I")
+    p_reproduce_plan.add_argument("--new-load-path", action="append", default=[],
+                                  help="Ruby new-only load path added to RUBYLIB/-I")
+    p_reproduce_plan.add_argument("--ruby-arg", action="append", default=[],
+                                  help="Ruby shared argument passed before the client file")
+    p_reproduce_plan.add_argument("--old-ruby-arg", action="append", default=[],
+                                  help="Ruby old-only argument")
+    p_reproduce_plan.add_argument("--new-ruby-arg", action="append", default=[],
+                                  help="Ruby new-only argument")
+    p_reproduce_plan.add_argument("--ruby-executable", default="ruby")
+    p_reproduce_plan.add_argument("--reference-path", action="append", default=[],
+                                  help=".NET shared reference path exposed in DOTNET_ADAPTER_PACKAGE_PATHS")
+    p_reproduce_plan.add_argument("--old-reference-path", action="append", default=[],
+                                  help=".NET old-only reference path")
+    p_reproduce_plan.add_argument("--new-reference-path", action="append", default=[],
+                                  help=".NET new-only reference path")
+    p_reproduce_plan.add_argument("--dotnet-arg", action="append", default=[],
+                                  help=".NET shared argument passed before --")
+    p_reproduce_plan.add_argument("--old-dotnet-arg", action="append", default=[],
+                                  help=".NET old-only argument")
+    p_reproduce_plan.add_argument("--new-dotnet-arg", action="append", default=[],
+                                  help=".NET new-only argument")
+    p_reproduce_plan.add_argument("--dotnet-executable", default="dotnet")
+    p_reproduce_plan.add_argument("--dotnet-restore", action="store_true",
+                                  help="allow dotnet run to perform restore instead of passing --no-restore")
+    p_reproduce_plan.add_argument("--go-module-path", action="append", default=[],
+                                  help="Go shared local module/reference path")
+    p_reproduce_plan.add_argument("--old-go-module-path", action="append", default=[],
+                                  help="Go old-only local module/reference path")
+    p_reproduce_plan.add_argument("--new-go-module-path", action="append", default=[],
+                                  help="Go new-only local module/reference path")
+    p_reproduce_plan.add_argument("--go-arg", action="append", default=[],
+                                  help="Go shared argument passed before the client package")
+    p_reproduce_plan.add_argument("--old-go-arg", action="append", default=[],
+                                  help="Go old-only argument")
+    p_reproduce_plan.add_argument("--new-go-arg", action="append", default=[],
+                                  help="Go new-only argument")
+    p_reproduce_plan.add_argument("--go-executable", default="go")
+    p_reproduce_plan.add_argument("--go-network", action="store_true",
+                                  help="allow go run to use normal network module lookup")
     p_reproduce_plan.add_argument("--out", required=True)
     p_reproduce_plan.set_defaults(func=cmd_reproduce_plan)
 
@@ -990,7 +1387,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     p_ecosystem_adapters = ecosystem_sub.add_parser(
         "adapters",
-        help="list reserved ecosystem adapter contracts without executing them",
+        help="list ecosystem adapter contracts",
     )
     p_ecosystem_adapters.add_argument("--target", default=None, help="optional ecosystem filter")
     p_ecosystem_adapters.add_argument("--out", default=None)

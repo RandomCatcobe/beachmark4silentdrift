@@ -5,6 +5,11 @@
       "name": "java",
       "found": false,
       "path": null
+    },
+    {
+      "name": "javac",
+      "found": false,
+      "path": null
     }
   ],
   "optional_tools": [

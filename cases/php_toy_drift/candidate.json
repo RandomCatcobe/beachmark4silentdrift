@@ -1,0 +1,24 @@
+{
+  "case_id": "php_toy_drift",
+  "candidate_id": "php-toy-drift",
+  "library": "toy-drift",
+  "ecosystem": "php",
+  "version_old": "1.0.0",
+  "version_new": "2.0.0",
+  "category": "default_shift",
+  "confidence": "weak",
+  "api_surface": [
+    "ToyDrift\\value"
+  ],
+  "source_url": "local://cases/php_toy_drift",
+  "source_type": "offline_fixture",
+  "retrieved_at": "2026-05-19",
+  "excerpt": "Offline PHP fixture returns different values from the same public function across old/new package roots.",
+  "review_notes": "Synthetic deterministic case for PHP adapter lifecycle coverage.",
+  "client_file": "client.php",
+  "adapter_entrypoint": "silent_drift_miner.adapters.php.PhpAdapter",
+  "observed_diff": {
+    "old_stdout": "old",
+    "new_stdout": "new"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "target_ecosystem": "php",
+  "required_tools": [
+    {
+      "name": "php",
+      "found": false,
+      "path": null
+    }
+  ],
+  "optional_tools": [
+    {
+      "name": "composer",
+      "found": false,
+      "path": null
+    }
+  ],
+  "pass": false
+}

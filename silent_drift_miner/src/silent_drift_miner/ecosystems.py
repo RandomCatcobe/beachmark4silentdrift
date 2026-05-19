@@ -39,7 +39,7 @@ class EcosystemEnvReport:
 
 ECOSYSTEM_TOOLS = {
     "jvm": {
-        "required": ["java"],
+        "required": ["java", "javac"],
         "optional": ["mvn", "gradle"],
     },
     "go": {
@@ -47,16 +47,16 @@ ECOSYSTEM_TOOLS = {
         "optional": [],
     },
     "js": {
-        "required": ["node", "npm"],
-        "optional": ["pnpm", "yarn"],
+        "required": ["node"],
+        "optional": ["npm", "pnpm", "yarn"],
     },
     "php": {
-        "required": ["php", "composer"],
-        "optional": [],
+        "required": ["php"],
+        "optional": ["composer"],
     },
     "ruby": {
-        "required": ["ruby", "bundle"],
-        "optional": [],
+        "required": ["ruby"],
+        "optional": ["bundle"],
     },
     "rust": {
         "required": ["cargo", "rustc"],

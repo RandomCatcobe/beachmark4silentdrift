@@ -85,3 +85,44 @@ generate_oracle_candidate(case)
 - 不在同一里程碑同时加入 Go/Rust。
 - 第一次扩展不支持统计性或分布式漂移（Statistical or Distributed Drift）。
 - 不把论文式模型比较（Model Comparison）放进生态扩展工作。
+# 2026-05-19 JVM Boundary Update
+
+The user explicitly opened the JVM special-case boundary. JVM is no longer only
+reserved: it has an active adapter under `silent_drift_miner.adapters.jvm` for
+local deterministic cases. Required real tools are now `java` and `javac`;
+`mvn` and `gradle` remain optional. Other ecosystems remain reserved.
+
+# 2026-05-19 JS Boundary Update
+
+The user then asked to adapt additional languages gradually, one at a time. JS
+is now active under `silent_drift_miner.adapters.js` for local deterministic
+Node package-root cases. Required real tool: `node`; package managers remain
+optional and are not part of the default execution path.
+
+# 2026-05-19 PHP Boundary Update
+
+Continuing the one-language-at-a-time expansion, PHP is now active under
+`silent_drift_miner.adapters.php` for local deterministic PHP CLI include-path
+cases. Required real tool: `php`; Composer remains optional and is not part of
+the default execution path.
+
+# 2026-05-19 Ruby Boundary Update
+
+Continuing the one-language-at-a-time expansion, Ruby is now active under
+`silent_drift_miner.adapters.ruby` for local deterministic Ruby CLI load-path
+cases. Required real tool: `ruby`; Bundler remains optional and is not part of
+the default execution path.
+
+# 2026-05-19 .NET Boundary Update
+
+Continuing the one-language-at-a-time expansion, .NET is now active under
+`silent_drift_miner.adapters.dotnet` for local deterministic .NET CLI
+project-root cases. Required real tool: `dotnet`; NuGet remains optional and is
+not part of the default execution path.
+
+# 2026-05-19 Go Boundary Update
+
+Continuing the one-language-at-a-time expansion, Go is now active under
+`silent_drift_miner.adapters.go` for local deterministic Go CLI package-root
+cases. Required real tool: `go`; network module download is not part of the
+default execution path.

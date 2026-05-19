@@ -1,0 +1,12 @@
+{
+  "target_ecosystem": "go",
+  "required_tools": [
+    {
+      "name": "go",
+      "found": false,
+      "path": null
+    }
+  ],
+  "optional_tools": [],
+  "pass": false
+}

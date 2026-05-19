@@ -3,9 +3,9 @@
   "contracts": [
     {
       "ecosystem": "dotnet",
-      "status": "reserved",
-      "owner_model": "handoff",
-      "implementation_module": null,
+      "status": "active",
+      "owner_model": "current",
+      "implementation_module": "silent_drift_miner.adapters.dotnet",
       "required_tools": [
         "dotnet"
       ],
@@ -23,13 +23,13 @@
       ],
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
-      "notes": "Reserved high-risk NuGet/.NET ecosystem target; likely rich in SDK, cloud-client, serializer, and framework cascade drift."
+      "notes": "Active .NET adapter for local deterministic project-root reproductions. NuGet restores remain optional future work."
     },
     {
       "ecosystem": "go",
-      "status": "reserved",
-      "owner_model": "handoff",
-      "implementation_module": null,
+      "status": "active",
+      "owner_model": "current",
+      "implementation_module": "silent_drift_miner.adapters.go",
       "required_tools": [
         "go"
       ],
@@ -45,18 +45,18 @@
       ],
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
-      "notes": "Reserved for future module-based old/new reproductions."
+      "notes": "Active Go adapter for local deterministic package-root reproductions. Network module downloads remain optional future work."
     },
     {
       "ecosystem": "js",
-      "status": "reserved",
-      "owner_model": "handoff",
-      "implementation_module": null,
+      "status": "active",
+      "owner_model": "current",
+      "implementation_module": "silent_drift_miner.adapters.js",
       "required_tools": [
-        "node",
-        "npm"
+        "node"
       ],
       "optional_tools": [
+        "npm",
         "pnpm",
         "yarn"
       ],
@@ -71,15 +71,16 @@
       ],
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
-      "notes": "Reserved high-risk npm/Node/TypeScript ecosystem target; likely rich in transitive, default, ESM/CJS, and framework behavior drift."
+      "notes": "Active Node adapter for local deterministic package-root reproductions. Package-manager installs remain optional future work."
     },
     {
       "ecosystem": "jvm",
-      "status": "reserved",
-      "owner_model": "handoff",
-      "implementation_module": null,
+      "status": "active",
+      "owner_model": "current",
+      "implementation_module": "silent_drift_miner.adapters.jvm",
       "required_tools": [
-        "java"
+        "java",
+        "javac"
       ],
       "optional_tools": [
         "mvn",
@@ -96,18 +97,19 @@
       ],
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
-      "notes": "Reserved first non-Python adapter. Implement only after explicit user command."
+      "notes": "Active first non-Python adapter. JVM-specific special cases are allowed inside the JVM adapter boundary when they remain local and deterministic."
     },
     {
       "ecosystem": "php",
-      "status": "reserved",
-      "owner_model": "handoff",
-      "implementation_module": null,
+      "status": "active",
+      "owner_model": "current",
+      "implementation_module": "silent_drift_miner.adapters.php",
       "required_tools": [
-        "php",
+        "php"
+      ],
+      "optional_tools": [
         "composer"
       ],
-      "optional_tools": [],
       "lifecycle_steps": [
         "candidate",
         "triage",
@@ -119,7 +121,7 @@
       ],
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
-      "notes": "Reserved high-risk Composer/PHP ecosystem target; likely rich in framework, ORM, serialization, and dependency cascade drift."
+      "notes": "Active PHP adapter for local deterministic include-path reproductions. Composer installs remain optional future work."
     },
     {
       "ecosystem": "python",
@@ -146,14 +148,15 @@
     },
     {
       "ecosystem": "ruby",
-      "status": "reserved",
-      "owner_model": "handoff",
-      "implementation_module": null,
+      "status": "active",
+      "owner_model": "current",
+      "implementation_module": "silent_drift_miner.adapters.ruby",
       "required_tools": [
-        "ruby",
+        "ruby"
+      ],
+      "optional_tools": [
         "bundle"
       ],
-      "optional_tools": [],
       "lifecycle_steps": [
         "candidate",
         "triage",
@@ -165,7 +168,7 @@
       ],
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
-      "notes": "Reserved high-risk RubyGems/Rails ecosystem target; likely rich in framework default, ActiveSupport, ORM, and gem cascade drift."
+      "notes": "Active Ruby adapter for local deterministic load-path reproductions. Bundler installs remain optional future work."
     },
     {
       "ecosystem": "rust",
@@ -191,5 +194,5 @@
       "notes": "Reserved for future crate-based old/new reproductions."
     }
   ],
-  "handoff_rule": "Reserved adapters expose contracts only; do not implement execution without an explicit user command."
+  "handoff_rule": "Active adapters may execute inside their ecosystem boundary; reserved adapters expose contracts only until explicitly opened."
 }

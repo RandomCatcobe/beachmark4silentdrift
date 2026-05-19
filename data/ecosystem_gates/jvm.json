@@ -1,6 +1,6 @@
 {
   "target_ecosystem": "jvm",
-  "audited_python_cases": 3,
+  "audited_python_cases": 6,
   "required_python_cases": 3,
   "checks": [
     {
@@ -16,7 +16,7 @@
     {
       "name": "python_audited_real_cases",
       "pass": true,
-      "message": "3 audited Python case(s) found; 3 required before enabling jvm"
+      "message": "6 audited Python case(s) found; 3 required before enabling jvm"
     }
   ],
   "pass": true

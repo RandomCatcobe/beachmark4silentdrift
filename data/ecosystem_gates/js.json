@@ -1,0 +1,23 @@
+{
+  "target_ecosystem": "js",
+  "audited_python_cases": 6,
+  "required_python_cases": 3,
+  "checks": [
+    {
+      "name": "same_lifecycle_required",
+      "pass": true,
+      "message": "new adapters must use candidate -> reproduction -> curation -> oracle -> package -> audit"
+    },
+    {
+      "name": "one_ecosystem_at_a_time",
+      "pass": true,
+      "message": "gate report targets exactly one ecosystem"
+    },
+    {
+      "name": "python_audited_real_cases",
+      "pass": true,
+      "message": "6 audited Python case(s) found; 3 required before enabling js"
+    }
+  ],
+  "pass": true
+}

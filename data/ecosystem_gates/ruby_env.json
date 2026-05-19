@@ -1,0 +1,18 @@
+{
+  "target_ecosystem": "ruby",
+  "required_tools": [
+    {
+      "name": "ruby",
+      "found": false,
+      "path": null
+    }
+  ],
+  "optional_tools": [
+    {
+      "name": "bundle",
+      "found": false,
+      "path": null
+    }
+  ],
+  "pass": false
+}

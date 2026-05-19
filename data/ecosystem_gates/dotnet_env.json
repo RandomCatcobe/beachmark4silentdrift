@@ -1,0 +1,18 @@
+{
+  "target_ecosystem": "dotnet",
+  "required_tools": [
+    {
+      "name": "dotnet",
+      "found": true,
+      "path": "C:\\Program Files (x86)\\dotnet\\dotnet.EXE"
+    }
+  ],
+  "optional_tools": [
+    {
+      "name": "nuget",
+      "found": false,
+      "path": null
+    }
+  ],
+  "pass": true
+}

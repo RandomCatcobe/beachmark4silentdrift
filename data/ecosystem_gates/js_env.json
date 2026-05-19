@@ -1,0 +1,28 @@
+{
+  "target_ecosystem": "js",
+  "required_tools": [
+    {
+      "name": "node",
+      "found": true,
+      "path": "C:\\Program Files\\nodejs\\node.EXE"
+    }
+  ],
+  "optional_tools": [
+    {
+      "name": "npm",
+      "found": true,
+      "path": "C:\\Program Files\\nodejs\\npm.CMD"
+    },
+    {
+      "name": "pnpm",
+      "found": false,
+      "path": null
+    },
+    {
+      "name": "yarn",
+      "found": false,
+      "path": null
+    }
+  ],
+  "pass": true
+}

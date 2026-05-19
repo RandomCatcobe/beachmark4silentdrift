@@ -52,6 +52,38 @@ contract files, registry entries, CLI inspection commands, tests, and handoff do
 does not permit implementing a non-Python runner, cloud harness, GPU path, or complex oracle without
 a separate explicit command.
 
+## JVM, JS, PHP, Ruby, .NET, And Go Adapter Exceptions
+
+On 2026-05-19 the user explicitly opened the boundary for JVM special cases.
+JVM is now allowed to have an active adapter, local deterministic old/new
+execution, and JVM-specific execution details such as multiple source roots,
+classpath/JAR entries, resource directories, JVM arguments, and program
+arguments.
+
+The user then asked to adapt additional languages gradually, one at a time. JS
+is now allowed to have an active adapter for local deterministic Node package
+root reproductions.
+
+PHP is now allowed to have an active adapter for local deterministic PHP CLI
+package-root reproductions.
+
+Continuing the one-language-at-a-time expansion, Ruby is now allowed to have an
+active adapter for local deterministic Ruby CLI package-root reproductions.
+
+Continuing the one-language-at-a-time expansion, .NET is now allowed to have an
+active adapter for local deterministic .NET CLI project-root reproductions.
+
+Continuing the one-language-at-a-time expansion, Go is now allowed to have an
+active adapter for local deterministic Go CLI package-root reproductions.
+
+These exceptions are limited to JVM, JS, PHP, Ruby, .NET, and Go. They do not
+open cloud harnesses, GPU paths, current-version bug tracks without old/new
+pairs, statistical or performance oracles, or any other ecosystem. The detailed
+boundaries are in `docs/jvm-special-case-boundary.md`,
+`docs/js-adapter-boundary.md`, `docs/php-adapter-boundary.md`,
+`docs/ruby-adapter-boundary.md`, `docs/dotnet-adapter-boundary.md`, and
+`docs/go-adapter-boundary.md`.
+
 ## Parallel Adapter Work Boundary
 
 When future adapter work is split across multiple agents, each agent must stay inside its owned
@@ -61,5 +93,5 @@ ecosystem directory and avoid shared refactors. The detailed collaboration proto
 If an adapter task looks larger than an isolated directory-level implementation, the agent must stop,
 record the blocker, and ask the user or coordinator before changing shared project structure.
 
-Currently reserved high-risk ecosystems include `js`, `php`, `ruby`, and `dotnet`, in addition to
-`jvm`, `go`, and `rust`. Reservation is not implementation permission.
+Currently reserved ecosystems include `rust`. JVM, JS, PHP, Ruby, .NET, and Go
+have separate active exceptions. Reservation is not implementation permission.

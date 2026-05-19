@@ -4,7 +4,9 @@ This is the handoff note for a future model that may implement non-Python ecosys
 
 ## Current State
 
-The Python package pipeline is the only active execution path:
+The Python package pipeline remains the mature production path. JVM, JS, PHP,
+Ruby, .NET, and Go are active under explicit one-ecosystem-at-a-time adapter
+boundaries:
 
 ```text
 candidate -> triage -> reproduction -> curation -> oracle -> package -> audit
@@ -23,18 +25,18 @@ silent-drift-miner ecosystem adapters
 silent-drift-miner ecosystem adapters --target jvm
 ```
 
-The reserved ecosystems are:
+The adapter statuses are:
 
 | Ecosystem | Status | Required tools | Notes |
 | --- | --- | --- | --- |
 | `python` | `active` | `python`, `pip` | Existing stable path in `silent_drift_miner.reproduction`. |
-| `jvm` | `reserved` | `java` | First intended non-Python adapter, with optional `mvn`/`gradle`. |
-| `go` | `reserved` | `go` | Reserved only. |
-| `js` | `reserved` | `node`, `npm` | High-risk npm/Node/TypeScript target for transitive, default, ESM/CJS, and framework drift. |
-| `php` | `reserved` | `php`, `composer` | High-risk Composer/PHP target for framework, ORM, serialization, and dependency cascade drift. |
-| `ruby` | `reserved` | `ruby`, `bundle` | High-risk RubyGems/Rails target for framework defaults, ActiveSupport, ORM, and gem cascade drift. |
+| `jvm` | `active` | `java`, `javac` | First non-Python adapter. JVM special cases are open only when local and deterministic; optional `mvn`/`gradle`. |
+| `js` | `active` | `node` | Second non-Python adapter. Local deterministic Node package-root reproductions only; optional `npm`/`pnpm`/`yarn`. |
+| `php` | `active` | `php` | Third non-Python adapter. Local deterministic PHP CLI include-path reproductions only; optional `composer`. |
+| `ruby` | `active` | `ruby` | Fourth non-Python adapter. Local deterministic Ruby CLI load-path reproductions only; optional `bundle`. |
+| `dotnet` | `active` | `dotnet` | Fifth non-Python adapter. Local deterministic .NET CLI project-root reproductions only; optional `nuget`. |
+| `go` | `active` | `go` | Sixth non-Python adapter. Local deterministic Go CLI package-root reproductions only. |
 | `rust` | `reserved` | `cargo`, `rustc` | Reserved only. |
-| `dotnet` | `reserved` | `dotnet` | High-risk NuGet/.NET target for SDK, cloud-client, serializer, and framework cascade drift. |
 
 ## What Future Models May Do
 
@@ -88,7 +90,10 @@ Parallel agents must not modify shared project surfaces:
 
 After parallel work completes, a single coordinator must merge branches in sequence, resolve conflicts, run the full test suite, update the version, write release notes if needed, tag, and push `main`.
 
-The preferred implementation order is still sequential: implement JVM first, then JS or PHP, then Ruby or .NET, and only then Go or Rust if the benchmark needs them. Parallel agents are acceptable for research and candidate-material collection, but adapter implementation should stay narrow and isolated.
+The preferred implementation order remains sequential. JVM, JS, PHP, Ruby, .NET,
+and Go are now active; Rust should remain last unless the benchmark needs it.
+Parallel agents are acceptable for research and candidate-material collection,
+but adapter implementation should stay narrow and isolated.
 
 ## High-Risk Drift Material Priorities
 
@@ -100,6 +105,7 @@ When collecting candidate materials before implementation, prioritize ecosystems
 - `dotnet`: NuGet dependency cascades, ASP.NET defaults, System.Text.Json/Newtonsoft behavior, cloud SDK defaults, target framework changes.
 
 Material collection may happen in parallel. Adapter implementation should still happen one ecosystem at a time.
+JVM, JS, PHP, Ruby, .NET, and Go are the only non-Python ecosystems currently opened for implementation.
 
 ## Stop And Ask Rule
 

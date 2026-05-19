@@ -1,8 +1,8 @@
-"""Reserved ecosystem adapter contracts.
+"""Ecosystem adapter contracts.
 
-This module defines the handoff surface for future non-Python adapters without
-implementing their runners. The current production path remains the Python
-package pipeline in ``reproduction.py``.
+This module defines the handoff surface for non-Python adapters. Python remains
+the mature production path; JVM, JS, PHP, Ruby, .NET, and Go are active behind
+their adapter boundaries.
 """
 from __future__ import annotations
 
@@ -124,53 +124,61 @@ ADAPTER_CONTRACTS: dict[str, AdapterContract] = {
     ),
     "jvm": AdapterContract(
         ecosystem="jvm",
-        status=AdapterStatus.RESERVED,
-        owner_model="handoff",
-        implementation_module=None,
-        required_tools=["java"],
+        status=AdapterStatus.ACTIVE,
+        owner_model="current",
+        implementation_module="silent_drift_miner.adapters.jvm",
+        required_tools=["java", "javac"],
         optional_tools=["mvn", "gradle"],
-        notes="Reserved first non-Python adapter. Implement only after explicit user command.",
+        notes=(
+            "Active first non-Python adapter. JVM-specific special cases are allowed "
+            "inside the JVM adapter boundary when they remain local and deterministic."
+        ),
     ),
     "go": AdapterContract(
         ecosystem="go",
-        status=AdapterStatus.RESERVED,
-        owner_model="handoff",
-        implementation_module=None,
+        status=AdapterStatus.ACTIVE,
+        owner_model="current",
+        implementation_module="silent_drift_miner.adapters.go",
         required_tools=["go"],
-        notes="Reserved for future module-based old/new reproductions.",
+        notes=(
+            "Active Go adapter for local deterministic package-root reproductions. "
+            "Network module downloads remain optional future work."
+        ),
     ),
     "js": AdapterContract(
         ecosystem="js",
-        status=AdapterStatus.RESERVED,
-        owner_model="handoff",
-        implementation_module=None,
-        required_tools=["node", "npm"],
-        optional_tools=["pnpm", "yarn"],
+        status=AdapterStatus.ACTIVE,
+        owner_model="current",
+        implementation_module="silent_drift_miner.adapters.js",
+        required_tools=["node"],
+        optional_tools=["npm", "pnpm", "yarn"],
         notes=(
-            "Reserved high-risk npm/Node/TypeScript ecosystem target; "
-            "likely rich in transitive, default, ESM/CJS, and framework behavior drift."
+            "Active Node adapter for local deterministic package-root reproductions. "
+            "Package-manager installs remain optional future work."
         ),
     ),
     "php": AdapterContract(
         ecosystem="php",
-        status=AdapterStatus.RESERVED,
-        owner_model="handoff",
-        implementation_module=None,
-        required_tools=["php", "composer"],
+        status=AdapterStatus.ACTIVE,
+        owner_model="current",
+        implementation_module="silent_drift_miner.adapters.php",
+        required_tools=["php"],
+        optional_tools=["composer"],
         notes=(
-            "Reserved high-risk Composer/PHP ecosystem target; likely rich in framework, "
-            "ORM, serialization, and dependency cascade drift."
+            "Active PHP adapter for local deterministic include-path reproductions. "
+            "Composer installs remain optional future work."
         ),
     ),
     "ruby": AdapterContract(
         ecosystem="ruby",
-        status=AdapterStatus.RESERVED,
-        owner_model="handoff",
-        implementation_module=None,
-        required_tools=["ruby", "bundle"],
+        status=AdapterStatus.ACTIVE,
+        owner_model="current",
+        implementation_module="silent_drift_miner.adapters.ruby",
+        required_tools=["ruby"],
+        optional_tools=["bundle"],
         notes=(
-            "Reserved high-risk RubyGems/Rails ecosystem target; likely rich in framework "
-            "default, ActiveSupport, ORM, and gem cascade drift."
+            "Active Ruby adapter for local deterministic load-path reproductions. "
+            "Bundler installs remain optional future work."
         ),
     ),
     "rust": AdapterContract(
@@ -183,14 +191,14 @@ ADAPTER_CONTRACTS: dict[str, AdapterContract] = {
     ),
     "dotnet": AdapterContract(
         ecosystem="dotnet",
-        status=AdapterStatus.RESERVED,
-        owner_model="handoff",
-        implementation_module=None,
+        status=AdapterStatus.ACTIVE,
+        owner_model="current",
+        implementation_module="silent_drift_miner.adapters.dotnet",
         required_tools=["dotnet"],
         optional_tools=["nuget"],
         notes=(
-            "Reserved high-risk NuGet/.NET ecosystem target; likely rich in SDK, "
-            "cloud-client, serializer, and framework cascade drift."
+            "Active .NET adapter for local deterministic project-root reproductions. "
+            "NuGet restores remain optional future work."
         ),
     ),
 }
@@ -213,8 +221,8 @@ def build_adapter_contract_report(target: str | None = None) -> dict[str, Any]:
         "schema_version": "1",
         "contracts": [contract.to_dict() for contract in contracts],
         "handoff_rule": (
-            "Reserved adapters expose contracts only; do not implement execution "
-            "without an explicit user command."
+            "Active adapters may execute inside their ecosystem boundary; reserved "
+            "adapters expose contracts only until explicitly opened."
         ),
     }
 
