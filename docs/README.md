@@ -41,6 +41,7 @@ raw_note
 | --- | --- | --- |
 | [人工指南（Guide for Humans）](guide-for-humans.md) | 真实用户，中文 | 怎么发现和提交合适的案例 |
 | [Agent 指南（Guide for Agents）](guide-for-agents.md) | LLM / 自动化 agent | 精确判定标准、CLI 序列、拒绝规则 |
+| [Python 管线边界（Python Pipeline Boundaries）](python-pipeline-boundaries.md) | LLM / 自动化 agent | 当前 Python package 管线的适用边界与禁止自动扩展规则 |
 | [Python 完成报告（Python Completion Report）](python-completion-report.md) | 项目维护者 | 当前 Python-only 里程碑的机械验收状态 |
 | [Python 候选流程报告（Python Candidate Flow Report）](python-candidate-flow-report.md) | 项目维护者 | 用户给定候选列表的逐项跑通/阻塞记录 |
 

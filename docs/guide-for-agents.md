@@ -4,6 +4,10 @@
 > and submitting Silent Behavioral Drift candidates to the beachmark4silentdrift pipeline.
 > Read the entire guide before acting. Precision matters more than volume.
 
+Before expanding the pipeline, read `docs/python-pipeline-boundaries.md`. Agents must not build
+cloud-service harnesses, current-bug tracks, GPU/CUDA paths, legacy policy exceptions, or complex
+statistical/performance oracles unless the user explicitly commands that expansion.
+
 ---
 
 ## 1. Exact Definition
