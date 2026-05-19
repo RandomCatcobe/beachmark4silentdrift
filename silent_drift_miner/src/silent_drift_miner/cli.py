@@ -37,6 +37,8 @@ from .adapters.ruby import RubyAdapter
 from .autodiscovery import (
     AcceptedCard,
     DEFAULT_IDEA_BANK,
+    DEFAULT_PLAN,
+    DEFAULT_RUN_BRIEF,
     DEFAULT_RUN_LOG,
     IdeaCard,
     RejectedCard,
@@ -46,6 +48,8 @@ from .autodiscovery import (
     append_rejected,
     append_run_log,
     build_avoid_summary,
+    build_readiness_report,
+    build_run_brief,
     init_memory,
 )
 from .bench import create_benchmark_package
@@ -1150,6 +1154,38 @@ def cmd_autodiscovery_avoid(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_autodiscovery_readiness(args: argparse.Namespace) -> int:
+    text = build_readiness_report(
+        idea_bank=Path(args.idea_bank),
+        run_log=Path(args.run_log),
+        plan=Path(args.plan),
+        run_brief=Path(args.run_brief),
+    )
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text + "\n", encoding="utf-8")
+    print(text)
+    return 0
+
+
+def cmd_autodiscovery_brief(args: argparse.Namespace) -> int:
+    text = build_run_brief(
+        idea_bank=Path(args.idea_bank),
+        run_log=Path(args.run_log),
+        attempts=args.attempts,
+        package_focus=args.package_focus,
+    )
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text + "\n", encoding="utf-8")
+        print(f"wrote autodiscovery next-run brief -> {out_path}")
+    else:
+        print(text)
+    return 0
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -1589,6 +1625,28 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_autodiscovery_avoid.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
     p_autodiscovery_avoid.add_argument("--out", default=None)
     p_autodiscovery_avoid.set_defaults(func=cmd_autodiscovery_avoid)
+
+    p_autodiscovery_readiness = autodiscovery_sub.add_parser(
+        "readiness",
+        help="check Markdown memory files and summarize whether discovery can be started",
+    )
+    p_autodiscovery_readiness.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
+    p_autodiscovery_readiness.add_argument("--run-log", default=str(DEFAULT_RUN_LOG))
+    p_autodiscovery_readiness.add_argument("--plan", default=str(DEFAULT_PLAN))
+    p_autodiscovery_readiness.add_argument("--run-brief", default=str(DEFAULT_RUN_BRIEF))
+    p_autodiscovery_readiness.add_argument("--out", default=None)
+    p_autodiscovery_readiness.set_defaults(func=cmd_autodiscovery_readiness)
+
+    p_autodiscovery_brief = autodiscovery_sub.add_parser(
+        "brief",
+        help="write a model-readable next-run brief without starting discovery",
+    )
+    p_autodiscovery_brief.add_argument("--idea-bank", default=str(DEFAULT_IDEA_BANK))
+    p_autodiscovery_brief.add_argument("--run-log", default=str(DEFAULT_RUN_LOG))
+    p_autodiscovery_brief.add_argument("--attempts", type=int, default=10)
+    p_autodiscovery_brief.add_argument("--package-focus", action="append", default=[])
+    p_autodiscovery_brief.add_argument("--out", default=str(DEFAULT_RUN_BRIEF))
+    p_autodiscovery_brief.set_defaults(func=cmd_autodiscovery_brief)
 
     args = p.parse_args(argv)
     return args.func(args)

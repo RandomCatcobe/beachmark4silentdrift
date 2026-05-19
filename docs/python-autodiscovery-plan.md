@@ -294,6 +294,18 @@ Before a new search batch, ask for a model-readable avoid summary:
 silent-drift-miner autodiscovery avoid-list
 ```
 
+Check whether the Markdown memory is ready:
+
+```bash
+silent-drift-miner autodiscovery readiness
+```
+
+Generate the brief for the next model run without starting discovery:
+
+```bash
+silent-drift-miner autodiscovery brief --attempts 10 --out docs/python-drift-next-run.md
+```
+
 These commands are helpers for writing Markdown. They are not judges, workflow
 states, or quality gates.
 

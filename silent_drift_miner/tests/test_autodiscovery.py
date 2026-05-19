@@ -185,3 +185,60 @@ def test_autodiscovery_avoid_list_summarizes_existing_cards(tmp_path, capsys) ->
     assert "pandas_read_csv_uint8_overflow" in summary
     assert "avoid timeout-only requests notes" in summary
     assert "Python Drift Avoid Summary" in capsys.readouterr().out
+
+
+def test_autodiscovery_readiness_and_brief_do_not_start_discovery(tmp_path, capsys) -> None:
+    idea_bank = tmp_path / "idea-bank.md"
+    run_log = tmp_path / "run-log.md"
+    plan = tmp_path / "plan.md"
+    brief = tmp_path / "next-run.md"
+    readiness = tmp_path / "readiness.md"
+
+    plan.write_text("# Plan\n", encoding="utf-8")
+    assert main(["autodiscovery", "init", "--idea-bank", str(idea_bank), "--run-log", str(run_log)]) == 0
+    assert main(
+        [
+            "autodiscovery",
+            "readiness",
+            "--idea-bank",
+            str(idea_bank),
+            "--run-log",
+            str(run_log),
+            "--plan",
+            str(plan),
+            "--run-brief",
+            str(brief),
+            "--out",
+            str(readiness),
+        ]
+    ) == 0
+
+    readiness_text = readiness.read_text(encoding="utf-8")
+    assert "Plan: ok" in readiness_text
+    assert "Next-run brief: missing" in readiness_text
+    assert "Ready for a model-guided discovery batch" in readiness_text
+
+    assert main(
+        [
+            "autodiscovery",
+            "brief",
+            "--idea-bank",
+            str(idea_bank),
+            "--run-log",
+            str(run_log),
+            "--attempts",
+            "10",
+            "--package-focus",
+            "pandas",
+            "--out",
+            str(brief),
+        ]
+    ) == 0
+
+    brief_text = brief.read_text(encoding="utf-8")
+    assert "Python Drift Next-Run Brief" in brief_text
+    assert "Start only when explicitly asked to begin searching" in brief_text
+    assert "Target discovery attempts: 10" in brief_text
+    assert "- pandas" in brief_text
+    assert "Current Idea Bank" in brief_text
+    assert "wrote autodiscovery next-run brief" in capsys.readouterr().out

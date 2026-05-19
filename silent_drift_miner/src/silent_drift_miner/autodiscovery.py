@@ -10,6 +10,8 @@ from pathlib import Path
 
 DEFAULT_IDEA_BANK = Path("docs/python-drift-idea-bank.md")
 DEFAULT_RUN_LOG = Path("docs/python-drift-run-log.md")
+DEFAULT_PLAN = Path("docs/python-autodiscovery-plan.md")
+DEFAULT_RUN_BRIEF = Path("docs/python-drift-next-run.md")
 
 CARD_RE = re.compile(
     r"^## (?P<kind>IDEA|REJECTED|ACCEPTED)-(?P<date>\d{8})-(?P<num>\d{3})(?::\s*)?(?P<title>.*)$",
@@ -188,6 +190,101 @@ def build_avoid_summary(path: Path) -> str:
     return "\n".join(lines)
 
 
+def build_readiness_report(
+    idea_bank: Path = DEFAULT_IDEA_BANK,
+    run_log: Path = DEFAULT_RUN_LOG,
+    plan: Path = DEFAULT_PLAN,
+    run_brief: Path = DEFAULT_RUN_BRIEF,
+) -> str:
+    cards = parse_cards(idea_bank)
+    counts = Counter(card["kind"] for card in cards)
+    checks = [
+        ("Plan", plan.exists(), str(plan)),
+        ("Idea bank", idea_bank.exists(), str(idea_bank)),
+        ("Run log", run_log.exists(), str(run_log)),
+        ("Next-run brief", run_brief.exists(), str(run_brief)),
+    ]
+
+    lines = ["# Python Drift Autodiscovery Readiness", ""]
+    lines.append("## Files")
+    for label, exists, path in checks:
+        status = "ok" if exists else "missing"
+        lines.append(f"- {label}: {status} - `{path}`")
+    lines.append("")
+
+    lines.append("## Idea Bank Counts")
+    lines.append(f"- Ideas: {counts.get('IDEA', 0)}")
+    lines.append(f"- Rejected: {counts.get('REJECTED', 0)}")
+    lines.append(f"- Accepted: {counts.get('ACCEPTED', 0)}")
+    lines.append("")
+
+    lines.append("## Ready Command")
+    lines.append("```bash")
+    lines.append("silent-drift-miner autodiscovery brief --out docs/python-drift-next-run.md")
+    lines.append("```")
+    lines.append("")
+
+    if all(exists for _, exists, _ in checks[:3]):
+        lines.append("Ready for a model-guided discovery batch after generating or refreshing the next-run brief.")
+    else:
+        lines.append("Not ready: initialize missing Markdown memory before starting discovery.")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def build_run_brief(
+    idea_bank: Path = DEFAULT_IDEA_BANK,
+    run_log: Path = DEFAULT_RUN_LOG,
+    attempts: int = 10,
+    package_focus: list[str] | None = None,
+) -> str:
+    package_focus = package_focus or []
+    idea_bank_text = _read_or_placeholder(idea_bank, "Idea bank missing. Run autodiscovery init first.")
+    run_log_text = _read_or_placeholder(run_log, "Run log missing. Run autodiscovery init first.")
+    avoid_summary = build_avoid_summary(idea_bank)
+
+    lines = [
+        "# Python Drift Next-Run Brief",
+        "",
+        "This brief prepares the next model-guided discovery batch. It does not start the batch.",
+        "",
+        "## Batch Budget",
+        f"- Target discovery attempts: {attempts}",
+        "- Start only when explicitly asked to begin searching.",
+        "- Append every useful idea or useful failure back to Markdown.",
+        "",
+        "## Package Focus",
+        *_list_items(package_focus),
+        "",
+        "## Operating Rules",
+        "- Read the idea bank before searching.",
+        "- Prefer a new package, API surface, version range, or drift category.",
+        "- Do not clone accepted cases or rejected dead ends.",
+        "- Record rejections when they teach future runs what to avoid.",
+        "- Promote only evidence-backed, deterministic, local Python behavior changes.",
+        "- Keep source quotes short and paraphrase where possible.",
+        "",
+        "## Avoid Summary",
+        avoid_summary.rstrip(),
+        "",
+        "## Append Commands",
+        "```bash",
+        "silent-drift-miner autodiscovery idea ...",
+        "silent-drift-miner autodiscovery reject ...",
+        "silent-drift-miner autodiscovery accept ...",
+        "silent-drift-miner autodiscovery log ...",
+        "```",
+        "",
+        "## Current Idea Bank",
+        idea_bank_text.rstrip(),
+        "",
+        "## Current Run Log",
+        run_log_text.rstrip(),
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def parse_cards(path: Path) -> list[dict[str, str]]:
     if not path.exists():
         return []
@@ -349,3 +446,9 @@ def _compact_anchor(card: dict[str, str]) -> str:
 
 def _today() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%d")
+
+
+def _read_or_placeholder(path: Path, placeholder: str) -> str:
+    if not path.exists():
+        return placeholder + "\n"
+    return path.read_text(encoding="utf-8")
