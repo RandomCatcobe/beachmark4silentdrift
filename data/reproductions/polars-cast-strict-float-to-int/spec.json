@@ -1,0 +1,37 @@
+{
+  "candidate_id": "polars-cast-strict-float-to-int",
+  "library": "polars",
+  "old_version": "1.0.0",
+  "new_version": "1.30.0",
+  "client_file": "cases\\polars_cast_strict_float_to_int\\client.py",
+  "old_environment": {
+    "label": "old",
+    "library": "polars",
+    "version": "1.0.0",
+    "install_command": [
+      "python",
+      "-m",
+      "pip",
+      "install",
+      "polars==1.0.0"
+    ],
+    "python_executable": "C:\\Users\\canglan\\AppData\\Roaming\\uv\\python\\cpython-3.10-windows-x86_64-none\\python.exe",
+    "package_path": null
+  },
+  "new_environment": {
+    "label": "new",
+    "library": "polars",
+    "version": "1.30.0",
+    "install_command": [
+      "python",
+      "-m",
+      "pip",
+      "install",
+      "polars==1.30.0"
+    ],
+    "python_executable": "C:\\Users\\canglan\\AppData\\Roaming\\uv\\python\\cpython-3.10-windows-x86_64-none\\python.exe",
+    "package_path": null
+  },
+  "schema_version": "1",
+  "created_at": "2026-05-19T08:45:59.519413"
+}

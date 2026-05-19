@@ -1,0 +1,8 @@
+{
+  "case_id": "pandas_read_csv_uint8_overflow",
+  "candidate_id": "pandas-read-csv-uint8-overflow",
+  "keep": true,
+  "diff_summary": "stdout changed",
+  "old_stdout": "{\"error\": \"cannot safely cast non-equivalent int64 to uint8\", \"error_type\": \"TypeError\", \"pandas_version\": \"1.5.3\", \"status\": \"raised\"}\n",
+  "new_stdout": "{\"pandas_version\": \"2.1.1\", \"status\": \"returned\", \"values\": [255, 1]}\n"
+}

@@ -1,0 +1,1 @@
+{"error": "cannot safely cast non-equivalent int64 to uint8", "error_type": "TypeError", "pandas_version": "1.5.3", "status": "raised"}

@@ -1,0 +1,1 @@
+command: .repro_venvs\polars-cast-strict-float-to-int\old-polars-1.0.0\Scripts\python.exe cases\polars_cast_strict_float_to_int\client.py

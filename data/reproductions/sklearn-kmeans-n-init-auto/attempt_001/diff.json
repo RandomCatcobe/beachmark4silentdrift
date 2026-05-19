@@ -1,0 +1,10 @@
+{
+  "stdout_changed": true,
+  "stderr_changed": true,
+  "exit_code_changed": false,
+  "summary": "stdout changed, stderr changed",
+  "details": {
+    "old_exit_code": 0,
+    "new_exit_code": 0
+  }
+}

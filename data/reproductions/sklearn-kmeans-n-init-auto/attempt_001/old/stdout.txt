@@ -1,0 +1,1 @@
+{"actual_n_init": 10, "inertia": 0.18666667, "n_init_param": "warn", "sklearn_version": "1.3.2"}

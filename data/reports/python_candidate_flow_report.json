@@ -1,0 +1,205 @@
+{
+  "schema_version": "1",
+  "created_at": "2026-05-19T08:55:00",
+  "scope": "python-only candidate flow test for the user-provided silent API drift list",
+  "summary": {
+    "received_rows": 18,
+    "unique_cases": 17,
+    "flow_pass": 3,
+    "already_existing_pass": 1,
+    "dropped_after_reproduction": 2,
+    "blocked_or_rejected_before_reproduction": 12,
+    "python_status_audited_cases": 6
+  },
+  "engineering_fixes": [
+    {
+      "issue": "The reproduction diff treated JSON stdout version metadata as a behavior change.",
+      "fix": "Structured JSON stdout comparison now strips keys named version or ending in _version before deciding stdout_changed.",
+      "regression_test": "silent_drift_miner/tests/test_reproduction_run.py::test_reproduce_run_ignores_json_version_metadata"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "google_gemini_flash_latest_alias_downgrade",
+      "library": "Google Gemini API",
+      "source_url": "https://news.ycombinator.com/item?id=39489513",
+      "flow_step": "reproduction_plan",
+      "status": "blocked",
+      "blocker_type": "algorithm_or_external_fixture",
+      "reason": "Historical cloud model alias state and response schema cannot be replayed by the local Python package flow without API credentials plus a recorded or mocked Gemini service fixture.",
+      "next_action": "Decide whether cloud alias/service drifts should use a separate fixture-backed harness rather than pip old/new package versions."
+    },
+    {
+      "case_id": "pandas_timestamp_to_datetime64_resolution",
+      "library": "pandas",
+      "source_url": "https://github.com/pandas-dev/pandas/issues/52653",
+      "flow_step": "package_audit",
+      "status": "pass",
+      "package_dir": "data/packages/pandas_timestamp_to_datetime64_resolution",
+      "result_path": "data/reproductions/pandas-timestamp-to-datetime64-resolution/attempt_001/result.json",
+      "observed_old": "{\"dtype\": \"datetime64[ns]\", \"pandas_version\": \"1.5.3\"}",
+      "observed_new": "{\"dtype\": \"datetime64[s]\", \"pandas_version\": \"2.0.3\"}"
+    },
+    {
+      "case_id": "boto3_s3_get_object_read_chunked_encoding",
+      "library": "boto3",
+      "source_url": "https://github.com/boto/boto3/issues/4570",
+      "flow_step": "reproduction_environment",
+      "status": "blocked",
+      "blocker_type": "algorithm_or_external_fixture",
+      "reason": "The reproducer depends on a live S3 bucket/object and HTTP transfer behavior. The current Python flow only supports local pip old/new package runs and cannot guarantee historical AWS service semantics.",
+      "next_action": "Add a cloud-service harness with recorded S3 responses or a controlled S3-compatible server before admitting this case."
+    },
+    {
+      "case_id": "pandas_read_csv_uint8_overflow",
+      "library": "pandas",
+      "source_url": "https://github.com/pandas-dev/pandas/issues/55232",
+      "flow_step": "package_audit",
+      "status": "pass",
+      "package_dir": "data/packages/pandas_read_csv_uint8_overflow",
+      "result_path": "data/reproductions/pandas-read-csv-uint8-overflow/attempt_001/result.json",
+      "observed_old": "{\"error\": \"cannot safely cast non-equivalent int64 to uint8\", \"error_type\": \"TypeError\", \"pandas_version\": \"1.5.3\", \"status\": \"raised\"}",
+      "observed_new": "{\"pandas_version\": \"2.1.1\", \"status\": \"returned\", \"values\": [255, 1]}"
+    },
+    {
+      "case_id": "sklearn_kmeans_n_init_auto",
+      "library": "scikit-learn",
+      "source_url": "https://scikit-learn.org/stable/whats_new/v1.2.html",
+      "flow_step": "package_audit",
+      "status": "pass_uncertain_silence",
+      "package_dir": "data/packages/sklearn_kmeans_n_init_auto",
+      "result_path": "data/reproductions/sklearn-kmeans-n-init-auto/attempt_001/result.json",
+      "observed_old": "{\"actual_n_init\": 10, \"inertia\": 0.18666667, \"n_init_param\": \"warn\", \"sklearn_version\": \"1.3.2\"}",
+      "observed_new": "{\"actual_n_init\": 1, \"inertia\": 0.18666667, \"n_init_param\": \"auto\", \"sklearn_version\": \"1.5.2\"}",
+      "note": "Accepted mechanically, but classified uncertain because old scikit-learn emits a FutureWarning and upstream release notes announced the default shift."
+    },
+    {
+      "case_id": "python_argparse_parent_parser_verbose_drop",
+      "library": "argparse",
+      "source_url": "https://bugs.python.org/issue23058",
+      "flow_step": "triage_scope",
+      "status": "rejected",
+      "blocker_type": "algorithm_criteria",
+      "reason": "The reported drift is Python 2.7.8 to 2.7.9 from 2014, outside the 2022-2026 Python ecosystem target window and outside the current Python 3 local harness."
+    },
+    {
+      "case_id": "python_multiprocessing_queue_feeder_failure",
+      "library": "multiprocessing",
+      "source_url": "https://bugs.python.org/issue30414",
+      "flow_step": "triage_definition",
+      "status": "rejected",
+      "blocker_type": "algorithm_criteria",
+      "reason": "This is a silent data-loss bug/side effect rather than a documented old/new API semantic drift with a version pair in the 2022-2026 window."
+    },
+    {
+      "case_id": "django_big_auto_field_default",
+      "library": "Django",
+      "source_url": "https://stackoverflow.com/q/67540398",
+      "flow_step": "triage_scope",
+      "status": "blocked_pending_policy",
+      "blocker_type": "algorithm_criteria",
+      "reason": "Mechanically reproducible in principle, but the default change is Django 3.2 from 2021 and is documented. It needs a policy decision on whether legacy-but-affecting-2023 upgrades are in scope."
+    },
+    {
+      "case_id": "openpyxl_cell_column_index",
+      "library": "openpyxl",
+      "source_url": "https://stackoverflow.com/q/51330902",
+      "flow_step": "triage_scope",
+      "status": "rejected",
+      "blocker_type": "algorithm_criteria",
+      "reason": "The cited change is from 2019 and outside the target window; also likely requires old openpyxl/Python compatibility work before local reproduction."
+    },
+    {
+      "case_id": "pyserial_list_ports_objects",
+      "library": "pyserial",
+      "source_url": "https://stackoverflow.com/q/39666396",
+      "flow_step": "triage_scope",
+      "status": "rejected",
+      "blocker_type": "algorithm_criteria",
+      "reason": "The cited change is from 2017 and outside the target window."
+    },
+    {
+      "case_id": "boto3_s3_default_checksum_validation",
+      "library": "boto3",
+      "source_url": "https://github.com/boto/boto3/issues/5232",
+      "flow_step": "reproduction_environment",
+      "status": "blocked",
+      "blocker_type": "algorithm_or_external_fixture",
+      "reason": "Requires S3 object/checksum behavior from AWS or a recorded compatible fixture. The current package-only harness cannot isolate cloud service defaults."
+    },
+    {
+      "case_id": "numpy_choice_shuffle_with_p",
+      "library": "numpy",
+      "source_url": "https://github.com/numpy/numpy/issues/31210",
+      "flow_step": "reproduction_run",
+      "status": "dropped",
+      "drop_reason": "no_behavior_diff",
+      "result_path": "data/reproductions/numpy-choice-shuffle-with-p/attempt_001/result.json",
+      "observed_old": "{\"numpy_version\": \"2.3.4\", \"unweighted_equal\": false, \"weighted_equal\": true}",
+      "observed_new": "{\"numpy_version\": \"2.3.5\", \"unweighted_equal\": false, \"weighted_equal\": true}",
+      "reason": "After ignoring version metadata, numpy 2.3.4 and 2.3.5 show the same behavior. This looks like a current bug/parameter semantics issue, not yet a versioned drift case."
+    },
+    {
+      "case_id": "langchain_openrouter_default_headers_swallowed",
+      "library": "langchain-openrouter",
+      "source_url": "https://github.com/langchain-ai/langchain/issues/36581",
+      "flow_step": "reproduction_plan",
+      "status": "blocked_pending_policy",
+      "blocker_type": "algorithm_criteria",
+      "reason": "The issue provides a self-contained current-version reproducer, but no released old/new version pair. It can become runnable once we define the before/after package versions or allow single-version current bug cases."
+    },
+    {
+      "case_id": "pytorch_erfinv_locale_encoding",
+      "library": "PyTorch",
+      "source_url": "https://github.com/pytorch/pytorch/issues/151442",
+      "flow_step": "reproduction_environment",
+      "status": "blocked",
+      "blocker_type": "algorithm_or_external_fixture",
+      "reason": "The reproducer requires CUDA and the issue states PyTorch 2.0 and 2.6 are both affected, so the candidate lacks a clean old/new drift pair for the local CPU-only package harness."
+    },
+    {
+      "case_id": "polars_cast_strict_float_to_int",
+      "library": "polars",
+      "source_url": "https://stackoverflow.com/q/78695585",
+      "flow_step": "reproduction_run",
+      "status": "dropped",
+      "drop_reason": "no_behavior_diff",
+      "result_path": "data/reproductions/polars-cast-strict-float-to-int/attempt_001/result.json",
+      "observed_old": "{\"polars_version\": \"1.0.0\", \"status\": \"returned\", \"values\": [1, 5]}",
+      "observed_new": "{\"polars_version\": \"1.30.0\", \"status\": \"returned\", \"values\": [1, 5]}",
+      "reason": "The behavior is stable across the tested versions after ignoring version metadata, so it is not a versioned drift under the current benchmark criteria."
+    },
+    {
+      "case_id": "reddit_boolean_string_filter_mismatch",
+      "library": "unknown integration",
+      "source_url": "https://www.reddit.com/r/learnpython/comments/pzzkvl/api_filter_silent_drop",
+      "flow_step": "triage_definition",
+      "status": "rejected",
+      "blocker_type": "algorithm_criteria",
+      "reason": "The report describes application-level filtering/data interpretation, not a named Python library API with old/new versions."
+    },
+    {
+      "case_id": "unknown_service_rounding_method",
+      "library": "unknown service",
+      "source_url": "https://news.ycombinator.com/item?id=4239375",
+      "flow_step": "triage_scope",
+      "status": "rejected",
+      "blocker_type": "algorithm_criteria",
+      "reason": "The source is from 2012, outside the date window, and does not identify a Python ecosystem package or reproducible version pair."
+    },
+    {
+      "case_id": "pandas_timestamp_to_datetime64_resolution_duplicate",
+      "library": "pandas",
+      "source_url": "https://github.com/pandas-dev/pandas/issues/52653",
+      "flow_step": "dedupe",
+      "status": "duplicate",
+      "reason": "Duplicate of pandas_timestamp_to_datetime64_resolution."
+    }
+  ],
+  "algorithm_questions_for_user": [
+    "Should documented warnings/release-note default shifts such as sklearn KMeans remain accepted as uncertain_silence, or should warning evidence exclude them?",
+    "Should legacy cases outside 2022-2026, such as Django 3.2, openpyxl, pyserial, argparse, and multiprocessing, be excluded strictly or allowed if they still affect 2023+ migrations?",
+    "Should current-version bugs without a clean old/new pair, such as NumPy choice shuffle or LangChain OpenRouter headers, be allowed in a separate benchmark track?",
+    "Should cloud/service alias cases such as Gemini and S3 use a recorded-fixture harness separate from pip package old/new reproductions?"
+  ]
+}

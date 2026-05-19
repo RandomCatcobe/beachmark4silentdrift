@@ -1,0 +1,25 @@
+{
+  "case_id": "numpy_choice_shuffle_with_p",
+  "candidate_id": "numpy-choice-shuffle-with-p",
+  "library": "numpy",
+  "ecosystem": "python",
+  "version_old": "2.3.4",
+  "version_new": "2.3.5",
+  "category": "uncategorized",
+  "confidence": "weak",
+  "api_surface": [
+    "numpy.random.Generator.choice"
+  ],
+  "source_url": "https://github.com/numpy/numpy/issues/31210",
+  "source_type": "github_issue",
+  "retrieved_at": "2026-05-19",
+  "flow_status": "dropped",
+  "drop_reason": "no_behavior_diff",
+  "review_notes": "Probe ran successfully, but NumPy 2.3.4 and 2.3.5 showed no behavior diff after ignoring version metadata. Treat as current bug or parameter-semantics issue unless an old/new drift pair is identified.",
+  "client_file": "client.py",
+  "observed_diff": {
+    "old_stdout": "{\"numpy_version\": \"2.3.4\", \"unweighted_equal\": false, \"weighted_equal\": true}",
+    "new_stdout": "{\"numpy_version\": \"2.3.5\", \"unweighted_equal\": false, \"weighted_equal\": true}",
+    "result_path": "data/reproductions/numpy-choice-shuffle-with-p/attempt_001/result.json"
+  }
+}

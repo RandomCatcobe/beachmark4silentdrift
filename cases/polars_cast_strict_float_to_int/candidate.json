@@ -1,0 +1,25 @@
+{
+  "case_id": "polars_cast_strict_float_to_int",
+  "candidate_id": "polars-cast-strict-float-to-int",
+  "library": "polars",
+  "ecosystem": "python",
+  "version_old": "1.0.0",
+  "version_new": "1.30.0",
+  "category": "uncategorized",
+  "confidence": "weak",
+  "api_surface": [
+    "polars.Expr.cast"
+  ],
+  "source_url": "https://stackoverflow.com/q/78695585",
+  "source_type": "stackoverflow",
+  "retrieved_at": "2026-05-19",
+  "flow_status": "dropped",
+  "drop_reason": "no_behavior_diff",
+  "review_notes": "Probe ran successfully, but Polars 1.0.0 and 1.30.0 showed no behavior diff after ignoring version metadata. Treat as stable semantics, not versioned drift, unless a better old/new pair is identified.",
+  "client_file": "client.py",
+  "observed_diff": {
+    "old_stdout": "{\"polars_version\": \"1.0.0\", \"status\": \"returned\", \"values\": [1, 5]}",
+    "new_stdout": "{\"polars_version\": \"1.30.0\", \"status\": \"returned\", \"values\": [1, 5]}",
+    "result_path": "data/reproductions/polars-cast-strict-float-to-int/attempt_001/result.json"
+  }
+}

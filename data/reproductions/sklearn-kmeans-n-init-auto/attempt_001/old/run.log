@@ -1,0 +1,1 @@
+command: .repro_venvs\sklearn-kmeans-n-init-auto\old-scikit-learn-1.3.2\Scripts\python.exe cases\sklearn_kmeans_n_init_auto\client.py

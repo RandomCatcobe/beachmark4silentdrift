@@ -1,0 +1,1 @@
+{"dtype": "datetime64[s]", "pandas_version": "2.0.3"}

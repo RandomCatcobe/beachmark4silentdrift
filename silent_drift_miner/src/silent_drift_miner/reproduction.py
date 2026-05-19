@@ -248,7 +248,10 @@ def build_diff(old_run: ReproductionRun, new_run: ReproductionRun) -> Reproducti
     old_stderr = Path(old_run.stderr_path).read_text(encoding="utf-8")
     new_stderr = Path(new_run.stderr_path).read_text(encoding="utf-8")
 
-    stdout_changed = old_stdout != new_stdout
+    old_behavior_stdout = _normalize_stdout_for_behavior(old_stdout)
+    new_behavior_stdout = _normalize_stdout_for_behavior(new_stdout)
+    raw_stdout_changed = old_stdout != new_stdout
+    stdout_changed = old_behavior_stdout != new_behavior_stdout
     stderr_changed = old_stderr != new_stderr
     exit_code_changed = old_run.exit_code != new_run.exit_code
     changed_bits = []
@@ -267,8 +270,47 @@ def build_diff(old_run: ReproductionRun, new_run: ReproductionRun) -> Reproducti
         details={
             "old_exit_code": old_run.exit_code,
             "new_exit_code": new_run.exit_code,
+            "raw_stdout_changed": raw_stdout_changed,
+            "stdout_compared_after_version_metadata": (
+                old_behavior_stdout != old_stdout or new_behavior_stdout != new_stdout
+            ),
         },
     )
+
+
+def _normalize_stdout_for_behavior(text: str) -> str:
+    stripped = text.strip()
+    if not stripped:
+        return text
+
+    try:
+        return json.dumps(_strip_version_metadata(json.loads(stripped)), ensure_ascii=False, sort_keys=True)
+    except json.JSONDecodeError:
+        pass
+
+    normalized_lines: list[Any] = []
+    for line in text.splitlines():
+        if not line.strip():
+            normalized_lines.append(line)
+            continue
+        try:
+            parsed = json.loads(line)
+        except json.JSONDecodeError:
+            return text
+        normalized_lines.append(_strip_version_metadata(parsed))
+    return json.dumps(normalized_lines, ensure_ascii=False, sort_keys=True)
+
+
+def _strip_version_metadata(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {
+            key: _strip_version_metadata(item)
+            for key, item in value.items()
+            if key != "version" and not key.endswith("_version")
+        }
+    if isinstance(value, list):
+        return [_strip_version_metadata(item) for item in value]
+    return value
 
 
 def _run_one_side(

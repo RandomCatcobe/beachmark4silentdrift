@@ -1,0 +1,28 @@
+isolated install requested; creating a virtual environment
+venv_dir: .repro_venvs\sklearn-kmeans-n-init-auto\new-scikit-learn-1.5.2
+base_python: C:\Users\canglan\AppData\Roaming\uv\python\cpython-3.10-windows-x86_64-none\python.exe
+venv create command: C:\Users\canglan\AppData\Roaming\uv\python\cpython-3.10-windows-x86_64-none\python.exe -m venv .repro_venvs\sklearn-kmeans-n-init-auto\new-scikit-learn-1.5.2
+venv create exit_code: 0
+
+
+install command: .repro_venvs\sklearn-kmeans-n-init-auto\new-scikit-learn-1.5.2\Scripts\python.exe -m pip install scikit-learn==1.5.2
+install exit_code: 0
+Collecting scikit-learn==1.5.2
+  Downloading scikit_learn-1.5.2-cp310-cp310-win_amd64.whl (11.0 MB)
+     --------------------------------------- 11.0/11.0 MB 10.2 MB/s eta 0:00:00
+Collecting numpy>=1.19.5
+  Downloading numpy-2.2.6-cp310-cp310-win_amd64.whl (12.9 MB)
+     --------------------------------------- 12.9/12.9 MB 15.6 MB/s eta 0:00:00
+Collecting threadpoolctl>=3.1.0
+  Using cached threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+Collecting joblib>=1.2.0
+  Using cached joblib-1.5.3-py3-none-any.whl (309 kB)
+Collecting scipy>=1.6.0
+  Using cached scipy-1.15.3-cp310-cp310-win_amd64.whl (41.3 MB)
+Installing collected packages: threadpoolctl, numpy, joblib, scipy, scikit-learn
+Successfully installed joblib-1.5.3 numpy-2.2.6 scikit-learn-1.5.2 scipy-1.15.3 threadpoolctl-3.6.0
+
+
+[notice] A new release of pip is available: 23.0.1 -> 26.1.1
+[notice] To update, run: D:\myproject\beach\.repro_venvs\sklearn-kmeans-n-init-auto\new-scikit-learn-1.5.2\Scripts\python.exe -m pip install --upgrade pip
+

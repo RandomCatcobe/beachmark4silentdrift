@@ -1,0 +1,25 @@
+{
+  "case_id": "sklearn_kmeans_n_init_auto",
+  "candidate_id": "sklearn-kmeans-n-init-auto",
+  "library": "scikit-learn",
+  "ecosystem": "python",
+  "version_old": "1.3.2",
+  "version_new": "1.5.2",
+  "category": "default_shift",
+  "confidence": "uncertain_silence",
+  "api_surface": [
+    "sklearn.cluster.KMeans.fit"
+  ],
+  "source_url": "https://scikit-learn.org/stable/whats_new/v1.2.html",
+  "source_type": "release_note",
+  "retrieved_at": "2026-05-19",
+  "excerpt": "KMeans accepts n_init='auto', begins deprecation for default n_init, and defaults are changed to n_init='auto' in 1.4.",
+  "review_notes": "Accepted as uncertain-silence: behavior reproduces as actual _n_init 10 versus 1, but sklearn 1.3.2 emits a FutureWarning and release notes announced the default shift.",
+  "client_file": "client.py",
+  "reproduction_command": "silent-drift-miner reproduce run --spec data/reproductions/sklearn-kmeans-n-init-auto/spec.json --out data/reproductions/sklearn-kmeans-n-init-auto --install --venv-root .repro_venvs --build-timeout 300 --timeout 60",
+  "observed_diff": {
+    "old_stdout": "{\"actual_n_init\": 10, \"inertia\": 0.18666667, \"n_init_param\": \"warn\", \"sklearn_version\": \"1.3.2\"}",
+    "new_stdout": "{\"actual_n_init\": 1, \"inertia\": 0.18666667, \"n_init_param\": \"auto\", \"sklearn_version\": \"1.5.2\"}",
+    "result_path": "data/reproductions/sklearn-kmeans-n-init-auto/attempt_001/result.json"
+  }
+}

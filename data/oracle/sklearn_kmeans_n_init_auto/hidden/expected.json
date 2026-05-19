@@ -1,0 +1,8 @@
+{
+  "case_id": "sklearn_kmeans_n_init_auto",
+  "candidate_id": "sklearn-kmeans-n-init-auto",
+  "keep": true,
+  "diff_summary": "stdout changed, stderr changed",
+  "old_stdout": "{\"actual_n_init\": 10, \"inertia\": 0.18666667, \"n_init_param\": \"warn\", \"sklearn_version\": \"1.3.2\"}\n",
+  "new_stdout": "{\"actual_n_init\": 1, \"inertia\": 0.18666667, \"n_init_param\": \"auto\", \"sklearn_version\": \"1.5.2\"}\n"
+}

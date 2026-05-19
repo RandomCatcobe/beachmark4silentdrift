@@ -1,0 +1,1 @@
+command: .repro_venvs\pandas-read-csv-uint8-overflow\new-pandas-2.1.1\Scripts\python.exe cases\pandas_read_csv_uint8_overflow\client.py

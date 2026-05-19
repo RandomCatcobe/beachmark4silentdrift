@@ -1,0 +1,5 @@
+{
+  "package": "data\\packages\\pandas_read_csv_uint8_overflow",
+  "pass": true,
+  "findings": []
+}

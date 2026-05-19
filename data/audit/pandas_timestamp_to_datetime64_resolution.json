@@ -1,0 +1,5 @@
+{
+  "package": "data\\packages\\pandas_timestamp_to_datetime64_resolution",
+  "pass": true,
+  "findings": []
+}

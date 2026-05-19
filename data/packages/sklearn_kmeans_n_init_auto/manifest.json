@@ -1,0 +1,12 @@
+{
+  "task_id": "sklearn_kmeans_n_init_auto",
+  "case_id": "sklearn_kmeans_n_init_auto",
+  "candidate_id": "sklearn-kmeans-n-init-auto",
+  "levels": [
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "public_dir": "public",
+  "reproduction_result": "reproduction_result.json"
+}

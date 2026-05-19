@@ -1,0 +1,16 @@
+case_id: "pandas_timestamp_to_datetime64_resolution"
+decision: "accept"
+candidate_id: "pandas-timestamp-to-datetime64-resolution"
+reproduction_result: "..\\reproductions\\pandas-timestamp-to-datetime64-resolution\\attempt_001\\result.json"
+keep: true
+drop_reason: null
+source_url: "https://github.com/pandas-dev/pandas/issues/52653"
+source_excerpt: "Pandas 1.5.3 returns dtype('<M8[ns]') while pandas 2.0.0 returns dtype('<M8[s]') for pd.Timestamp('2023-01-01').to_datetime64()."
+retrieved_at: "2026-05-19"
+ecosystem: "python"
+version_old: "1.5.3"
+version_new: "2.0.3"
+api_surface: ["pandas.Timestamp.to_datetime64"]
+review_notes: "Accepted: isolated Python 3.10 reproduction produced deterministic stdout diff with exit code 0 on both sides; version metadata is ignored for behavior diffing."
+schema_version: "1"
+created_at: "2026-05-19T08:47:36.885582"

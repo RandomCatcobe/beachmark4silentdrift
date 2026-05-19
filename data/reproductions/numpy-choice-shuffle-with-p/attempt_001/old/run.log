@@ -1,0 +1,1 @@
+command: .repro_venvs\numpy-choice-shuffle-with-p\old-numpy-2.3.4\Scripts\python.exe cases\numpy_choice_shuffle_with_p\client.py

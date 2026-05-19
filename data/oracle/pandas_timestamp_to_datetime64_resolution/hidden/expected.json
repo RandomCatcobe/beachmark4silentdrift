@@ -1,0 +1,8 @@
+{
+  "case_id": "pandas_timestamp_to_datetime64_resolution",
+  "candidate_id": "pandas-timestamp-to-datetime64-resolution",
+  "keep": true,
+  "diff_summary": "stdout changed",
+  "old_stdout": "{\"dtype\": \"datetime64[ns]\", \"pandas_version\": \"1.5.3\"}\n",
+  "new_stdout": "{\"dtype\": \"datetime64[s]\", \"pandas_version\": \"2.0.3\"}\n"
+}

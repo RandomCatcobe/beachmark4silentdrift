@@ -1,0 +1,12 @@
+{
+  "task_id": "pandas_timestamp_to_datetime64_resolution",
+  "case_id": "pandas_timestamp_to_datetime64_resolution",
+  "candidate_id": "pandas-timestamp-to-datetime64-resolution",
+  "levels": [
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "public_dir": "public",
+  "reproduction_result": "reproduction_result.json"
+}

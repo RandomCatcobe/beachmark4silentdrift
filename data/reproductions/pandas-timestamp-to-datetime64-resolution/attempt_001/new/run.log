@@ -1,0 +1,1 @@
+command: .repro_venvs\pandas-timestamp-to-datetime64-resolution\new-pandas-2.0.3\Scripts\python.exe cases\pandas_timestamp_to_datetime64_resolution\client.py

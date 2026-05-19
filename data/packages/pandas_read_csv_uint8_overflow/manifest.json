@@ -1,0 +1,12 @@
+{
+  "task_id": "pandas_read_csv_uint8_overflow",
+  "case_id": "pandas_read_csv_uint8_overflow",
+  "candidate_id": "pandas-read-csv-uint8-overflow",
+  "levels": [
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "public_dir": "public",
+  "reproduction_result": "reproduction_result.json"
+}

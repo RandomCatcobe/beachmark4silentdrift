@@ -1,0 +1,25 @@
+{
+  "case_id": "pandas_read_csv_uint8_overflow",
+  "candidate_id": "pandas-read-csv-uint8-overflow",
+  "library": "pandas",
+  "ecosystem": "python",
+  "version_old": "1.5.3",
+  "version_new": "2.1.1",
+  "category": "unit_shift",
+  "confidence": "high",
+  "api_surface": [
+    "pandas.read_csv"
+  ],
+  "source_url": "https://github.com/pandas-dev/pandas/issues/55232",
+  "source_type": "github_issue",
+  "retrieved_at": "2026-05-19",
+  "excerpt": "read_csv no longer raises an exception for out-of-range UInt8 integers; -1 becomes 255 and 257 becomes 1.",
+  "review_notes": "Same read_csv call shape; out-of-range conversion semantics changed to wrap-around values.",
+  "client_file": "client.py",
+  "reproduction_command": "silent-drift-miner reproduce run --spec data/reproductions/pandas-read-csv-uint8-overflow/spec.json --out data/reproductions/pandas-read-csv-uint8-overflow --install --venv-root .repro_venvs --build-timeout 300 --timeout 60",
+  "observed_diff": {
+    "old_stdout": "{\"error\": \"cannot safely cast non-equivalent int64 to uint8\", \"error_type\": \"TypeError\", \"pandas_version\": \"1.5.3\", \"status\": \"raised\"}",
+    "new_stdout": "{\"pandas_version\": \"2.1.1\", \"status\": \"returned\", \"values\": [255, 1]}",
+    "result_path": "data/reproductions/pandas-read-csv-uint8-overflow/attempt_001/result.json"
+  }
+}

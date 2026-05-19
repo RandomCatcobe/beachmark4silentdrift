@@ -1,0 +1,28 @@
+isolated install requested; creating a virtual environment
+venv_dir: .repro_venvs\pandas-timestamp-to-datetime64-resolution\new-pandas-2.0.3
+base_python: C:\Users\canglan\AppData\Roaming\uv\python\cpython-3.10-windows-x86_64-none\python.exe
+venv create command: C:\Users\canglan\AppData\Roaming\uv\python\cpython-3.10-windows-x86_64-none\python.exe -m venv .repro_venvs\pandas-timestamp-to-datetime64-resolution\new-pandas-2.0.3
+venv create exit_code: 0
+
+
+install command: .repro_venvs\pandas-timestamp-to-datetime64-resolution\new-pandas-2.0.3\Scripts\python.exe -m pip install numpy==1.24.4 pandas==2.0.3
+install exit_code: 0
+Collecting numpy==1.24.4
+  Using cached numpy-1.24.4-cp310-cp310-win_amd64.whl (14.8 MB)
+Collecting pandas==2.0.3
+  Using cached pandas-2.0.3-cp310-cp310-win_amd64.whl (10.7 MB)
+Collecting pytz>=2020.1
+  Using cached pytz-2026.2-py2.py3-none-any.whl (510 kB)
+Collecting tzdata>=2022.1
+  Using cached tzdata-2026.2-py2.py3-none-any.whl (349 kB)
+Collecting python-dateutil>=2.8.2
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Collecting six>=1.5
+  Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: pytz, tzdata, six, numpy, python-dateutil, pandas
+Successfully installed numpy-1.24.4 pandas-2.0.3 python-dateutil-2.9.0.post0 pytz-2026.2 six-1.17.0 tzdata-2026.2
+
+
+[notice] A new release of pip is available: 23.0.1 -> 26.1.1
+[notice] To update, run: D:\myproject\beach\.repro_venvs\pandas-timestamp-to-datetime64-resolution\new-pandas-2.0.3\Scripts\python.exe -m pip install --upgrade pip
+
