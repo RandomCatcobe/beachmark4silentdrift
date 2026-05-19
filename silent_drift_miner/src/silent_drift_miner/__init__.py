@@ -1,2 +1,2 @@
 """silent_drift_miner: pipeline to mine and reproduce silent-drift cases."""
-__version__ = "0.2.2"
+__version__ = "0.3.0"

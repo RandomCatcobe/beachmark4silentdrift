@@ -1,0 +1,77 @@
+"""Curation manifests for reproduced cases."""
+from __future__ import annotations
+
+import json
+from dataclasses import asdict, dataclass, field
+from enum import Enum
+from pathlib import Path
+from typing import Optional
+
+from .reproduction import ReproductionResult, load_reproduction_result
+from .schema import ARTIFACT_SCHEMA_VERSION, utc_now_iso
+
+
+class CurationDecision(str, Enum):
+    ACCEPT = "accept"
+    REJECT = "reject"
+
+
+@dataclass
+class CuratedCase:
+    case_id: str
+    decision: CurationDecision
+    candidate_id: str
+    reproduction_result: str
+    keep: bool
+    drop_reason: Optional[str] = None
+    schema_version: str = ARTIFACT_SCHEMA_VERSION
+    created_at: str = field(default_factory=utc_now_iso)
+
+    def to_yaml(self) -> str:
+        data = asdict(self)
+        data["decision"] = self.decision.value
+        lines = []
+        for key, value in data.items():
+            lines.append(f"{key}: {_yaml_scalar(value)}")
+        return "\n".join(lines) + "\n"
+
+
+def create_curated_case(
+    result_path: Path,
+    decision: str,
+    case_id: str,
+) -> CuratedCase:
+    result = load_reproduction_result(result_path)
+    curation_decision = CurationDecision(decision)
+    _validate_decision_matches_result(result, curation_decision)
+    return CuratedCase(
+        case_id=case_id,
+        decision=curation_decision,
+        candidate_id=result.candidate_id,
+        reproduction_result=str(result_path),
+        keep=result.keep,
+        drop_reason=result.drop_reason.value if result.drop_reason else None,
+    )
+
+
+def write_curated_case(case: CuratedCase, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(case.to_yaml(), encoding="utf-8")
+
+
+def _validate_decision_matches_result(
+    result: ReproductionResult,
+    decision: CurationDecision,
+) -> None:
+    if decision == CurationDecision.ACCEPT and not result.keep:
+        raise ValueError("cannot accept a reproduction result with keep=false")
+    if decision == CurationDecision.REJECT and result.keep:
+        raise ValueError("cannot reject a reproduction result with keep=true")
+
+
+def _yaml_scalar(value) -> str:
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return json.dumps(value, ensure_ascii=False)

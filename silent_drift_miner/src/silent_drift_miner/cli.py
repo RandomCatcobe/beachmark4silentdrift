@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Optional
 
 from .artifacts import ArtifactStore
+from .curation import CurationDecision, create_curated_case, write_curated_case
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .extractors.rules import extract_candidates
 from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
@@ -575,6 +576,19 @@ def cmd_reproduce_summarize(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_curate_create(args: argparse.Namespace) -> int:
+    result_path = artifact_path(args.reproduction_result, args.artifact_root)
+    out_path = artifact_path(args.out, args.artifact_root)
+    try:
+        case = create_curated_case(result_path, args.decision, args.case_id)
+        write_curated_case(case, out_path)
+    except Exception as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    print(f"wrote curated case -> {out_path}")
+    return 0
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -694,6 +708,19 @@ def main(argv: Optional[list[str]] = None) -> int:
                                        help="artifact root; result path must stay inside this directory")
     p_reproduce_summarize.add_argument("--result", required=True)
     p_reproduce_summarize.set_defaults(func=cmd_reproduce_summarize)
+
+    p_curate = sub.add_parser("curate", help="create curated case manifests")
+    curate_sub = p_curate.add_subparsers(dest="curate_cmd", required=True)
+
+    p_curate_create = curate_sub.add_parser("create", help="create an accepted or rejected case manifest")
+    p_curate_create.add_argument("--artifact-root", default=None,
+                                 help="artifact root; output cannot escape this directory")
+    p_curate_create.add_argument("--reproduction-result", required=True)
+    p_curate_create.add_argument("--decision", required=True,
+                                 choices=[d.value for d in CurationDecision])
+    p_curate_create.add_argument("--case-id", required=True)
+    p_curate_create.add_argument("--out", required=True)
+    p_curate_create.set_defaults(func=cmd_curate_create)
 
     args = p.parse_args(argv)
     return args.func(args)
