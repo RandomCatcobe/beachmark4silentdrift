@@ -19,6 +19,7 @@ env/
 .coverage
 htmlcov/
 .tox/
+.demo_artifacts/
 
 # IDE
 .vscode/

@@ -194,6 +194,86 @@ class LLMRefiner:
         return "\n".join(text_chunks)
 
 
+class OfflineLLMFilter:
+    """Deterministic no-network stand-in for the precision filter.
+
+    This keeps fixture/demo runs shaped like the LLM path without sending any
+    text to an API. It intentionally stays conservative and transparent.
+    """
+
+    enabled = True
+
+    KEEP_TERMS = (
+        "default",
+        "now",
+        "changed",
+        "previously",
+        "no longer",
+        "instead of",
+        "behavior",
+        "behaviour",
+    )
+    REJECT_TERMS = (
+        "deprecated",
+        "removed",
+        "deleted",
+        "compile error",
+        "now throws",
+        "will throw",
+    )
+
+    def refine_batch(self, candidates: list[DriftCandidate]) -> list[DriftCandidate]:
+        kept: list[DriftCandidate] = []
+        for cand in candidates:
+            refined = self._refine_one(cand)
+            if refined is not None:
+                kept.append(refined)
+        return kept
+
+    def _refine_one(self, cand: DriftCandidate) -> Optional[DriftCandidate]:
+        text = " ".join(
+            [
+                cand.title,
+                cand.summary_paraphrased,
+                cand.evidence[0].snippet_raw if cand.evidence else "",
+            ]
+        ).lower()
+        if any(term in text for term in self.REJECT_TERMS):
+            return None
+        if not any(term in text for term in self.KEEP_TERMS):
+            return None
+
+        cand.confidence = Confidence.UNCERTAIN_SILENCE
+        cand.extracted_by = "llm_filter"
+        if not cand.summary_paraphrased:
+            cand.summary_paraphrased = (
+                f"Offline filter kept this {cand.category.value} candidate because "
+                "the excerpt describes changed runtime behavior with the public call shape intact."
+            )
+        if cand.evidence and not cand.evidence[0].snippet_paraphrased:
+            cand.evidence[0].snippet_paraphrased = cand.summary_paraphrased
+        if not cand.reproduce_hypothesis:
+            cand.reproduce_hypothesis = (
+                "Compare the same client call or configuration on the old and new versions, "
+                "then assert that the observed default behavior differs."
+            )
+        if not cand.api_surface and cand.evidence:
+            cand.api_surface = _extract_api_surface(cand.evidence[0].snippet_raw)
+        return cand
+
+
+def _extract_api_surface(text: str) -> list[str]:
+    backticked = re.findall(r"`([^`]+)`", text)
+    dotted = re.findall(r"\b[A-Za-z_][\w]*(?:\.[A-Za-z_][\w-]*)+\b", text)
+    seen: set[str] = set()
+    out: list[str] = []
+    for item in backticked + dotted:
+        if item not in seen:
+            seen.add(item)
+            out.append(item)
+    return out[:6]
+
+
 def _parse_json_response(text: str) -> Optional[dict]:
     """Be lenient: strip code fences, find first {...} block."""
     text = text.strip()

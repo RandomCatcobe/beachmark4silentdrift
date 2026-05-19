@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Optional
 
 from .artifacts import ArtifactStore
-from .extractors.llm import LLMConfig, LLMRefiner
+from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .extractors.rules import extract_candidates
 from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
 from .sources.github_changelog import (
@@ -165,6 +165,32 @@ def mine_target(target: Target, fetcher: GitHubFetcher, threshold: int) -> list[
     return candidates
 
 
+def mine_source_file(
+    library: str,
+    ecosystem: str,
+    source_path: Path,
+    source_url: str,
+    threshold: int,
+) -> list[DriftCandidate]:
+    body = source_path.read_text(encoding="utf-8")
+    sections = list(split_changelog_into_sections(body)) or [(source_path.stem, body)]
+    now_iso = utc_now_iso()
+    candidates: list[DriftCandidate] = []
+    for version_label, section_body in sections:
+        candidates.extend(
+            extract_candidates(
+                library=library,
+                ecosystem=ecosystem,
+                version_label=version_label,
+                section_body=section_body,
+                source_url=source_url,
+                threshold=threshold,
+                retrieved_at=now_iso,
+            )
+        )
+    return candidates
+
+
 # ----------------------- output -----------------------
 
 def write_candidates_jsonl(cands: list[DriftCandidate], out_path: Path) -> None:
@@ -217,7 +243,61 @@ def artifact_path(path: str, artifact_root: Optional[str]) -> Path:
         return Path(path)
     return ArtifactStore(artifact_root).resolve_user_path(path)
 
+
+def candidate_file_arg(path: str, artifact_root: Optional[str]) -> Path:
+    if artifact_root is None:
+        return Path(path)
+    return ArtifactStore(artifact_root).resolve_user_path(path)
+
+
+def build_refiner(mode: str):
+    if mode == "api":
+        refiner = LLMRefiner(LLMConfig())
+        if not refiner.enabled:
+            print("[llm] no API key found; LLM stage will be skipped per-call")
+        return refiner
+    if mode == "offline":
+        return OfflineLLMFilter()
+    return None
+
+
+def refine_candidates(refiner, candidates: list[DriftCandidate]) -> list[DriftCandidate]:
+    if refiner is not None and refiner.enabled and candidates:
+        kept = refiner.refine_batch(candidates)
+        print(f"  precision filter: kept {len(kept)} of {len(candidates)}")
+        return kept
+    return candidates
+
 def cmd_mine(args: argparse.Namespace) -> int:
+    out_dir = candidate_dir(args.out_dir, args.artifact_root)
+    refiner = build_refiner(args.llm_mode)
+
+    if args.source:
+        if not args.library:
+            print("--library is required when --source is used", file=sys.stderr)
+            return 2
+        source_path = Path(args.source)
+        if not source_path.exists():
+            print(f"source not found: {source_path}", file=sys.stderr)
+            return 2
+        source_url = args.source_url or source_path.as_posix()
+        print(f"\n=== mining {args.library} ({args.ecosystem}) from {source_path} ===")
+        weak = mine_source_file(
+            library=args.library,
+            ecosystem=args.ecosystem,
+            source_path=source_path,
+            source_url=source_url,
+            threshold=args.threshold,
+        )
+        print(f"  rule prescreen: {len(weak)} WEAK candidates")
+        kept = refine_candidates(refiner, weak)
+        out_path = candidate_file_arg(args.out, args.artifact_root) if args.out else out_dir / f"{args.library}.jsonl"
+        write_candidates_jsonl(kept, out_path)
+        print(f"  wrote -> {out_path}")
+        print("\n=== summary ===")
+        print(json.dumps(summarize(kept), indent=2, ensure_ascii=False))
+        return 0
+
     config_path = Path(args.config)
     if not config_path.exists():
         print(f"config not found: {config_path}", file=sys.stderr)
@@ -236,23 +316,14 @@ def cmd_mine(args: argparse.Namespace) -> int:
             print(f"[config] skipping disabled targets: {', '.join(disabled)}", file=sys.stderr)
 
     cache_dir = Path(args.cache_dir)
-    out_dir = candidate_dir(args.out_dir, args.artifact_root)
     fetcher = GitHubFetcher(cache_dir=cache_dir)
-
-    refiner = LLMRefiner(LLMConfig()) if args.use_llm else None
-    if refiner is not None and not refiner.enabled:
-        print("[llm] no API key found; LLM stage will be skipped per-call")
 
     all_after: list[DriftCandidate] = []
     for t in targets:
         print(f"\n=== mining {t.library} ({t.ecosystem}) ===")
         weak = mine_target(t, fetcher, threshold=args.threshold)
         print(f"  rule prescreen: {len(weak)} WEAK candidates")
-        if refiner is not None and refiner.enabled and weak:
-            kept = refiner.refine_batch(weak)
-            print(f"  LLM refinement: kept {len(kept)} of {len(weak)}")
-        else:
-            kept = weak
+        kept = refine_candidates(refiner, weak)
 
         out_path = out_dir / f"{t.library}.jsonl"
         write_candidates_jsonl(kept, out_path)
@@ -266,10 +337,17 @@ def cmd_mine(args: argparse.Namespace) -> int:
 
 
 def cmd_stats(args: argparse.Namespace) -> int:
-    out_dir = candidate_dir(args.out_dir, args.artifact_root)
     all_c: list[DriftCandidate] = []
-    for p in sorted(out_dir.glob("*.jsonl")):
-        all_c.extend(load_candidates_jsonl(p))
+    paths = args.paths or []
+    if not paths:
+        paths = [str(candidate_dir(args.out_dir, args.artifact_root))]
+    for raw_path in paths:
+        path = candidate_file_arg(raw_path, args.artifact_root) if args.artifact_root else Path(raw_path)
+        if path.is_dir():
+            for p in sorted(path.glob("*.jsonl")):
+                all_c.extend(load_candidates_jsonl(p))
+        else:
+            all_c.extend(load_candidates_jsonl(path))
     s = summarize(all_c)
     print(json.dumps(s, indent=2, ensure_ascii=False))
     return 0
@@ -321,9 +399,15 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 
 def cmd_show(args: argparse.Namespace) -> int:
-    out_dir = candidate_dir(args.out_dir, args.artifact_root)
-    path = out_dir / f"{args.library}.jsonl"
+    target = Path(args.target)
+    if target.suffix == ".jsonl" or target.exists():
+        path = candidate_file_arg(args.target, args.artifact_root) if args.artifact_root else target
+    else:
+        out_dir = candidate_dir(args.out_dir, args.artifact_root)
+        path = out_dir / f"{args.target}.jsonl"
     cands = load_candidates_jsonl(path)
+    if args.candidate_id:
+        cands = [c for c in cands if c.candidate_id == args.candidate_id]
     if args.only_category:
         cands = [c for c in cands if c.category.value == args.only_category]
     if args.min_confidence:
@@ -433,30 +517,38 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_mine = sub.add_parser("mine", help="run the mining pipeline")
     p_mine.add_argument("--config", default="configs/targets.yaml")
     p_mine.add_argument("--library", default=None, help="only mine this library from config")
+    p_mine.add_argument("--ecosystem", default="other", help="ecosystem for --source mining")
+    p_mine.add_argument("--source", default=None, help="local changelog/release-note fixture")
+    p_mine.add_argument("--source-url", default=None, help="stable provenance URL for --source")
     p_mine.add_argument("--cache-dir", default="data/raw_changelogs")
     p_mine.add_argument("--artifact-root", default=None,
                         help="artifact root; when set, outputs cannot escape this directory")
     p_mine.add_argument("--out-dir", default=None)
+    p_mine.add_argument("--out", default=None, help="candidate JSONL output for single --source mining")
     p_mine.add_argument("--threshold", type=int, default=4,
                         help="rule score threshold to emit a WEAK candidate")
     llm_group = p_mine.add_mutually_exclusive_group()
-    llm_group.add_argument("--use-llm", action="store_true", default=False,
+    llm_group.add_argument("--use-llm", dest="llm_mode", action="store_const", const="api", default="none",
                            help="enable LLM refinement (needs ANTHROPIC_API_KEY)")
-    llm_group.add_argument("--no-llm", dest="use_llm", action="store_false",
+    llm_group.add_argument("--no-llm", dest="llm_mode", action="store_const", const="none",
                            help="disable LLM refinement (default)")
+    llm_group.add_argument("--llm-filter", dest="llm_mode", action="store_const", const="offline",
+                           help="run deterministic offline precision filter")
     p_mine.set_defaults(func=cmd_mine)
 
     p_stats = sub.add_parser("stats", help="print summary over all candidates")
+    p_stats.add_argument("paths", nargs="*", help="candidate JSONL files or directories")
     p_stats.add_argument("--artifact-root", default=None,
                          help="artifact root; defaults candidate input to <root>/candidates")
     p_stats.add_argument("--out-dir", default=None)
     p_stats.set_defaults(func=cmd_stats)
 
     p_show = sub.add_parser("show", help="show candidates for one library")
-    p_show.add_argument("library")
+    p_show.add_argument("target", help="library name or candidate JSONL file")
     p_show.add_argument("--artifact-root", default=None,
                         help="artifact root; defaults candidate input to <root>/candidates")
     p_show.add_argument("--out-dir", default=None)
+    p_show.add_argument("--candidate-id", default=None)
     p_show.add_argument("--limit", type=int, default=20)
     p_show.add_argument("--only-category", default=None)
     p_show.add_argument("--min-confidence", default=None,
