@@ -25,6 +25,8 @@ jobs:
         run: pip install -e "silent_drift_miner[dev]"
 
       - name: Run tests (offline only, no network/LLM)
+        env:
+          SILENT_DRIFT_SKIP_REAL_TOOLCHAIN_SMOKE: "1"
         run: python -m pytest silent_drift_miner/tests/ -v
 
       - name: Validate existing candidate fixtures
