@@ -28,6 +28,7 @@ from typing import Optional
 from .artifacts import ArtifactStore
 from .audit import audit_package, write_audit_report
 from .bench import create_benchmark_package
+from .client_generation import write_client_generation_artifacts
 from .curation import CurationDecision, create_curated_case, write_curated_case
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .oracle import generate_pytest_oracle, validate_pytest_oracle
@@ -593,6 +594,32 @@ def cmd_reproduce_summarize(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_reproduce_generate_client(args: argparse.Namespace) -> int:
+    candidate_path = artifact_path(args.candidate, args.artifact_root)
+    out_path = artifact_path(args.out, args.artifact_root)
+    prompt_out = artifact_path(args.prompt_out, args.artifact_root) if args.prompt_out else None
+    metadata_out = artifact_path(args.metadata_out, args.artifact_root) if args.metadata_out else None
+    try:
+        artifacts = write_client_generation_artifacts(
+            candidate_path=candidate_path,
+            candidate_id=args.candidate_id,
+            out_path=out_path,
+            redacted=args.redacted,
+            dry_run=args.dry_run,
+            model=args.model,
+            provider=args.provider,
+            allowed_imports=args.allowed_import,
+            forbidden_terms=args.forbidden_term,
+            prompt_out=prompt_out,
+            metadata_out=metadata_out,
+        )
+    except Exception as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    print(artifacts.to_json())
+    return 0
+
+
 def cmd_curate_create(args: argparse.Namespace) -> int:
     result_path = artifact_path(args.reproduction_result, args.artifact_root)
     out_path = artifact_path(args.out, args.artifact_root)
@@ -803,6 +830,26 @@ def main(argv: Optional[list[str]] = None) -> int:
                                        help="artifact root; result path must stay inside this directory")
     p_reproduce_summarize.add_argument("--result", required=True)
     p_reproduce_summarize.set_defaults(func=cmd_reproduce_summarize)
+
+    p_reproduce_generate_client = reproduce_sub.add_parser(
+        "generate-client",
+        help="build leak-controlled client-generation prompt artifacts",
+    )
+    p_reproduce_generate_client.add_argument("--artifact-root", default=None,
+                                             help="artifact root; outputs cannot escape this directory")
+    p_reproduce_generate_client.add_argument("--candidate", required=True)
+    p_reproduce_generate_client.add_argument("--candidate-id", required=True)
+    p_reproduce_generate_client.add_argument("--redacted", action="store_true")
+    p_reproduce_generate_client.add_argument("--dry-run", action="store_true",
+                                             help="write a deterministic scaffold instead of calling a live LLM")
+    p_reproduce_generate_client.add_argument("--provider", default="anthropic")
+    p_reproduce_generate_client.add_argument("--model", default=None)
+    p_reproduce_generate_client.add_argument("--allowed-import", action="append", default=[])
+    p_reproduce_generate_client.add_argument("--forbidden-term", action="append", default=[])
+    p_reproduce_generate_client.add_argument("--prompt-out", default=None)
+    p_reproduce_generate_client.add_argument("--metadata-out", default=None)
+    p_reproduce_generate_client.add_argument("--out", required=True)
+    p_reproduce_generate_client.set_defaults(func=cmd_reproduce_generate_client)
 
     p_curate = sub.add_parser("curate", help="create curated case manifests")
     curate_sub = p_curate.add_subparsers(dest="curate_cmd", required=True)
