@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "silent-drift-miner"
-version = "0.9.0"
+version = "0.9.1"
 description = "Mine silent semantic API drift candidates from release notes/CHANGELOGs."
 requires-python = ">=3.10"
 dependencies = []  # stdlib-only by design; PyYAML optional

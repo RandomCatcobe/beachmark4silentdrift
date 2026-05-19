@@ -43,6 +43,54 @@ Only after an explicit user command to implement an adapter:
 - Add offline toy fixtures before attempting real cases.
 - Keep environment-specific logic inside the adapter boundary.
 
+## Parallel Agent Rules
+
+When multiple GPT/model agents work on ecosystem adapters at the same time, each agent must use an isolated branch or worktree:
+
+- JVM agent: `adapter-jvm`
+- Go agent: `adapter-go`
+- Rust agent: `adapter-rust`
+
+Each agent owns only its ecosystem-specific directory:
+
+```text
+silent_drift_miner/src/silent_drift_miner/adapters/jvm/
+silent_drift_miner/src/silent_drift_miner/adapters/go/
+silent_drift_miner/src/silent_drift_miner/adapters/rust/
+```
+
+Each agent may submit only:
+
+- Its adapter implementation under its owned directory.
+- One offline toy case for that ecosystem.
+- Tests scoped to that adapter.
+- A short handoff note for that ecosystem.
+
+Parallel agents must not modify shared project surfaces:
+
+- Do not change `pyproject.toml`, package version, release tags, or publishing metadata.
+- Do not change the root README or docs index.
+- Do not restructure the main CLI.
+- Do not rewrite `adapter_contracts.py`, `ecosystems.py`, or Python reproduction code unless the coordinator explicitly asks.
+- Do not move existing Python cases, packages, oracle files, or reports.
+
+After parallel work completes, a single coordinator must merge branches in sequence, resolve conflicts, run the full test suite, update the version, write release notes if needed, tag, and push `main`.
+
+The preferred implementation order is still sequential: implement JVM first, then consider Go or Rust only after JVM proves the adapter pattern. Parallel agents are acceptable for research and candidate-material collection, but adapter implementation should stay narrow and isolated.
+
+## Stop And Ask Rule
+
+Adapter agents must not attempt large refactors. If the task appears to require changing shared lifecycle schema, replacing the Python runner, redesigning the CLI, adding a new oracle family, or changing packaging/audit semantics, stop immediately.
+
+When stopping, record:
+
+- What adapter was being attempted.
+- What file or contract caused the blocker.
+- Why the change appears larger than the owned adapter directory.
+- The smallest question the user or coordinator must answer.
+
+Then ask instead of continuing.
+
 ## What Future Models Must Not Do By Default
 
 Do not implement any of the following unless the user explicitly asks for that exact expansion:

@@ -51,3 +51,12 @@ The user has explicitly allowed reserving interfaces for future ecosystems. This
 contract files, registry entries, CLI inspection commands, tests, and handoff documentation only. It
 does not permit implementing a non-Python runner, cloud harness, GPU path, or complex oracle without
 a separate explicit command.
+
+## Parallel Adapter Work Boundary
+
+When future adapter work is split across multiple agents, each agent must stay inside its owned
+ecosystem directory and avoid shared refactors. The detailed collaboration protocol is in
+`docs/ecosystem-adapter-handoff.md`.
+
+If an adapter task looks larger than an isolated directory-level implementation, the agent must stop,
+record the blocker, and ask the user or coordinator before changing shared project structure.
