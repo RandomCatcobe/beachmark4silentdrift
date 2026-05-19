@@ -139,6 +139,40 @@ ADAPTER_CONTRACTS: dict[str, AdapterContract] = {
         required_tools=["go"],
         notes="Reserved for future module-based old/new reproductions.",
     ),
+    "js": AdapterContract(
+        ecosystem="js",
+        status=AdapterStatus.RESERVED,
+        owner_model="handoff",
+        implementation_module=None,
+        required_tools=["node", "npm"],
+        optional_tools=["pnpm", "yarn"],
+        notes=(
+            "Reserved high-risk npm/Node/TypeScript ecosystem target; "
+            "likely rich in transitive, default, ESM/CJS, and framework behavior drift."
+        ),
+    ),
+    "php": AdapterContract(
+        ecosystem="php",
+        status=AdapterStatus.RESERVED,
+        owner_model="handoff",
+        implementation_module=None,
+        required_tools=["php", "composer"],
+        notes=(
+            "Reserved high-risk Composer/PHP ecosystem target; likely rich in framework, "
+            "ORM, serialization, and dependency cascade drift."
+        ),
+    ),
+    "ruby": AdapterContract(
+        ecosystem="ruby",
+        status=AdapterStatus.RESERVED,
+        owner_model="handoff",
+        implementation_module=None,
+        required_tools=["ruby", "bundle"],
+        notes=(
+            "Reserved high-risk RubyGems/Rails ecosystem target; likely rich in framework "
+            "default, ActiveSupport, ORM, and gem cascade drift."
+        ),
+    ),
     "rust": AdapterContract(
         ecosystem="rust",
         status=AdapterStatus.RESERVED,
@@ -146,6 +180,18 @@ ADAPTER_CONTRACTS: dict[str, AdapterContract] = {
         implementation_module=None,
         required_tools=["cargo", "rustc"],
         notes="Reserved for future crate-based old/new reproductions.",
+    ),
+    "dotnet": AdapterContract(
+        ecosystem="dotnet",
+        status=AdapterStatus.RESERVED,
+        owner_model="handoff",
+        implementation_module=None,
+        required_tools=["dotnet"],
+        optional_tools=["nuget"],
+        notes=(
+            "Reserved high-risk NuGet/.NET ecosystem target; likely rich in SDK, "
+            "cloud-client, serializer, and framework cascade drift."
+        ),
     ),
 }
 

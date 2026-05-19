@@ -89,8 +89,13 @@ def test_adapter_contracts_reserve_future_ecosystems() -> None:
     assert contracts["python"].status == AdapterStatus.ACTIVE
     assert contracts["jvm"].status == AdapterStatus.RESERVED
     assert contracts["go"].status == AdapterStatus.RESERVED
+    assert contracts["js"].status == AdapterStatus.RESERVED
+    assert contracts["php"].status == AdapterStatus.RESERVED
+    assert contracts["ruby"].status == AdapterStatus.RESERVED
     assert contracts["rust"].status == AdapterStatus.RESERVED
+    assert contracts["dotnet"].status == AdapterStatus.RESERVED
     assert get_adapter_contract("JVM").required_tools == ["java"]
+    assert get_adapter_contract("php").required_tools == ["php", "composer"]
 
 
 def test_ecosystem_adapters_cli_reports_reserved_contracts(tmp_path, capsys) -> None:
@@ -103,6 +108,18 @@ def test_ecosystem_adapters_cli_reports_reserved_contracts(tmp_path, capsys) -> 
     assert payload["contracts"][0]["status"] == "reserved"
     assert "explicit user command" in payload["handoff_rule"]
     assert json.loads(out.read_text(encoding="utf-8")) == payload
+
+
+def test_ecosystem_env_check_supports_php_toolchain(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "silent_drift_miner.ecosystems.shutil.which",
+        lambda tool: f"/fake/bin/{tool}",
+    )
+
+    report = check_ecosystem_environment("php")
+
+    assert report.pass_ is True
+    assert [tool["name"] for tool in report.required_tools] == ["php", "composer"]
 
 
 def _write_case_package(tmp_path: Path, case_id: str) -> None:

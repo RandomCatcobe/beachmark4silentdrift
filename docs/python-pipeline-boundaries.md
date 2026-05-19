@@ -60,3 +60,6 @@ ecosystem directory and avoid shared refactors. The detailed collaboration proto
 
 If an adapter task looks larger than an isolated directory-level implementation, the agent must stop,
 record the blocker, and ask the user or coordinator before changing shared project structure.
+
+Currently reserved high-risk ecosystems include `js`, `php`, `ruby`, and `dotnet`, in addition to
+`jvm`, `go`, and `rust`. Reservation is not implementation permission.

@@ -2,6 +2,30 @@
   "schema_version": "1",
   "contracts": [
     {
+      "ecosystem": "dotnet",
+      "status": "reserved",
+      "owner_model": "handoff",
+      "implementation_module": null,
+      "required_tools": [
+        "dotnet"
+      ],
+      "optional_tools": [
+        "nuget"
+      ],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Reserved high-risk NuGet/.NET ecosystem target; likely rich in SDK, cloud-client, serializer, and framework cascade drift."
+    },
+    {
       "ecosystem": "go",
       "status": "reserved",
       "owner_model": "handoff",
@@ -22,6 +46,32 @@
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
       "notes": "Reserved for future module-based old/new reproductions."
+    },
+    {
+      "ecosystem": "js",
+      "status": "reserved",
+      "owner_model": "handoff",
+      "implementation_module": null,
+      "required_tools": [
+        "node",
+        "npm"
+      ],
+      "optional_tools": [
+        "pnpm",
+        "yarn"
+      ],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Reserved high-risk npm/Node/TypeScript ecosystem target; likely rich in transitive, default, ESM/CJS, and framework behavior drift."
     },
     {
       "ecosystem": "jvm",
@@ -49,6 +99,29 @@
       "notes": "Reserved first non-Python adapter. Implement only after explicit user command."
     },
     {
+      "ecosystem": "php",
+      "status": "reserved",
+      "owner_model": "handoff",
+      "implementation_module": null,
+      "required_tools": [
+        "php",
+        "composer"
+      ],
+      "optional_tools": [],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Reserved high-risk Composer/PHP ecosystem target; likely rich in framework, ORM, serialization, and dependency cascade drift."
+    },
+    {
       "ecosystem": "python",
       "status": "active",
       "owner_model": "current",
@@ -70,6 +143,29 @@
       "result_schema": "ReproductionResult-compatible JSON",
       "oracle_contract": "public/hidden split, no expected-output leakage",
       "notes": "Existing stable package old/new pipeline; do not rewrite while reserving other interfaces."
+    },
+    {
+      "ecosystem": "ruby",
+      "status": "reserved",
+      "owner_model": "handoff",
+      "implementation_module": null,
+      "required_tools": [
+        "ruby",
+        "bundle"
+      ],
+      "optional_tools": [],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Reserved high-risk RubyGems/Rails ecosystem target; likely rich in framework default, ActiveSupport, ORM, and gem cascade drift."
     },
     {
       "ecosystem": "rust",

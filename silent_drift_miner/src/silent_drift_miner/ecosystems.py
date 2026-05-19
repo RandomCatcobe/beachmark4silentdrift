@@ -46,9 +46,25 @@ ECOSYSTEM_TOOLS = {
         "required": ["go"],
         "optional": [],
     },
+    "js": {
+        "required": ["node", "npm"],
+        "optional": ["pnpm", "yarn"],
+    },
+    "php": {
+        "required": ["php", "composer"],
+        "optional": [],
+    },
+    "ruby": {
+        "required": ["ruby", "bundle"],
+        "optional": [],
+    },
     "rust": {
         "required": ["cargo", "rustc"],
         "optional": [],
+    },
+    "dotnet": {
+        "required": ["dotnet"],
+        "optional": ["nuget"],
     },
     "python": {
         "required": ["python"],
