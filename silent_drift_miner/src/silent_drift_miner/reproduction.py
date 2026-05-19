@@ -5,7 +5,8 @@ import json
 import os
 import re
 import subprocess
-from dataclasses import asdict, dataclass, field
+import sys
+from dataclasses import asdict, dataclass, field, replace
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
@@ -67,6 +68,7 @@ class ReproductionRun:
     run_log_path: str
     build_log_path: str
     exit_code: Optional[int] = None
+    build_exit_code: Optional[int] = None
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "ReproductionRun":
@@ -123,19 +125,29 @@ def create_reproduction_spec(
     client_file: str | Path,
     old_package_path: str | Path | None = None,
     new_package_path: str | Path | None = None,
+    old_python_executable: str = "python",
+    new_python_executable: str = "python",
+    extra_packages: list[str] | None = None,
+    old_extra_packages: list[str] | None = None,
+    new_extra_packages: list[str] | None = None,
 ) -> ReproductionSpec:
+    shared_packages = list(extra_packages or [])
+    old_packages = shared_packages + list(old_extra_packages or []) + [f"{library}=={old_version}"]
+    new_packages = shared_packages + list(new_extra_packages or []) + [f"{library}=={new_version}"]
     old_environment = PythonEnvironmentDefinition(
         label="old",
         library=library,
         version=old_version,
-        install_command=["python", "-m", "pip", "install", f"{library}=={old_version}"],
+        install_command=["python", "-m", "pip", "install", *old_packages],
+        python_executable=old_python_executable,
         package_path=str(Path(old_package_path)) if old_package_path else None,
     )
     new_environment = PythonEnvironmentDefinition(
         label="new",
         library=library,
         version=new_version,
-        install_command=["python", "-m", "pip", "install", f"{library}=={new_version}"],
+        install_command=["python", "-m", "pip", "install", *new_packages],
+        python_executable=new_python_executable,
         package_path=str(Path(new_package_path)) if new_package_path else None,
     )
     return ReproductionSpec(
@@ -162,13 +174,36 @@ def load_reproduction_result(path: Path) -> ReproductionResult:
     return ReproductionResult.from_json(path.read_text(encoding="utf-8"))
 
 
-def run_reproduction_spec(spec: ReproductionSpec, out: Path, timeout_s: int = 30) -> ReproductionResult:
+def run_reproduction_spec(
+    spec: ReproductionSpec,
+    out: Path,
+    timeout_s: int = 30,
+    install: bool = False,
+    venv_root: Path | None = None,
+    build_timeout_s: int = 300,
+) -> ReproductionResult:
     attempt_dir = allocate_attempt_dir(out)
     attempt_dir.mkdir(parents=True, exist_ok=False)
     write_reproduction_spec(spec, attempt_dir / "spec.json")
 
-    old_run = _run_one_side(spec, spec.old_environment, attempt_dir / "old", timeout_s)
-    new_run = _run_one_side(spec, spec.new_environment, attempt_dir / "new", timeout_s)
+    old_run = _run_one_side(
+        spec,
+        spec.old_environment,
+        attempt_dir / "old",
+        timeout_s,
+        install=install,
+        venv_root=venv_root,
+        build_timeout_s=build_timeout_s,
+    )
+    new_run = _run_one_side(
+        spec,
+        spec.new_environment,
+        attempt_dir / "new",
+        timeout_s,
+        install=install,
+        venv_root=venv_root,
+        build_timeout_s=build_timeout_s,
+    )
     diff = build_diff(old_run, new_run)
 
     drop_reason = _drop_reason(old_run, new_run, diff)
@@ -241,6 +276,9 @@ def _run_one_side(
     environment: PythonEnvironmentDefinition,
     out_dir: Path,
     timeout_s: int,
+    install: bool = False,
+    venv_root: Path | None = None,
+    build_timeout_s: int = 300,
 ) -> ReproductionRun:
     out_dir.mkdir(parents=True, exist_ok=True)
     stdout_path = out_dir / "stdout.txt"
@@ -250,7 +288,9 @@ def _run_one_side(
     build_log_path = out_dir / "build.log"
     dockerfile_path = out_dir / "Dockerfile"
 
-    build_log_path.write_text(_build_log(environment), encoding="utf-8")
+    build_exit_code: int | None = None
+    build_log = _build_log(environment, install=install)
+    run_environment = environment
     dockerfile_path.write_text(_dockerfile(spec, environment), encoding="utf-8")
     env = os.environ.copy()
     if environment.package_path:
@@ -260,48 +300,168 @@ def _run_one_side(
             if not existing
             else str(Path(environment.package_path)) + os.pathsep + existing
         )
-    command = [environment.python_executable, spec.client_file]
+
+    if install and not environment.package_path:
+        build = _prepare_installed_environment(spec, environment, out_dir, venv_root, build_timeout_s)
+        build_log += build["log"]
+        build_exit_code = build["exit_code"]
+        if build["python_executable"]:
+            run_environment = replace(environment, python_executable=build["python_executable"])
+
+    build_log_path.write_text(build_log, encoding="utf-8")
+    command = [run_environment.python_executable, spec.client_file]
     run_log_path.write_text("command: " + " ".join(command) + "\n", encoding="utf-8")
 
-    try:
-        completed = subprocess.run(
-            command,
-            capture_output=True,
-            text=True,
-            timeout=timeout_s,
-            env=env,
-            check=False,
-        )
-        stdout = completed.stdout
-        stderr = completed.stderr
-        exit_code = completed.returncode
-    except subprocess.TimeoutExpired as exc:
-        stdout = exc.stdout or ""
-        stderr = (exc.stderr or "") + f"\nTIMEOUT after {timeout_s}s\n"
-        exit_code = 124
+    if build_exit_code not in (None, 0):
+        stdout = ""
+        stderr = f"client not run because build failed with exit code {build_exit_code}\n"
+        exit_code = 1
+    else:
+        try:
+            completed = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=timeout_s,
+                env=env,
+                check=False,
+            )
+            stdout = completed.stdout
+            stderr = completed.stderr
+            exit_code = completed.returncode
+        except subprocess.TimeoutExpired as exc:
+            stdout = exc.stdout or ""
+            stderr = (exc.stderr or "") + f"\nTIMEOUT after {timeout_s}s\n"
+            exit_code = 124
 
     stdout_path.write_text(stdout, encoding="utf-8")
     stderr_path.write_text(stderr, encoding="utf-8")
     exit_code_path.write_text(str(exit_code) + "\n", encoding="utf-8")
     return ReproductionRun(
         label=environment.label,
-        environment=environment,
+        environment=run_environment,
         stdout_path=str(stdout_path),
         stderr_path=str(stderr_path),
         exit_code_path=str(exit_code_path),
         run_log_path=str(run_log_path),
         build_log_path=str(build_log_path),
         exit_code=exit_code,
+        build_exit_code=build_exit_code,
     )
 
 
-def _build_log(environment: PythonEnvironmentDefinition) -> str:
+def _build_log(environment: PythonEnvironmentDefinition, install: bool = False) -> str:
     if environment.package_path:
         return (
             "offline package path configured; using PYTHONPATH instead of pip install\n"
             f"package_path: {environment.package_path}\n"
         )
+    if install:
+        return "isolated install requested; creating a virtual environment\n"
     return "no build step configured; running client in current Python environment\n"
+
+
+def _prepare_installed_environment(
+    spec: ReproductionSpec,
+    environment: PythonEnvironmentDefinition,
+    out_dir: Path,
+    venv_root: Path | None,
+    build_timeout_s: int,
+) -> dict[str, Any]:
+    venv_dir = (
+        _venv_dir(Path(venv_root), spec, environment)
+        if venv_root
+        else out_dir / ".venv"
+    )
+    python_path = _venv_python(venv_dir)
+    lines = [
+        f"venv_dir: {venv_dir}",
+        f"base_python: {environment.python_executable}",
+    ]
+
+    try:
+        create = subprocess.run(
+            [environment.python_executable, "-m", "venv", str(venv_dir)],
+            capture_output=True,
+            text=True,
+            timeout=build_timeout_s,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        lines.extend(
+            [
+                "venv create timed out",
+                exc.stdout or "",
+                exc.stderr or "",
+            ]
+        )
+        return {"python_executable": None, "exit_code": 124, "log": "\n".join(lines) + "\n"}
+
+    lines.extend(
+        [
+            "venv create command: "
+            + " ".join([environment.python_executable, "-m", "venv", str(venv_dir)]),
+            f"venv create exit_code: {create.returncode}",
+            create.stdout,
+            create.stderr,
+        ]
+    )
+    if create.returncode != 0:
+        return {"python_executable": None, "exit_code": create.returncode, "log": "\n".join(lines) + "\n"}
+
+    install_command = _venv_install_command(environment, python_path)
+    try:
+        install = subprocess.run(
+            install_command,
+            capture_output=True,
+            text=True,
+            timeout=build_timeout_s,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        lines.extend(
+            [
+                "install command timed out",
+                "install command: " + " ".join(install_command),
+                exc.stdout or "",
+                exc.stderr or "",
+            ]
+        )
+        return {"python_executable": str(python_path), "exit_code": 124, "log": "\n".join(lines) + "\n"}
+
+    lines.extend(
+        [
+            "install command: " + " ".join(install_command),
+            f"install exit_code: {install.returncode}",
+            install.stdout,
+            install.stderr,
+        ]
+    )
+    return {"python_executable": str(python_path), "exit_code": install.returncode, "log": "\n".join(lines) + "\n"}
+
+
+def _venv_dir(root: Path, spec: ReproductionSpec, environment: PythonEnvironmentDefinition) -> Path:
+    return root / _slug(spec.candidate_id) / f"{environment.label}-{_slug(environment.library)}-{_slug(environment.version)}"
+
+
+def _venv_python(venv_dir: Path) -> Path:
+    if sys.platform == "win32":
+        return venv_dir / "Scripts" / "python.exe"
+    return venv_dir / "bin" / "python"
+
+
+def _venv_install_command(environment: PythonEnvironmentDefinition, python_path: Path) -> list[str]:
+    command = list(environment.install_command)
+    if command:
+        executable = Path(command[0]).name.lower()
+        if executable in {"python", "python.exe", "python3", "python3.exe"}:
+            command[0] = str(python_path)
+            return command
+    return [str(python_path), "-m", "pip", "install", f"{environment.library}=={environment.version}"]
+
+
+def _slug(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_.-]+", "-", value).strip("-") or "value"
 
 
 def _dockerfile(spec: ReproductionSpec, environment: PythonEnvironmentDefinition) -> str:
@@ -331,6 +491,8 @@ def _drop_reason(
     new_run: ReproductionRun,
     diff: ReproductionDiff,
 ) -> Optional[DropReason]:
+    if (old_run.build_exit_code not in (None, 0)) or (new_run.build_exit_code not in (None, 0)):
+        return DropReason.INSTALL_FAILED
     if old_run.exit_code == 124 or new_run.exit_code == 124:
         return DropReason.TIMEOUT
     if old_run.exit_code != 0 or new_run.exit_code != 0:

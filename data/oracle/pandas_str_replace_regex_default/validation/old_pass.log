@@ -1,0 +1,19 @@
+case_id: pandas_str_replace_regex_default
+mode: old
+exit_code: 0
+command: C:\ProgramData\anaconda3\python.exe -m pytest D:\myproject\beach\data\oracle\pandas_str_replace_regex_default\hidden\test_behavior.py
+
+=== stdout ===
+============================= test session starts =============================
+platform win32 -- Python 3.12.3, pytest-7.4.4, pluggy-1.0.0
+rootdir: D:\myproject\beach\data\oracle\pandas_str_replace_regex_default\hidden
+plugins: anyio-4.13.0, langsmith-0.8.4
+collected 1 item
+
+test_behavior.py .                                                       [100%]
+
+============================== 1 passed in 0.03s ==============================
+
+=== stderr ===
+C:\ProgramData\anaconda3\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.2.3) or chardet (7.4.0.post2)/charset_normalizer (3.3.2) doesn't match a supported version!
+  warnings.warn(

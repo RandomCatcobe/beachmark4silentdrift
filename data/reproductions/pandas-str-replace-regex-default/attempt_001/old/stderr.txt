@@ -1,0 +1,2 @@
+D:\myproject\beach\cases\pandas_str_replace_regex_default\client.py:11: FutureWarning: The default value of regex will change from True to False in a future version.
+  result = values.str.replace(r"\W", "_").tolist()

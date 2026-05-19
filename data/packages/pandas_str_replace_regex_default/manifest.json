@@ -1,0 +1,12 @@
+{
+  "task_id": "pandas_str_replace_regex_default",
+  "case_id": "pandas_str_replace_regex_default",
+  "candidate_id": "pandas-str-replace-regex-default",
+  "levels": [
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "public_dir": "public",
+  "reproduction_result": "reproduction_result.json"
+}

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from collections import Counter
 from dataclasses import dataclass
@@ -538,6 +539,11 @@ def cmd_reproduce_plan(args: argparse.Namespace) -> int:
         client_file=client_file,
         old_package_path=args.old_package_path,
         new_package_path=args.new_package_path,
+        old_python_executable=args.old_python_executable,
+        new_python_executable=args.new_python_executable,
+        extra_packages=args.extra_package,
+        old_extra_packages=args.old_extra_package,
+        new_extra_packages=args.new_extra_package,
     )
     write_reproduction_spec(spec, out_path)
     print(f"wrote reproduction spec -> {out_path}")
@@ -549,7 +555,15 @@ def cmd_reproduce_run(args: argparse.Namespace) -> int:
     out_path = artifact_path(args.out, args.artifact_root)
     try:
         spec = load_reproduction_spec(spec_path)
-        result = run_reproduction_spec(spec, out_path, timeout_s=args.timeout)
+        venv_root = Path(args.venv_root) if args.venv_root else None
+        result = run_reproduction_spec(
+            spec,
+            out_path,
+            timeout_s=args.timeout,
+            install=args.install,
+            venv_root=venv_root,
+            build_timeout_s=args.build_timeout,
+        )
     except Exception as exc:
         print(f"ERROR {exc}", file=sys.stderr)
         return 1
@@ -583,7 +597,20 @@ def cmd_curate_create(args: argparse.Namespace) -> int:
     result_path = artifact_path(args.reproduction_result, args.artifact_root)
     out_path = artifact_path(args.out, args.artifact_root)
     try:
-        case = create_curated_case(result_path, args.decision, args.case_id)
+        case = create_curated_case(
+            result_path,
+            args.decision,
+            args.case_id,
+            source_url=args.source_url,
+            source_excerpt=args.source_excerpt,
+            retrieved_at=args.retrieved_at,
+            version_old=args.version_old,
+            version_new=args.version_new,
+            api_surface=args.api_surface,
+            review_notes=args.review_notes,
+        )
+        if not Path(args.reproduction_result).is_absolute():
+            case.reproduction_result = os.path.relpath(result_path, start=out_path.parent)
         write_curated_case(case, out_path)
     except Exception as exc:
         print(f"ERROR {exc}", file=sys.stderr)
@@ -744,6 +771,16 @@ def main(argv: Optional[list[str]] = None) -> int:
                                   help="offline package directory added to PYTHONPATH for old run")
     p_reproduce_plan.add_argument("--new-package-path", default=None,
                                   help="offline package directory added to PYTHONPATH for new run")
+    p_reproduce_plan.add_argument("--old-python-executable", default="python",
+                                  help="base Python used for the old run or isolated venv")
+    p_reproduce_plan.add_argument("--new-python-executable", default="python",
+                                  help="base Python used for the new run or isolated venv")
+    p_reproduce_plan.add_argument("--extra-package", action="append", default=[],
+                                  help="additional package spec installed before both old and new library versions")
+    p_reproduce_plan.add_argument("--old-extra-package", action="append", default=[],
+                                  help="additional package spec installed only before the old library version")
+    p_reproduce_plan.add_argument("--new-extra-package", action="append", default=[],
+                                  help="additional package spec installed only before the new library version")
     p_reproduce_plan.add_argument("--out", required=True)
     p_reproduce_plan.set_defaults(func=cmd_reproduce_plan)
 
@@ -753,6 +790,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_reproduce_run.add_argument("--spec", required=True)
     p_reproduce_run.add_argument("--out", required=True)
     p_reproduce_run.add_argument("--timeout", type=int, default=30)
+    p_reproduce_run.add_argument("--install", action="store_true",
+                                 help="create isolated venvs and run each side's install command before the client")
+    p_reproduce_run.add_argument("--venv-root", default=None,
+                                 help="directory for reusable isolated reproduction venvs")
+    p_reproduce_run.add_argument("--build-timeout", type=int, default=300,
+                                 help="seconds allowed for venv creation and dependency install")
     p_reproduce_run.set_defaults(func=cmd_reproduce_run)
 
     p_reproduce_summarize = reproduce_sub.add_parser("summarize", help="summarize a reproduction result")
@@ -771,6 +814,13 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_curate_create.add_argument("--decision", required=True,
                                  choices=[d.value for d in CurationDecision])
     p_curate_create.add_argument("--case-id", required=True)
+    p_curate_create.add_argument("--source-url", default=None)
+    p_curate_create.add_argument("--source-excerpt", default=None)
+    p_curate_create.add_argument("--retrieved-at", default=None)
+    p_curate_create.add_argument("--version-old", default=None)
+    p_curate_create.add_argument("--version-new", default=None)
+    p_curate_create.add_argument("--api-surface", action="append", default=[])
+    p_curate_create.add_argument("--review-notes", default=None)
     p_curate_create.add_argument("--out", required=True)
     p_curate_create.set_defaults(func=cmd_curate_create)
 

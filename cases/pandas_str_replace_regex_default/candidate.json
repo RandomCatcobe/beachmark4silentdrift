@@ -16,5 +16,10 @@
   "excerpt": "Change the default argument of regex for Series.str.replace() from True to False.",
   "review_notes": "Same public call shape; omitting regex= changes whether a regex pattern is interpreted as a regex or a literal string.",
   "client_file": "client.py",
-  "reproduction_command": "silent-drift-miner reproduce plan --candidate-id pandas-str-replace-regex-default --library pandas --old-version 1.5.3 --new-version 2.0.3 --client-file cases/pandas_str_replace_regex_default/client.py --out data/reproductions/pandas-str-replace-regex-default/spec.json"
+  "reproduction_command": "py310=\"$(uv python find 3.10)\" && silent-drift-miner reproduce plan --candidate-id pandas-str-replace-regex-default --library pandas --old-version 1.5.3 --new-version 2.0.3 --client-file cases/pandas_str_replace_regex_default/client.py --old-python-executable \"$py310\" --new-python-executable \"$py310\" --extra-package numpy==1.24.4 --out data/reproductions/pandas-str-replace-regex-default/spec.json && silent-drift-miner reproduce run --spec data/reproductions/pandas-str-replace-regex-default/spec.json --out data/reproductions/pandas-str-replace-regex-default --install --venv-root .repro_venvs --build-timeout 300 --timeout 60",
+  "observed_diff": {
+    "old_stdout": "{\"pandas_version\": \"1.5.3\", \"result\": [\"a_b\", \"a_b\", \"abc\"]}",
+    "new_stdout": "{\"pandas_version\": \"2.0.3\", \"result\": [\"a.b\", \"a?b\", \"abc\"]}",
+    "result_path": "data/reproductions/pandas-str-replace-regex-default/attempt_001/result.json"
+  }
 }

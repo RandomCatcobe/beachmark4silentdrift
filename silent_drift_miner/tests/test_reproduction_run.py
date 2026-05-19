@@ -4,6 +4,11 @@ import json
 from pathlib import Path
 
 from silent_drift_miner.cli import main
+from silent_drift_miner.reproduction import (
+    PythonEnvironmentDefinition,
+    ReproductionSpec,
+    write_reproduction_spec,
+)
 
 
 def test_reproduce_run_captures_diff_and_allocates_attempts(tmp_path) -> None:
@@ -161,6 +166,57 @@ def test_reproduce_run_classifies_import_failure(tmp_path) -> None:
     assert result["drop_reason"] == "import_failed"
 
 
+def test_reproduce_run_can_install_local_packages_in_isolated_venvs(tmp_path) -> None:
+    client = tmp_path / "client.py"
+    spec_path = tmp_path / "spec.json"
+    out_root = tmp_path / "repro"
+    client.write_text("import toy_drift\nprint(toy_drift.value())\n", encoding="utf-8")
+    spec = ReproductionSpec(
+        candidate_id="cand-install",
+        library="toy-drift",
+        old_version="1.0.0",
+        new_version="2.0.0",
+        client_file=str(client),
+        old_environment=PythonEnvironmentDefinition(
+            label="old",
+            library="toy-drift",
+            version="1.0.0",
+            install_command=_write_toy_package_command("old"),
+        ),
+        new_environment=PythonEnvironmentDefinition(
+            label="new",
+            library="toy-drift",
+            version="2.0.0",
+            install_command=_write_toy_package_command("new"),
+        ),
+    )
+    write_reproduction_spec(spec, spec_path)
+
+    assert main(
+        [
+            "reproduce",
+            "run",
+            "--spec",
+            str(spec_path),
+            "--out",
+            str(out_root),
+            "--install",
+            "--venv-root",
+            str(tmp_path / "venvs"),
+            "--build-timeout",
+            "120",
+        ]
+    ) == 0
+
+    result = json.loads((out_root / "attempt_001" / "result.json").read_text(encoding="utf-8"))
+    assert result["keep"] is True
+    assert result["drop_reason"] is None
+    assert result["old_run"]["build_exit_code"] == 0
+    assert result["new_run"]["build_exit_code"] == 0
+    assert (out_root / "attempt_001" / "old" / "stdout.txt").read_text(encoding="utf-8").strip() == "old"
+    assert (out_root / "attempt_001" / "new" / "stdout.txt").read_text(encoding="utf-8").strip() == "new"
+
+
 def _toy_packages(tmp_path: Path, old_value: str = "old", new_value: str = "new") -> tuple[Path, Path]:
     old_pkg = tmp_path / "old_pkg"
     new_pkg = tmp_path / "new_pkg"
@@ -172,3 +228,13 @@ def _toy_packages(tmp_path: Path, old_value: str = "old", new_value: str = "new"
             encoding="utf-8",
         )
     return old_pkg, new_pkg
+
+
+def _write_toy_package_command(value: str) -> list[str]:
+    script = (
+        "from pathlib import Path; import site; "
+        "root = Path(site.getsitepackages()[0]) / 'toy_drift'; "
+        "root.mkdir(parents=True, exist_ok=True); "
+        f"(root / '__init__.py').write_text(\"def value():\\n    return {value!r}\\n\", encoding='utf-8')"
+    )
+    return ["python", "-c", script]

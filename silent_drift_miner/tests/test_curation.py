@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from silent_drift_miner.cli import main
+from silent_drift_miner.curation import load_curated_case
 
 
 def test_curate_create_accepts_kept_reproduction(tmp_path) -> None:
@@ -50,6 +51,30 @@ def test_curate_create_rejects_mismatched_decision(tmp_path) -> None:
         ]
     ) == 1
     assert not out.exists()
+
+
+def test_curate_create_stores_result_path_relative_to_case_file(tmp_path, monkeypatch) -> None:
+    result = _kept_result(tmp_path)
+    out = tmp_path / "curated" / "case.yaml"
+    monkeypatch.chdir(tmp_path)
+
+    assert main(
+        [
+            "curate",
+            "create",
+            "--reproduction-result",
+            str(result.relative_to(tmp_path)),
+            "--decision",
+            "accept",
+            "--case-id",
+            "toy_case_001",
+            "--out",
+            str(out.relative_to(tmp_path)),
+        ]
+    ) == 0
+
+    case = load_curated_case(out)
+    assert Path(out.parent / case.reproduction_result).resolve() == result.resolve()
 
 
 def _kept_result(tmp_path: Path) -> Path:

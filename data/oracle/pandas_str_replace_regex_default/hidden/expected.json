@@ -1,0 +1,8 @@
+{
+  "case_id": "pandas_str_replace_regex_default",
+  "candidate_id": "pandas-str-replace-regex-default",
+  "keep": true,
+  "diff_summary": "stdout changed, stderr changed",
+  "old_stdout": "{\"pandas_version\": \"1.5.3\", \"result\": [\"a_b\", \"a_b\", \"abc\"]}\n",
+  "new_stdout": "{\"pandas_version\": \"2.0.3\", \"result\": [\"a.b\", \"a?b\", \"abc\"]}\n"
+}

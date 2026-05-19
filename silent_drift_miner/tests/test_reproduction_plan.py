@@ -25,6 +25,12 @@ def test_reproduce_plan_writes_spec_with_old_and_new_envs(tmp_path) -> None:
             "2.0.0",
             "--client-file",
             str(client_file),
+            "--old-python-executable",
+            "python-old",
+            "--new-python-executable",
+            "python-new",
+            "--extra-package",
+            "numpy==1.24.4",
             "--out",
             str(out),
         ]
@@ -35,6 +41,10 @@ def test_reproduce_plan_writes_spec_with_old_and_new_envs(tmp_path) -> None:
     assert spec.candidate_id == "cand-1"
     assert spec.old_environment.install_command[-1] == "pandas==1.5.3"
     assert spec.new_environment.install_command[-1] == "pandas==2.0.0"
+    assert "numpy==1.24.4" in spec.old_environment.install_command
+    assert "numpy==1.24.4" in spec.new_environment.install_command
+    assert spec.old_environment.python_executable == "python-old"
+    assert spec.new_environment.python_executable == "python-new"
     assert spec.client_file == str(client_file)
 
 

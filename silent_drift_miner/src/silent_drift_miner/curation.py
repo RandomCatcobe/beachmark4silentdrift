@@ -24,6 +24,13 @@ class CuratedCase:
     reproduction_result: str
     keep: bool
     drop_reason: Optional[str] = None
+    source_url: Optional[str] = None
+    source_excerpt: Optional[str] = None
+    retrieved_at: Optional[str] = None
+    version_old: Optional[str] = None
+    version_new: Optional[str] = None
+    api_surface: list[str] = field(default_factory=list)
+    review_notes: Optional[str] = None
     schema_version: str = ARTIFACT_SCHEMA_VERSION
     created_at: str = field(default_factory=utc_now_iso)
 
@@ -40,6 +47,13 @@ def create_curated_case(
     result_path: Path,
     decision: str,
     case_id: str,
+    source_url: str | None = None,
+    source_excerpt: str | None = None,
+    retrieved_at: str | None = None,
+    version_old: str | None = None,
+    version_new: str | None = None,
+    api_surface: list[str] | None = None,
+    review_notes: str | None = None,
 ) -> CuratedCase:
     result = load_reproduction_result(result_path)
     curation_decision = CurationDecision(decision)
@@ -51,6 +65,13 @@ def create_curated_case(
         reproduction_result=str(result_path),
         keep=result.keep,
         drop_reason=result.drop_reason.value if result.drop_reason else None,
+        source_url=source_url,
+        source_excerpt=source_excerpt,
+        retrieved_at=retrieved_at,
+        version_old=version_old,
+        version_new=version_new,
+        api_surface=list(api_surface or []),
+        review_notes=review_notes,
     )
 
 

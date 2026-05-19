@@ -11,6 +11,14 @@ from .oracle import load_oracle_spec
 
 LEAK_TERMS = ("expected.json", "hidden", "old output", "new output")
 ALLOWED_LEVELS = {"L1", "L2", "L3"}
+REQUIRED_CASE_PROVENANCE = (
+    "source_url",
+    "source_excerpt",
+    "retrieved_at",
+    "version_old",
+    "version_new",
+    "review_notes",
+)
 
 
 def audit_package(package_dir: Path) -> dict[str, Any]:
@@ -106,6 +114,11 @@ def _check_manifest_case(manifest: dict[str, Any], case, findings: list[dict[str
         findings.append({"check": "package_structure", "message": "levels must be a non-empty subset of L1,L2,L3"})
     if not case.keep:
         findings.append({"check": "reproducibility_status", "message": "packaged case must have keep=true"})
+    for field in REQUIRED_CASE_PROVENANCE:
+        if not getattr(case, field, None):
+            findings.append({"check": "provenance", "message": f"case.yaml missing {field}"})
+    if not case.api_surface:
+        findings.append({"check": "provenance", "message": "case.yaml missing api_surface"})
 
 
 def _check_case_oracle(case, oracle, findings: list[dict[str, str]]) -> None:

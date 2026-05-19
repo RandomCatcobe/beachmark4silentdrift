@@ -27,7 +27,9 @@ silent-drift reproduce plan \
 
 silent-drift reproduce run \
   --spec data/reproductions/CANDIDATE_ID/spec.json \
-  --out data/reproductions/CANDIDATE_ID/attempt_001/
+  --out data/reproductions/CANDIDATE_ID/attempt_001/ \
+  --install \
+  --venv-root .repro_venvs/
 
 silent-drift reproduce summarize \
   --result data/reproductions/CANDIDATE_ID/attempt_001/result.json

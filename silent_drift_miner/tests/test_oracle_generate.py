@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from silent_drift_miner.cli import main
@@ -32,6 +33,9 @@ def test_oracle_generate_creates_hidden_and_public_split(tmp_path) -> None:
     assert "hidden" not in public_readme.lower()
     assert "expected.json" not in public_readme
     assert "expected.json" not in public_client
+    expected = json.loads((out / "hidden" / "expected.json").read_text(encoding="utf-8"))
+    assert expected["keep"] is True
+    assert expected["old_stdout"] != expected["new_stdout"]
 
 
 def test_oracle_generate_rejects_rejected_case(tmp_path) -> None:

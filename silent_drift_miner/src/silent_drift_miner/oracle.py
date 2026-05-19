@@ -8,6 +8,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from .curation import CurationDecision, load_curated_case
+from .reproduction import load_reproduction_result
 from .schema import ARTIFACT_SCHEMA_VERSION, utc_now_iso
 
 
@@ -71,17 +72,10 @@ def generate_pytest_oracle(case_path: Path, out_dir: Path) -> OracleSpec:
         public_readme_path=str(public_dir / "README.md"),
         starter_client_path=str(public_dir / "starter_client.py"),
     )
+    expected_payload = _expected_payload(case_path, case)
     (out_dir / "oracle_spec.yaml").write_text(spec.to_yaml(), encoding="utf-8")
     (hidden_dir / "expected.json").write_text(
-        json.dumps(
-            {
-                "case_id": case.case_id,
-                "candidate_id": case.candidate_id,
-                "expected_behavior": "author hidden oracle expectation here",
-            },
-            indent=2,
-            ensure_ascii=False,
-        )
+        json.dumps(expected_payload, indent=2, ensure_ascii=False)
         + "\n",
         encoding="utf-8",
     )
@@ -105,7 +99,7 @@ def validate_pytest_oracle(oracle_spec_path: Path, mode: str) -> OracleValidatio
     if mode not in {"old", "new", "fixed"}:
         raise ValueError("mode must be one of: old, new, fixed")
     spec = load_oracle_spec(oracle_spec_path)
-    hidden_test = Path(spec.hidden_test_path)
+    hidden_test = Path(spec.hidden_test_path).resolve()
     if not hidden_test.exists():
         raise ValueError(f"hidden test not found: {hidden_test}")
 
@@ -149,8 +143,7 @@ def validate_pytest_oracle(oracle_spec_path: Path, mode: str) -> OracleValidatio
 def _hidden_test_template() -> str:
     return '''"""Hidden pytest oracle.
 
-Fill in the expected behavior after human verification. This file stays out of
-public task packages.
+Verifies that the curated reproduction captured a real old/new behavior diff.
 """
 
 import json
@@ -159,7 +152,9 @@ from pathlib import Path
 
 def test_behavior_matches_expected():
     expected = json.loads((Path(__file__).parent / "expected.json").read_text())
-    assert expected["expected_behavior"]
+    assert expected["keep"] is True
+    assert expected["old_stdout"] != expected["new_stdout"]
+    assert expected["diff_summary"]
 '''
 
 
@@ -179,3 +174,34 @@ def _starter_client_template() -> str:
         "if __name__ == '__main__':\n"
         "    main()\n"
     )
+
+
+def _resolve_link(base_file: Path, value: str) -> Path:
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    return base_file.parent / path
+
+
+def _expected_payload(case_path: Path, case) -> dict:
+    base = {
+        "case_id": case.case_id,
+        "candidate_id": case.candidate_id,
+        "keep": case.keep,
+        "diff_summary": "",
+        "old_stdout": "",
+        "new_stdout": "",
+    }
+    try:
+        result = load_reproduction_result(_resolve_link(case_path, case.reproduction_result))
+    except Exception:
+        return base
+    base.update(
+        {
+            "keep": result.keep,
+            "diff_summary": result.diff.summary,
+            "old_stdout": Path(result.old_run.stdout_path).read_text(encoding="utf-8"),
+            "new_stdout": Path(result.new_run.stdout_path).read_text(encoding="utf-8"),
+        }
+    )
+    return base
