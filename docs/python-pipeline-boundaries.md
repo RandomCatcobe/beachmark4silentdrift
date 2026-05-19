@@ -44,3 +44,10 @@ When a candidate falls outside the current boundary:
 4. Continue only if the user explicitly commands that boundary to be opened.
 
 The correct default action is to preserve the working Python package pipeline, not to broaden the project.
+
+## Reserved Interface Exception
+
+The user has explicitly allowed reserving interfaces for future ecosystems. This exception permits
+contract files, registry entries, CLI inspection commands, tests, and handoff documentation only. It
+does not permit implementing a non-Python runner, cloud harness, GPU path, or complex oracle without
+a separate explicit command.

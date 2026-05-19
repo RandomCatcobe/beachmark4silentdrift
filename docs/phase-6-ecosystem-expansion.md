@@ -38,6 +38,13 @@ silent-drift-miner ecosystem env-check \
 
 外部 CLI 应保持一致：
 
+Reserved adapter contracts can be inspected without executing a non-Python adapter:
+
+```bash
+silent-drift-miner ecosystem adapters
+silent-drift-miner ecosystem adapters --target jvm
+```
+
 ```bash
 silent-drift-miner reproduce plan \
   --candidate-id CANDIDATE_ID \

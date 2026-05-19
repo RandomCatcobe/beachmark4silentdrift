@@ -1,0 +1,99 @@
+{
+  "schema_version": "1",
+  "contracts": [
+    {
+      "ecosystem": "go",
+      "status": "reserved",
+      "owner_model": "handoff",
+      "implementation_module": null,
+      "required_tools": [
+        "go"
+      ],
+      "optional_tools": [],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Reserved for future module-based old/new reproductions."
+    },
+    {
+      "ecosystem": "jvm",
+      "status": "reserved",
+      "owner_model": "handoff",
+      "implementation_module": null,
+      "required_tools": [
+        "java"
+      ],
+      "optional_tools": [
+        "mvn",
+        "gradle"
+      ],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Reserved first non-Python adapter. Implement only after explicit user command."
+    },
+    {
+      "ecosystem": "python",
+      "status": "active",
+      "owner_model": "current",
+      "implementation_module": "silent_drift_miner.reproduction",
+      "required_tools": [
+        "python",
+        "pip"
+      ],
+      "optional_tools": [],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Existing stable package old/new pipeline; do not rewrite while reserving other interfaces."
+    },
+    {
+      "ecosystem": "rust",
+      "status": "reserved",
+      "owner_model": "handoff",
+      "implementation_module": null,
+      "required_tools": [
+        "cargo",
+        "rustc"
+      ],
+      "optional_tools": [],
+      "lifecycle_steps": [
+        "candidate",
+        "triage",
+        "reproduction",
+        "curation",
+        "oracle",
+        "package",
+        "audit"
+      ],
+      "result_schema": "ReproductionResult-compatible JSON",
+      "oracle_contract": "public/hidden split, no expected-output leakage",
+      "notes": "Reserved for future crate-based old/new reproductions."
+    }
+  ],
+  "handoff_rule": "Reserved adapters expose contracts only; do not implement execution without an explicit user command."
+}

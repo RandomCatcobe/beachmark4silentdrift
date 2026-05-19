@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from silent_drift_miner.cli import main
+from silent_drift_miner.adapter_contracts import AdapterStatus, get_adapter_contract, list_adapter_contracts
 from silent_drift_miner.ecosystems import check_ecosystem_environment, evaluate_adapter_gates
 
 
@@ -80,6 +81,28 @@ def test_ecosystem_env_check_cli_writes_report(tmp_path, monkeypatch) -> None:
     payload = json.loads(out.read_text(encoding="utf-8"))
     assert payload["pass"] is True
     assert payload["required_tools"][0]["name"] == "java"
+
+
+def test_adapter_contracts_reserve_future_ecosystems() -> None:
+    contracts = {contract.ecosystem: contract for contract in list_adapter_contracts()}
+
+    assert contracts["python"].status == AdapterStatus.ACTIVE
+    assert contracts["jvm"].status == AdapterStatus.RESERVED
+    assert contracts["go"].status == AdapterStatus.RESERVED
+    assert contracts["rust"].status == AdapterStatus.RESERVED
+    assert get_adapter_contract("JVM").required_tools == ["java"]
+
+
+def test_ecosystem_adapters_cli_reports_reserved_contracts(tmp_path, capsys) -> None:
+    out = tmp_path / "adapters.json"
+
+    assert main(["ecosystem", "adapters", "--target", "jvm", "--out", str(out)]) == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["contracts"][0]["ecosystem"] == "jvm"
+    assert payload["contracts"][0]["status"] == "reserved"
+    assert "explicit user command" in payload["handoff_rule"]
+    assert json.loads(out.read_text(encoding="utf-8")) == payload
 
 
 def _write_case_package(tmp_path: Path, case_id: str) -> None:

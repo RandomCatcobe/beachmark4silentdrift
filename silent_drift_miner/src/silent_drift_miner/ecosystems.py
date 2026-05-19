@@ -42,6 +42,14 @@ ECOSYSTEM_TOOLS = {
         "required": ["java"],
         "optional": ["mvn", "gradle"],
     },
+    "go": {
+        "required": ["go"],
+        "optional": [],
+    },
+    "rust": {
+        "required": ["cargo", "rustc"],
+        "optional": [],
+    },
     "python": {
         "required": ["python"],
         "optional": [],

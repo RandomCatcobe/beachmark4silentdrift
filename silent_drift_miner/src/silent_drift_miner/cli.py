@@ -27,6 +27,7 @@ from typing import Optional
 
 from .artifacts import ArtifactStore
 from .audit import audit_package, write_audit_report
+from .adapter_contracts import adapter_contract_report_json
 from .bench import create_benchmark_package
 from .client_generation import write_client_generation_artifacts
 from .curation import CurationDecision, create_curated_case, write_curated_case
@@ -725,6 +726,20 @@ def cmd_ecosystem_env_check(args: argparse.Namespace) -> int:
     return 0 if report.pass_ else 1
 
 
+def cmd_ecosystem_adapters(args: argparse.Namespace) -> int:
+    try:
+        text = adapter_contract_report_json(args.target)
+    except KeyError as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 2
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text + "\n", encoding="utf-8")
+    print(text)
+    return 0
+
+
 def cmd_python_status(args: argparse.Namespace) -> int:
     report = build_python_status_report(
         cases_root=Path(args.cases),
@@ -972,6 +987,14 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_ecosystem_env.add_argument("--target", required=True, help="target ecosystem, e.g. jvm")
     p_ecosystem_env.add_argument("--out", default=None)
     p_ecosystem_env.set_defaults(func=cmd_ecosystem_env_check)
+
+    p_ecosystem_adapters = ecosystem_sub.add_parser(
+        "adapters",
+        help="list reserved ecosystem adapter contracts without executing them",
+    )
+    p_ecosystem_adapters.add_argument("--target", default=None, help="optional ecosystem filter")
+    p_ecosystem_adapters.add_argument("--out", default=None)
+    p_ecosystem_adapters.set_defaults(func=cmd_ecosystem_adapters)
 
     p_python = sub.add_parser("python", help="inspect Python-only benchmark lifecycle status")
     python_sub = p_python.add_subparsers(dest="python_cmd", required=True)
