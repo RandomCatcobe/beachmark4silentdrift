@@ -28,6 +28,7 @@ from .artifacts import ArtifactStore
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .extractors.rules import extract_candidates
 from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
+from .reproduction import create_reproduction_spec, write_reproduction_spec
 from .sources.github_changelog import (
     GitHubFetcher,
     ReleaseDoc,
@@ -512,6 +513,25 @@ def cmd_triage_export(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_reproduce_plan(args: argparse.Namespace) -> int:
+    client_file = Path(args.client_file)
+    if not client_file.exists():
+        print(f"client file not found: {client_file}", file=sys.stderr)
+        return 2
+
+    out_path = artifact_path(args.out, args.artifact_root)
+    spec = create_reproduction_spec(
+        candidate_id=args.candidate_id,
+        library=args.library,
+        old_version=args.old_version,
+        new_version=args.new_version,
+        client_file=client_file,
+    )
+    write_reproduction_spec(spec, out_path)
+    print(f"wrote reproduction spec -> {out_path}")
+    return 0
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -599,6 +619,20 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_triage_export.add_argument("--decision", choices=decisions, default=None)
     p_triage_export.add_argument("--include-undecided", action="store_true")
     p_triage_export.set_defaults(func=cmd_triage_export)
+
+    p_reproduce = sub.add_parser("reproduce", help="plan and run Python reproductions")
+    reproduce_sub = p_reproduce.add_subparsers(dest="reproduce_cmd", required=True)
+
+    p_reproduce_plan = reproduce_sub.add_parser("plan", help="create a Python reproduction spec")
+    p_reproduce_plan.add_argument("--artifact-root", default=None,
+                                  help="artifact root; output cannot escape this directory")
+    p_reproduce_plan.add_argument("--candidate-id", required=True)
+    p_reproduce_plan.add_argument("--library", required=True)
+    p_reproduce_plan.add_argument("--old-version", required=True)
+    p_reproduce_plan.add_argument("--new-version", required=True)
+    p_reproduce_plan.add_argument("--client-file", required=True)
+    p_reproduce_plan.add_argument("--out", required=True)
+    p_reproduce_plan.set_defaults(func=cmd_reproduce_plan)
 
     args = p.parse_args(argv)
     return args.func(args)
