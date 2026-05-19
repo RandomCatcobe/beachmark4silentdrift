@@ -9,9 +9,9 @@
 - 增加整理命令（Curation Commands），把复现结果（Reproduction Result）变成接受或拒绝的案例清单（Case Manifest）。✓
 - 为 Python 案例生成 pytest 判定器（Pytest Oracle）。✓
 - 在判定器目录中强制隐藏/公开分离（Hidden/Public Split）。✓
-- 只生成 L1、L2、L3 benchmark 任务包（Task Packages）。
-- 增加审计检查（Audit Checks）：判定器泄漏（Oracle Leakage）、复现状态（Reproducibility Status）、溯源（Provenance）和包结构（Package Structure）。
-- 保存 JSON 审计报告（Audit Report）。
+- 只生成 L1、L2、L3 benchmark 任务包（Task Packages）。✓
+- 增加审计检查（Audit Checks）：判定器泄漏（Oracle Leakage）、复现状态（Reproducibility Status）、溯源（Provenance）和包结构（Package Structure）。✓
+- 保存 JSON 审计报告（Audit Report）。✓
 
 ## CLI/API 形状（CLI/API Shape）
 

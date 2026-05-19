@@ -28,7 +28,7 @@ def test_oracle_generate_creates_hidden_and_public_split(tmp_path) -> None:
     public_readme = (out / "public" / "README.md").read_text(encoding="utf-8")
     public_client = (out / "public" / "starter_client.py").read_text(encoding="utf-8")
 
-    assert "expected old/new outputs" in public_readme
+    assert "oracle expectations" in public_readme
     assert "hidden" not in public_readme.lower()
     assert "expected.json" not in public_readme
     assert "expected.json" not in public_client

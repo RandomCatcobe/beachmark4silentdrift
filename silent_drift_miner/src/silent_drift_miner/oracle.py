@@ -68,6 +68,16 @@ def generate_pytest_oracle(case_path: Path, out_dir: Path) -> OracleSpec:
     return spec
 
 
+def load_oracle_spec(path: Path) -> OracleSpec:
+    data = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        key, value = raw.split(":", 1)
+        data[key.strip()] = json.loads(value.strip())
+    return OracleSpec(**data)
+
+
 def _hidden_test_template() -> str:
     return '''"""Hidden pytest oracle.
 
@@ -89,7 +99,7 @@ def _public_readme(case_id: str) -> str:
     return (
         f"# {case_id}\n\n"
         "Implement or adapt `starter_client.py` to reproduce the documented behavior.\n"
-        "Public files intentionally omit expected old/new outputs.\n"
+        "Public files intentionally omit oracle expectations.\n"
     )
 
 

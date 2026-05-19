@@ -25,6 +25,8 @@ from pathlib import Path
 from typing import Optional
 
 from .artifacts import ArtifactStore
+from .audit import audit_package, write_audit_report
+from .bench import create_benchmark_package
 from .curation import CurationDecision, create_curated_case, write_curated_case
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .oracle import generate_pytest_oracle
@@ -605,6 +607,29 @@ def cmd_oracle_generate(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_bench_package(args: argparse.Namespace) -> int:
+    case_path = artifact_path(args.case, args.artifact_root)
+    oracle_path = artifact_path(args.oracle, args.artifact_root)
+    out_root = artifact_path(args.out, args.artifact_root)
+    levels = [level.strip() for level in args.levels.split(",") if level.strip()]
+    try:
+        package_dir = create_benchmark_package(case_path, oracle_path, levels, out_root)
+    except Exception as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    print(f"wrote benchmark package -> {package_dir}")
+    return 0
+
+
+def cmd_audit_case(args: argparse.Namespace) -> int:
+    package_dir = artifact_path(args.package, args.artifact_root)
+    out_path = artifact_path(args.out, args.artifact_root)
+    report = audit_package(package_dir)
+    write_audit_report(report, out_path)
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    return 0 if report["pass"] else 1
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -748,6 +773,28 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_oracle_generate.add_argument("--template", default="pytest")
     p_oracle_generate.add_argument("--out", required=True)
     p_oracle_generate.set_defaults(func=cmd_oracle_generate)
+
+    p_bench = sub.add_parser("bench", help="package benchmark tasks")
+    bench_sub = p_bench.add_subparsers(dest="bench_cmd", required=True)
+
+    p_bench_package = bench_sub.add_parser("package", help="package a curated case and oracle")
+    p_bench_package.add_argument("--artifact-root", default=None,
+                                 help="artifact root; output cannot escape this directory")
+    p_bench_package.add_argument("--case", required=True)
+    p_bench_package.add_argument("--oracle", required=True)
+    p_bench_package.add_argument("--levels", default="L1,L2,L3")
+    p_bench_package.add_argument("--out", required=True)
+    p_bench_package.set_defaults(func=cmd_bench_package)
+
+    p_audit = sub.add_parser("audit", help="audit packaged benchmark tasks")
+    audit_sub = p_audit.add_subparsers(dest="audit_cmd", required=True)
+
+    p_audit_case = audit_sub.add_parser("case", help="audit one benchmark package")
+    p_audit_case.add_argument("--artifact-root", default=None,
+                              help="artifact root; output cannot escape this directory")
+    p_audit_case.add_argument("--package", required=True)
+    p_audit_case.add_argument("--out", required=True)
+    p_audit_case.set_defaults(func=cmd_audit_case)
 
     args = p.parse_args(argv)
     return args.func(args)
