@@ -38,6 +38,8 @@ def test_reproduce_run_captures_diff_and_allocates_attempts(tmp_path) -> None:
 
     assert main(["reproduce", "run", "--spec", str(spec), "--out", str(out_root)]) == 0
     first = out_root / "attempt_001"
+    assert (first / "old" / "Dockerfile").exists()
+    assert (first / "new" / "Dockerfile").exists()
     assert (first / "old" / "stdout.txt").read_text(encoding="utf-8").strip() == "old"
     assert (first / "new" / "stdout.txt").read_text(encoding="utf-8").strip() == "new"
     result = json.loads((first / "result.json").read_text(encoding="utf-8"))
@@ -119,6 +121,44 @@ def test_reproduce_run_drops_no_behavior_diff(tmp_path) -> None:
     result = json.loads((out_root / "attempt_001" / "result.json").read_text(encoding="utf-8"))
     assert result["keep"] is False
     assert result["drop_reason"] == "no_behavior_diff"
+
+
+def test_reproduce_run_classifies_import_failure(tmp_path) -> None:
+    old_pkg = tmp_path / "old_pkg"
+    new_pkg = tmp_path / "new_pkg"
+    old_pkg.mkdir()
+    new_pkg.mkdir()
+    client = tmp_path / "client.py"
+    spec = tmp_path / "spec.json"
+    out_root = tmp_path / "repro"
+    client.write_text("import missing_package\n", encoding="utf-8")
+    assert main(
+        [
+            "reproduce",
+            "plan",
+            "--candidate-id",
+            "cand-1",
+            "--library",
+            "toy-drift",
+            "--old-version",
+            "1.0.0",
+            "--new-version",
+            "2.0.0",
+            "--client-file",
+            str(client),
+            "--old-package-path",
+            str(old_pkg),
+            "--new-package-path",
+            str(new_pkg),
+            "--out",
+            str(spec),
+        ]
+    ) == 0
+    assert main(["reproduce", "run", "--spec", str(spec), "--out", str(out_root)]) == 0
+
+    result = json.loads((out_root / "attempt_001" / "result.json").read_text(encoding="utf-8"))
+    assert result["keep"] is False
+    assert result["drop_reason"] == "import_failed"
 
 
 def _toy_packages(tmp_path: Path, old_value: str = "old", new_value: str = "new") -> tuple[Path, Path]:

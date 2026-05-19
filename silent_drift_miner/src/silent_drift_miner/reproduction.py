@@ -248,8 +248,10 @@ def _run_one_side(
     exit_code_path = out_dir / "exit_code.txt"
     run_log_path = out_dir / "run.log"
     build_log_path = out_dir / "build.log"
+    dockerfile_path = out_dir / "Dockerfile"
 
     build_log_path.write_text(_build_log(environment), encoding="utf-8")
+    dockerfile_path.write_text(_dockerfile(spec, environment), encoding="utf-8")
     env = os.environ.copy()
     if environment.package_path:
         existing = env.get("PYTHONPATH")
@@ -302,6 +304,28 @@ def _build_log(environment: PythonEnvironmentDefinition) -> str:
     return "no build step configured; running client in current Python environment\n"
 
 
+def _dockerfile(spec: ReproductionSpec, environment: PythonEnvironmentDefinition) -> str:
+    lines = [
+        "FROM python:3.12-slim",
+        "WORKDIR /case",
+        f"# Candidate: {spec.candidate_id}",
+        f"# Side: {environment.label}",
+        f"# Intended dependency: {environment.library}=={environment.version}",
+    ]
+    if environment.package_path:
+        lines.append(f"# Offline package path used by local runner: {environment.package_path}")
+    else:
+        lines.append("RUN " + " ".join(environment.install_command))
+    lines.extend(
+        [
+            "COPY client.py /case/client.py",
+            "CMD [\"python\", \"/case/client.py\"]",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def _drop_reason(
     old_run: ReproductionRun,
     new_run: ReproductionRun,
@@ -310,6 +334,13 @@ def _drop_reason(
     if old_run.exit_code == 124 or new_run.exit_code == 124:
         return DropReason.TIMEOUT
     if old_run.exit_code != 0 or new_run.exit_code != 0:
+        stderr = (
+            Path(old_run.stderr_path).read_text(encoding="utf-8")
+            + "\n"
+            + Path(new_run.stderr_path).read_text(encoding="utf-8")
+        )
+        if "ModuleNotFoundError" in stderr or "ImportError" in stderr:
+            return DropReason.IMPORT_FAILED
         if old_run.exit_code != new_run.exit_code:
             return DropReason.HARD_BREAK
         return DropReason.CLIENT_RUNTIME_ERROR

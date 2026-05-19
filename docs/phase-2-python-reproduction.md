@@ -43,11 +43,15 @@ data/reproductions/<candidate_id>/attempt_001/
     stdout.txt
     stderr.txt
     exit_code.txt
+    run.log
+    build.log
   new/
     Dockerfile
     stdout.txt
     stderr.txt
     exit_code.txt
+    run.log
+    build.log
   diff.json
   result.json
 ```
