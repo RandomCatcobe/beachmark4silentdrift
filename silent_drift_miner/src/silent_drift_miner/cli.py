@@ -27,11 +27,20 @@ from typing import Optional
 from .artifacts import ArtifactStore
 from .extractors.llm import LLMConfig, LLMRefiner
 from .extractors.rules import extract_candidates
-from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, utc_now_iso
+from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
 from .sources.github_changelog import (
     GitHubFetcher,
     ReleaseDoc,
     split_changelog_into_sections,
+)
+from .triage import (
+    build_queue_items,
+    export_candidate_rows,
+    find_next_item,
+    load_triage_queue,
+    mark_queue_item,
+    queue_summary,
+    write_triage_queue,
 )
 
 # ----------------------- config loading -----------------------
@@ -202,6 +211,12 @@ def candidate_dir(out_dir: Optional[str], artifact_root: Optional[str]) -> Path:
         return store.dir_for(ArtifactType.CANDIDATE)
     return store.resolve_user_path(out_dir)
 
+
+def artifact_path(path: str, artifact_root: Optional[str]) -> Path:
+    if artifact_root is None:
+        return Path(path)
+    return ArtifactStore(artifact_root).resolve_user_path(path)
+
 def cmd_mine(args: argparse.Namespace) -> int:
     config_path = Path(args.config)
     if not config_path.exists():
@@ -333,6 +348,84 @@ def cmd_show(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_triage_build(args: argparse.Namespace) -> int:
+    candidates_path = artifact_path(args.candidates, args.artifact_root)
+    out_path = artifact_path(args.out, args.artifact_root)
+    candidates = load_candidates_jsonl(candidates_path)
+    items = build_queue_items(candidates)
+    write_triage_queue(items, out_path)
+    print(f"wrote {len(items)} triage items -> {out_path}")
+    print(json.dumps(queue_summary(items), indent=2, ensure_ascii=False))
+    return 0
+
+
+def cmd_triage_next(args: argparse.Namespace) -> int:
+    queue_path = artifact_path(args.queue, args.artifact_root)
+    items = load_triage_queue(queue_path)
+    item = find_next_item(items)
+    if item is None:
+        print("OK no undecided candidates")
+        return 0
+    if args.json:
+        print(json.dumps(item, ensure_ascii=False))
+        return 0
+
+    candidate = item["candidate"]
+    print(f"candidate_id: {item['candidate_id']}")
+    print(f"library: {candidate.get('library')}")
+    print(f"version_new: {candidate.get('version_new')}")
+    print(f"category: {candidate.get('category')}")
+    print(f"confidence: {candidate.get('confidence')}")
+    print(f"title: {candidate.get('title')}")
+    evidence = candidate.get("evidence") or []
+    if evidence:
+        print(f"url: {evidence[0].get('url')}")
+    return 0
+
+
+def cmd_triage_mark(args: argparse.Namespace) -> int:
+    queue_path = artifact_path(args.queue, args.artifact_root)
+    try:
+        items = load_triage_queue(queue_path)
+        item = mark_queue_item(
+            items=items,
+            candidate_id=args.candidate_id,
+            decision_value=args.decision,
+            notes=args.notes,
+            reviewer=args.reviewer,
+            overwrite=args.overwrite,
+        )
+        write_triage_queue(items, queue_path)
+    except ValueError as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+
+    print(f"marked {item['candidate_id']} -> {item['decision']}")
+    return 0
+
+
+def cmd_triage_export(args: argparse.Namespace) -> int:
+    queue_path = artifact_path(args.queue, args.artifact_root)
+    out_path = artifact_path(args.out, args.artifact_root)
+    try:
+        items = load_triage_queue(queue_path)
+        rows = export_candidate_rows(
+            items,
+            decision_value=args.decision,
+            include_undecided=args.include_undecided,
+        )
+    except ValueError as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with out_path.open("w", encoding="utf-8") as f:
+        for row in rows:
+            f.write(row + "\n")
+    print(f"exported {len(rows)} candidates -> {out_path}")
+    return 0
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -374,6 +467,44 @@ def main(argv: Optional[list[str]] = None) -> int:
                                 help="validate JSONL schema and round-trip for a candidates file")
     p_validate.add_argument("path", help="path to a candidates .jsonl file")
     p_validate.set_defaults(func=cmd_validate)
+
+    p_triage = sub.add_parser("triage", help="build and mark triage queues")
+    triage_sub = p_triage.add_subparsers(dest="triage_cmd", required=True)
+
+    p_triage_build = triage_sub.add_parser("build", help="build a triage queue from candidates")
+    p_triage_build.add_argument("--artifact-root", default=None,
+                                help="artifact root; outputs cannot escape this directory")
+    p_triage_build.add_argument("--candidates", required=True)
+    p_triage_build.add_argument("--out", required=True)
+    p_triage_build.set_defaults(func=cmd_triage_build)
+
+    p_triage_next = triage_sub.add_parser("next", help="show the next undecided candidate")
+    p_triage_next.add_argument("--artifact-root", default=None,
+                               help="artifact root; queue path must stay inside this directory")
+    p_triage_next.add_argument("--queue", required=True)
+    p_triage_next.add_argument("--json", action="store_true")
+    p_triage_next.set_defaults(func=cmd_triage_next)
+
+    decisions = [d.value for d in TriageDecision]
+    p_triage_mark = triage_sub.add_parser("mark", help="mark one triage decision")
+    p_triage_mark.add_argument("--artifact-root", default=None,
+                               help="artifact root; queue path must stay inside this directory")
+    p_triage_mark.add_argument("--queue", required=True)
+    p_triage_mark.add_argument("--candidate-id", required=True)
+    p_triage_mark.add_argument("--decision", required=True, choices=decisions)
+    p_triage_mark.add_argument("--notes", default="")
+    p_triage_mark.add_argument("--reviewer", default="")
+    p_triage_mark.add_argument("--overwrite", action="store_true")
+    p_triage_mark.set_defaults(func=cmd_triage_mark)
+
+    p_triage_export = triage_sub.add_parser("export", help="export candidates from a queue")
+    p_triage_export.add_argument("--artifact-root", default=None,
+                                 help="artifact root; output cannot escape this directory")
+    p_triage_export.add_argument("--queue", required=True)
+    p_triage_export.add_argument("--out", required=True)
+    p_triage_export.add_argument("--decision", choices=decisions, default=None)
+    p_triage_export.add_argument("--include-undecided", action="store_true")
+    p_triage_export.set_defaults(func=cmd_triage_export)
 
     args = p.parse_args(argv)
     return args.func(args)
