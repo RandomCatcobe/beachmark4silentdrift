@@ -3,12 +3,13 @@
 ## Current Status (2026-05-19)
 
 - Latest pushed package release: `v0.11.0`.
-- Python package lifecycle is the mature path, with six audited real Python cases.
+- Python package lifecycle is the mature path, with seven audited real Python cases.
 - JVM, JS, PHP, Ruby, .NET, and Go adapters are active for local deterministic
   toy/reproduction cases; Rust remains reserved.
 - Python autodiscovery now has Markdown memory helpers for idea cards,
   rejection lessons, accepted-case anchors, readiness checks, and next-run
-  briefs. The real 200-attempt discovery run has not been started.
+  briefs. The first idea-bank promotion has accepted the `httpx` JSON request
+  serialization case; the real 200-attempt discovery run has not been started.
 
 SilentDrift 当前定位为静默行为漂移（Silent Behavioral Drift）的案例发现与复现库（Case Discovery and Reproduction Library）。本仓库目前包含第 1 层挖掘器（Layer 1 Miner），以及把它逐步扩展成可复现产物流水线（Reproducible Artifact Pipeline）的阶段路线图（Roadmap）。
 

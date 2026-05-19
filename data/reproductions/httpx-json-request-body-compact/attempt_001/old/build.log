@@ -1,0 +1,43 @@
+isolated install requested; creating a virtual environment
+venv_dir: .repro_venvs\httpx-json-request-body-compact\old-httpx-0.27.2
+base_python: python
+venv create command: python -m venv .repro_venvs\httpx-json-request-body-compact\old-httpx-0.27.2
+venv create exit_code: 0
+
+
+install command: .repro_venvs\httpx-json-request-body-compact\old-httpx-0.27.2\Scripts\python.exe -m pip install httpx==0.27.2
+install exit_code: 0
+Collecting httpx==0.27.2
+  Downloading httpx-0.27.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting anyio (from httpx==0.27.2)
+  Using cached anyio-4.13.0-py3-none-any.whl.metadata (4.5 kB)
+Collecting certifi (from httpx==0.27.2)
+  Downloading certifi-2026.4.22-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx==0.27.2)
+  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx==0.27.2)
+  Downloading idna-3.15-py3-none-any.whl.metadata (7.7 kB)
+Collecting sniffio (from httpx==0.27.2)
+  Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx==0.27.2)
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting typing_extensions>=4.5 (from anyio->httpx==0.27.2)
+  Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Downloading httpx-0.27.2-py3-none-any.whl (76 kB)
+   ---------------------------------------- 76.4/76.4 kB 1.1 MB/s eta 0:00:00
+Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+Using cached anyio-4.13.0-py3-none-any.whl (114 kB)
+Downloading idna-3.15-py3-none-any.whl (72 kB)
+   ---------------------------------------- 72.3/72.3 kB 2.0 MB/s eta 0:00:00
+Downloading certifi-2026.4.22-py3-none-any.whl (135 kB)
+   ---------------------------------------- 135.7/135.7 kB 4.0 MB/s eta 0:00:00
+Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Installing collected packages: typing_extensions, sniffio, idna, h11, certifi, httpcore, anyio, httpx
+Successfully installed anyio-4.13.0 certifi-2026.4.22 h11-0.16.0 httpcore-1.0.9 httpx-0.27.2 idna-3.15 sniffio-1.3.1 typing_extensions-4.15.0
+
+
+[notice] A new release of pip is available: 24.0 -> 26.1.1
+[notice] To update, run: D:\myproject\beach\.repro_venvs\httpx-json-request-body-compact\old-httpx-0.27.2\Scripts\python.exe -m pip install --upgrade pip
+

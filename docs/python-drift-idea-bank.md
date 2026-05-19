@@ -8,6 +8,7 @@ until a real discovery batch is explicitly started.
 ## IDEA-20260519-001: httpx JSON request body compact serialization
 
 - Package: `httpx`
+- Status: Accepted as `ACCEPTED-20260519-001` / `httpx_json_request_body_compact`.
 - API surface: `httpx.Request(..., json=...)`, `httpx.post(..., json=...)`
 - Candidate versions: old `0.27.2`, new `0.28.0`
 - Source:
@@ -1099,3 +1100,18 @@ until a real discovery batch is explicitly started.
   - later directory changes are either additive API or reversions under clear changelog headings
 - What future runs should avoid: Avoid platformdirs `2.0.0`, `2.6.0`, `3.0.1`, and `3.2.0` config/log directory path changes as silent-drift candidates.
 - What future runs may still try: A narrow platformdirs bugfix not labeled breaking, ideally on a deterministic non-OS-specific path helper or with a clearly controlled platform fixture.
+
+## ACCEPTED-20260519-001: httpx_json_request_body_compact
+
+- Case id: `httpx_json_request_body_compact`
+- Package: `httpx`
+- API surface: `httpx.Request(json=...)`
+- Versions: old 0.27.2, new 0.28.0
+- Source: https://github.com/encode/httpx/blob/master/CHANGELOG.md
+- Reproduction path: data\reproductions\httpx-json-request-body-compact\attempt_001\result.json
+- Oracle path: data\oracle\httpx_json_request_body_compact\oracle_spec.yaml
+- Package path: data\packages\httpx_json_request_body_compact
+- Audit path: data\audit\httpx_json_request_body_compact.json
+- Why it is non-duplicate: Promotes IDEA-20260519-001; this covers local HTTP request JSON serialization, not the existing pandas, pydantic, or scikit-learn anchors.
+- Follow-up ideas nearby:
+- Try IDEA-20260519-002: Jinja groupby default case-insensitive behavior.

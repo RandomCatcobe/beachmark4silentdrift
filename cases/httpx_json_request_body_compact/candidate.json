@@ -1,0 +1,21 @@
+{
+  "case_id": "httpx_json_request_body_compact",
+  "candidate_id": "httpx-json-request-body-compact",
+  "library": "httpx",
+  "ecosystem": "python",
+  "version_old": "0.27.2",
+  "version_new": "0.28.0",
+  "category": "serialization_change",
+  "confidence": "high",
+  "api_surface": [
+    "httpx.Request(json=...)"
+  ],
+  "source_url": "https://github.com/encode/httpx/blob/master/CHANGELOG.md",
+  "source_type": "changelog",
+  "retrieved_at": "2026-05-19",
+  "excerpt": "0.28.0 switches JSON request serialization to a compact representation by default.",
+  "review_notes": "Same local request-construction call shape; default JSON body serialization changes without a live network call.",
+  "client_file": "client.py",
+  "reproduction_command": ".\\.sandbox\\sdm.cmd reproduce run --spec data\\reproductions\\httpx-json-request-body-compact\\spec.json --out data\\reproductions\\httpx-json-request-body-compact --install --venv-root .repro_venvs --build-timeout 300 --timeout 60",
+  "result_path": "data/reproductions/httpx-json-request-body-compact/attempt_001/result.json"
+}

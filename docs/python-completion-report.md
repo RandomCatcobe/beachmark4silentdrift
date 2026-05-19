@@ -16,8 +16,8 @@ Current result:
 
 ```text
 pass: true
-audited_case_count: 6
-min_audited_cases: 6
+audited_case_count: 7
+min_audited_cases: 7
 findings: []
 ```
 
@@ -25,6 +25,7 @@ findings: []
 
 | Case | Library | Version Pair | Package | Audit |
 | --- | --- | --- | --- | --- |
+| `httpx_json_request_body_compact` | `httpx` | `0.27.2 -> 0.28.0` | `data/packages/httpx_json_request_body_compact/` | pass |
 | `pandas_str_replace_regex_default` | `pandas` | `1.5.3 -> 2.0.3` | `data/packages/pandas_str_replace_regex_default/` | pass |
 | `pandas_timestamp_to_datetime64_resolution` | `pandas` | `1.5.3 -> 2.0.3` | `data/packages/pandas_timestamp_to_datetime64_resolution/` | pass |
 | `pandas_read_csv_uint8_overflow` | `pandas` | `1.5.3 -> 2.1.1` | `data/packages/pandas_read_csv_uint8_overflow/` | pass |
@@ -38,13 +39,13 @@ findings: []
 silent-drift-miner python status \
   --cases cases \
   --packages data/packages \
-  --min-cases 6 \
+  --min-cases 7 \
   --out data/reports/python_status.json
 ```
 
 The status check verifies:
 
-- at least 6 complete audited Python cases
+- at least 7 complete audited Python cases
 - live audit passes for all discovered Python packages
 - `cases/<case_id>/candidate.json` and `README.md` exist for each package
 - each hand-authored `client.py` compiles without leaving build artifacts
@@ -57,5 +58,6 @@ user requests on 2026-05-19, JVM, JS, PHP, Ruby, .NET, and Go adapters are now
 active for local deterministic reproduction paths. Rust remains reserved until
 explicitly opened.
 
-The Python autodiscovery Markdown loop is prepared in `v0.11.0`, but the real
-search/discovery run has not started.
+The Python autodiscovery Markdown loop is prepared in `v0.11.0`, and the first
+idea-bank promotion has accepted `httpx_json_request_body_compact`. The real
+large search/discovery run has not started.

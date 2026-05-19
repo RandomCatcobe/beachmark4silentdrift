@@ -1,0 +1,8 @@
+{
+  "case_id": "httpx_json_request_body_compact",
+  "candidate_id": "httpx-json-request-body-compact",
+  "keep": true,
+  "diff_summary": "stdout changed",
+  "old_stdout": "{\"content\": \"{\\\"a\\\": 1, \\\"b\\\": 2}\", \"httpx_version\": \"0.27.2\"}\n",
+  "new_stdout": "{\"content\": \"{\\\"a\\\":1,\\\"b\\\":2}\", \"httpx_version\": \"0.28.0\"}\n"
+}

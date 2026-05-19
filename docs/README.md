@@ -3,15 +3,17 @@
 ## Current Status (2026-05-19)
 
 - Current pushed release: `v0.11.0`.
-- Python has six audited real cases and remains the mature production path.
+- Python has seven audited real cases and remains the mature production path.
 - JVM, JS, PHP, Ruby, .NET, and Go adapters are active for local deterministic
   reproduction paths; Rust is still reserved.
-- The Python autodiscovery Markdown loop is prepared but not started:
+- The Python autodiscovery Markdown loop is active, with one accepted
+  idea-bank promotion:
   - [Python Autodiscovery Plan](python-autodiscovery-plan.md)
   - [Python Drift Idea Bank](python-drift-idea-bank.md)
   - [Python Drift Run Log](python-drift-run-log.md)
   - [Python Drift Next-Run Brief](python-drift-next-run.md)
   - [Python Drift Readiness](python-drift-readiness.md)
+  - [Python Autodiscovery Handoff](python-autodiscovery-handoff.md)
 
 SilentDrift 当前不是一套已经成型的论文基准（Paper Benchmark），而是一个案例发现与复现库（Case Discovery and Reproduction Library）。近期目标是搭建可靠的产物工厂（Artifact Factory），让每条候选案例（Candidate）都能从来源证据（Source Evidence）推进到可复现、可人审、可打包、可审计的案例（Case）。
 

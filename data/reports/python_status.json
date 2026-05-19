@@ -1,8 +1,22 @@
 {
   "ecosystem": "python",
-  "audited_case_count": 6,
-  "min_audited_cases": 6,
+  "audited_case_count": 7,
+  "min_audited_cases": 7,
   "cases": [
+    {
+      "case_id": "httpx_json_request_body_compact",
+      "candidate_id": "httpx-json-request-body-compact",
+      "library": "httpx",
+      "version_old": "0.27.2",
+      "version_new": "0.28.0",
+      "source_url": "https://github.com/encode/httpx/blob/master/CHANGELOG.md",
+      "package_dir": "data\\packages\\httpx_json_request_body_compact",
+      "audit_pass": true,
+      "client_compiles": true,
+      "reproduction_result_exists": true,
+      "candidate_manifest_exists": true,
+      "readme_exists": true
+    },
     {
       "case_id": "pandas_read_csv_uint8_overflow",
       "candidate_id": "pandas-read-csv-uint8-overflow",
@@ -92,7 +106,7 @@
     {
       "name": "min_audited_real_cases",
       "pass": true,
-      "message": "6 complete audited Python case(s); 6 required"
+      "message": "7 complete audited Python case(s); 7 required"
     },
     {
       "name": "all_packages_audit_pass",
@@ -112,6 +126,6 @@
   ],
   "findings": [],
   "schema_version": "1",
-  "created_at": "2026-05-19T08:53:38.742884",
+  "created_at": "2026-05-19T22:25:24.562279",
   "pass": true
 }

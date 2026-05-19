@@ -4,12 +4,12 @@ Current release: `v0.11.0`.
 
 Current scope:
 
-- Python package lifecycle is mature and has six audited real cases.
+- Python package lifecycle is mature and has seven audited real cases.
 - JVM, JS, PHP, Ruby, .NET, and Go adapters are active for local deterministic
   reproduction paths.
 - Rust remains reserved.
-- Python autodiscovery has Markdown memory helpers; the real discovery run has
-  not been started.
+- Python autodiscovery has Markdown memory helpers and one accepted
+  idea-bank promotion; the real large discovery run has not been started.
 
 分阶段实现路线图（Staged Implementation Roadmap）见 [../docs/README.md](../docs/README.md)，术语对齐（Terminology Alignment）见 [../docs/terminology.md](../docs/terminology.md)。
 

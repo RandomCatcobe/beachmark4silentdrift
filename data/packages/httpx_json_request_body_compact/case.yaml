@@ -1,0 +1,16 @@
+case_id: "httpx_json_request_body_compact"
+decision: "accept"
+candidate_id: "httpx-json-request-body-compact"
+reproduction_result: "..\\..\\reproductions\\httpx-json-request-body-compact\\attempt_001\\result.json"
+keep: true
+drop_reason: null
+source_url: "https://github.com/encode/httpx/blob/master/CHANGELOG.md"
+source_excerpt: "0.28.0: Switch to compact representation as default for serializing JSON requests. Update tests to use a content=... b'...' literal when expecting a JSON serialized request body."
+retrieved_at: "2026-05-19"
+ecosystem: "python"
+version_old: "0.27.2"
+version_new: "0.28.0"
+api_surface: ["httpx.Request(json=...)"]
+review_notes: "Smoke-test promotion of IDEA-20260519-001; default JSON separators changed from spaced to compact."
+schema_version: "1"
+created_at: "2026-05-19T22:15:28.227210"

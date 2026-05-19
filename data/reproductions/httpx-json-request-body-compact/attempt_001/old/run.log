@@ -1,0 +1,1 @@
+command: .repro_venvs\httpx-json-request-body-compact\old-httpx-0.27.2\Scripts\python.exe cases\httpx_json_request_body_compact\client.py

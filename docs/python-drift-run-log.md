@@ -217,3 +217,22 @@ Append-only batch notes for model-guided Python silent-drift discovery.
   - No code files were changed; this batch only appended Python drift discovery Markdown.
   - Avoided all previously mentioned packages/APIs plus local anchors `pandas`, `pydantic`, `scikit-learn`, `numpy`, and `polars`.
   - Best next reproduction candidates are `coverage`, `beautifulsoup4`, `json5`, and `fsspec`; `ruff`, `rich`, and `mypy` need policy review because their differences are tool defaults or side effects.
+
+## RUN-20260519: Python autodiscovery promotion batch 001
+
+- Model/operator: Codex
+- Search budget: 1 promoted reproduction from existing IDEA card
+- Packages searched:
+- httpx
+- Ideas added:
+- None
+- Ideas rejected:
+- None
+- Cases promoted to reproduction:
+- IDEA-20260519-001 -> httpx-json-request-body-compact
+- Cases accepted into benchmark:
+- ACCEPTED-20260519-001: httpx_json_request_body_compact
+- Notes:
+- No new search; closed the markdown memory loop for the previously reproduced httpx case.
+- Counts: promoted=1, accepted=1, rejected=0.
+- Reproduction keep=true and package audit pass=true with no findings.

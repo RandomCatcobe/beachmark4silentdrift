@@ -40,7 +40,7 @@ This brief prepares the next model-guided discovery batch. It does not start the
 - `filelock` (1 card)
 - `flask` (1 card)
 - `fsspec` (1 card)
-- `httpx` (1 card)
+- `httpx` (2 cards)
 - `hypothesis` (1 card)
 - `invoke` (1 card)
 - `jinja2` (1 card)
@@ -102,7 +102,7 @@ This brief prepares the next model-guided discovery batch. It does not start the
 - `filelock`: `import filelock; logging.getLogger('filelock')`
 - `flask`: `flask.sessions.SessionInterface.get_cookie_domain, Set-Cookie domain behavior`
 - `fsspec`: `fsspec.open`, `fsspec.spec.AbstractBufferedFile`, default cache type for buffered reads`
-- `httpx`: `httpx.Request(..., json=...)`, `httpx.post(..., json=...)`
+- `httpx`: `httpx.Request(..., json=...)`, `httpx.post(..., json=...)`, `httpx.Request(json=...)`
 - `hypothesis`: `hypothesis settings example database, DirectoryBasedExampleDatabase side effects`
 - `invoke`: `invoke.context.MockContext(..., repeat=...)`
 - `jinja2`: `Environment.from_string(...).render(...)` using the `groupby` filter`
@@ -146,7 +146,7 @@ This brief prepares the next model-guided discovery batch. It does not start the
 - `yarl`: `yarl.URL.join`, `yarl.URL.joinpath`, `/` operator string output`
 
 ## Accepted Case Anchors
-- None
+- httpx_json_request_body_compact - `httpx` `httpx.Request(json=...)` old 0.27.2, new 0.28.0
 
 ## Rejection Lessons
 - Do not spend another attempt on NetworkX 2.x -> 3.0 matrix/array return-type changes unless the user explicitly accepts prominent migration-guide cases.
@@ -189,6 +189,7 @@ until a real discovery batch is explicitly started.
 ## IDEA-20260519-001: httpx JSON request body compact serialization
 
 - Package: `httpx`
+- Status: Accepted as `ACCEPTED-20260519-001` / `httpx_json_request_body_compact`.
 - API surface: `httpx.Request(..., json=...)`, `httpx.post(..., json=...)`
 - Candidate versions: old `0.27.2`, new `0.28.0`
 - Source:
@@ -1281,6 +1282,21 @@ until a real discovery batch is explicitly started.
 - What future runs should avoid: Avoid platformdirs `2.0.0`, `2.6.0`, `3.0.1`, and `3.2.0` config/log directory path changes as silent-drift candidates.
 - What future runs may still try: A narrow platformdirs bugfix not labeled breaking, ideally on a deterministic non-OS-specific path helper or with a clearly controlled platform fixture.
 
+## ACCEPTED-20260519-001: httpx_json_request_body_compact
+
+- Case id: `httpx_json_request_body_compact`
+- Package: `httpx`
+- API surface: `httpx.Request(json=...)`
+- Versions: old 0.27.2, new 0.28.0
+- Source: https://github.com/encode/httpx/blob/master/CHANGELOG.md
+- Reproduction path: data\reproductions\httpx-json-request-body-compact\attempt_001\result.json
+- Oracle path: data\oracle\httpx_json_request_body_compact\oracle_spec.yaml
+- Package path: data\packages\httpx_json_request_body_compact
+- Audit path: data\audit\httpx_json_request_body_compact.json
+- Why it is non-duplicate: Promotes IDEA-20260519-001; this covers local HTTP request JSON serialization, not the existing pandas, pydantic, or scikit-learn anchors.
+- Follow-up ideas nearby:
+- Try IDEA-20260519-002: Jinja groupby default case-insensitive behavior.
+
 ## Current Run Log
 # Python Drift Run Log
 
@@ -1501,4 +1517,23 @@ Append-only batch notes for model-guided Python silent-drift discovery.
   - No code files were changed; this batch only appended Python drift discovery Markdown.
   - Avoided all previously mentioned packages/APIs plus local anchors `pandas`, `pydantic`, `scikit-learn`, `numpy`, and `polars`.
   - Best next reproduction candidates are `coverage`, `beautifulsoup4`, `json5`, and `fsspec`; `ruff`, `rich`, and `mypy` need policy review because their differences are tool defaults or side effects.
+
+## RUN-20260519: Python autodiscovery promotion batch 001
+
+- Model/operator: Codex
+- Search budget: 1 promoted reproduction from existing IDEA card
+- Packages searched:
+- httpx
+- Ideas added:
+- None
+- Ideas rejected:
+- None
+- Cases promoted to reproduction:
+- IDEA-20260519-001 -> httpx-json-request-body-compact
+- Cases accepted into benchmark:
+- ACCEPTED-20260519-001: httpx_json_request_body_compact
+- Notes:
+- No new search; closed the markdown memory loop for the previously reproduced httpx case.
+- Counts: promoted=1, accepted=1, rejected=0.
+- Reproduction keep=true and package audit pass=true with no findings.
 

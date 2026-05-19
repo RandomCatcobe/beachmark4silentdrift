@@ -1,0 +1,10 @@
+{
+  "task_id": "httpx_json_request_body_compact",
+  "case_id": "httpx_json_request_body_compact",
+  "candidate_id": "httpx-json-request-body-compact",
+  "levels": [
+    "L1"
+  ],
+  "public_dir": "public",
+  "reproduction_result": "reproduction_result.json"
+}
