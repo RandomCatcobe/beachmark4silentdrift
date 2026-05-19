@@ -218,12 +218,14 @@ def summarize(cands: list[DriftCandidate]) -> dict:
     conf_counter = Counter(c.confidence.value for c in cands)
     by_lib = Counter(c.library for c in cands)
     by_ecosystem = Counter(c.ecosystem for c in cands)
+    by_source = Counter(c.evidence[0].source_type if c.evidence else "(none)" for c in cands)
     return {
         "total": len(cands),
         "by_category": dict(cat_counter),
         "by_confidence": dict(conf_counter),
         "by_library": dict(by_lib),
         "by_ecosystem": dict(by_ecosystem),
+        "by_source": dict(by_source),
     }
 
 

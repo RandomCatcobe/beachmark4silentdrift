@@ -14,7 +14,7 @@
 - 对畸形 JSONL（Malformed JSONL）给出清晰错误。✓（`validate-candidates` 已处理）
 - 增加分诊命令（Triage Commands）：`build`、`next`、`mark`、`export`。✓
 - 增加不依赖网络或 LLM API 的合成端到端演示（Synthetic End-to-End Demo）占位。✓
-- 将现有 `unittest` 测试迁移至 `pytest`（本阶段验收标准要求使用 `tmp_path` fixture）。
+- 将现有 `unittest` 测试迁移至 `pytest`（本阶段验收标准要求使用 `tmp_path` fixture）。✓
 
 ## CLI/API 形状（CLI/API Shape）
 

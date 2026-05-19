@@ -5,14 +5,14 @@ web_search) directly to the rule extractor, bypassing the GitHub fetcher.
 Use this to validate that the pipeline catches realistic silent-drift
 language without needing GitHub API access in the sandbox.
 
-Run from project root:
-    PYTHONPATH=src python tools/demo_offline_spring_boot.py
+Run from this package directory:
+    python tools/demo_offline_spring_boot.py
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
-from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from silent_drift_miner.cli import summarize, write_candidates_jsonl  # noqa: E402
 from silent_drift_miner.extractors.rules import extract_candidates    # noqa: E402
+from silent_drift_miner.schema import utc_now_iso                     # noqa: E402
 
 
 # Real text fragments from Spring Boot release-note wiki pages, retrieved
@@ -102,8 +103,20 @@ SAMPLES = [
 ]
 
 
-def main():
-    now = datetime.utcnow().isoformat()
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--out",
+        default=str(ROOT.parent / ".demo_artifacts" / "offline_spring_boot" / "spring-boot.jsonl"),
+        help="candidate JSONL output path",
+    )
+    parser.add_argument("--retrieved-at", default=None, help="stable ISO timestamp override")
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    now = args.retrieved_at or utc_now_iso()
     all_cands = []
     for s in SAMPLES:
         cands = extract_candidates(
@@ -125,7 +138,7 @@ def main():
         print(f"  url: {c.evidence[0].url}")
         print()
 
-    out = ROOT / "data" / "candidates" / "spring-boot.jsonl"
+    out = Path(args.out)
     write_candidates_jsonl(all_cands, out)
     print(f"wrote -> {out}")
 
