@@ -48,9 +48,22 @@ def test_audit_fails_when_public_mentions_hidden_path(tmp_path) -> None:
     assert report["findings"]
 
 
-def _case_and_oracle(tmp_path: Path) -> tuple[Path, Path]:
+def test_audit_fails_when_reproduction_result_missing(tmp_path) -> None:
+    case, oracle_spec = _case_and_oracle(tmp_path, create_result=False)
+    packages = tmp_path / "packages"
+    audit = tmp_path / "audit.json"
+    assert main(["bench", "package", "--case", str(case), "--oracle", str(oracle_spec), "--out", str(packages)]) == 0
+
+    assert main(["audit", "case", "--package", str(packages / "toy_case_001"), "--out", str(audit)]) == 1
+    report = json.loads(audit.read_text(encoding="utf-8"))
+    assert any(finding["check"] == "reproducibility_status" for finding in report["findings"])
+
+
+def _case_and_oracle(tmp_path: Path, create_result: bool = True) -> tuple[Path, Path]:
     case = tmp_path / "case.yaml"
     oracle = tmp_path / "oracle"
+    if create_result:
+        (tmp_path / "result.json").write_text('{"candidate_id": "cand-1", "keep": true}\n', encoding="utf-8")
     case.write_text(
         "\n".join(
             [

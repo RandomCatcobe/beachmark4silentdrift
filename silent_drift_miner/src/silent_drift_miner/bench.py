@@ -27,6 +27,9 @@ def create_benchmark_package(
 
     shutil.copy2(case_path, package_dir / "case.yaml")
     shutil.copy2(oracle_spec_path, package_dir / "oracle_spec.yaml")
+    reproduction_result = _resolve_link(case_path, case.reproduction_result)
+    if reproduction_result.exists():
+        shutil.copy2(reproduction_result, package_dir / "reproduction_result.json")
     public_src = Path(oracle.public_readme_path).parent
     public_dst = package_dir / "public"
     shutil.copytree(public_src, public_dst)
@@ -36,9 +39,17 @@ def create_benchmark_package(
         "candidate_id": case.candidate_id,
         "levels": levels,
         "public_dir": "public",
+        "reproduction_result": "reproduction_result.json",
     }
     (package_dir / "manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
     return package_dir
+
+
+def _resolve_link(base_file: Path, value: str) -> Path:
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    return base_file.parent / path
