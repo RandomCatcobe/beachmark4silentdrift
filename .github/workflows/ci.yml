@@ -30,5 +30,5 @@ jobs:
       - name: Validate existing candidate fixtures
         run: |
           python -m silent_drift_miner.cli validate-candidates \
-            silent_drift_miner/data/candidates/spring-boot.jsonl
+            data/candidates/spring-boot.jsonl
         working-directory: silent_drift_miner
