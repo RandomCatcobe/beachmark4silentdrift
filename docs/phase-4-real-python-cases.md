@@ -39,6 +39,17 @@
 - Package: `data/packages/pydantic_optional_field_required/`
 - Audit: `data/audit/pydantic_optional_field_required.json`
 
+- `pydantic_field_alias_none`
+- Source: https://pydantic.dev/docs/validation/2.11/get-started/migration/
+- Version pair: `pydantic==1.10.15` -> `pydantic==2.7.4`
+- Stabilizer: `Python 3.10`
+- Observed diff:
+  - old: `field.alias == "name"`
+  - new: `field.alias is None`
+- Result: `data/reproductions/pydantic-field-alias-none/attempt_001/result.json`
+- Package: `data/packages/pydantic_field_alias_none/`
+- Audit: `data/audit/pydantic_field_alias_none.json`
+
 ## CLI/API 形状（CLI/API Shape）
 
 ```bash

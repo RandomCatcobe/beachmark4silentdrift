@@ -38,3 +38,19 @@ def test_pydantic_optional_field_case_manifest_has_required_fields() -> None:
 
 def test_pydantic_optional_field_client_compiles() -> None:
     py_compile.compile(str(CASES_ROOT / "pydantic_optional_field_required" / "client.py"), doraise=True)
+
+
+def test_pydantic_field_alias_case_manifest_has_required_fields() -> None:
+    manifest = json.loads((CASES_ROOT / "pydantic_field_alias_none" / "candidate.json").read_text(encoding="utf-8"))
+
+    assert manifest["case_id"] == "pydantic_field_alias_none"
+    assert manifest["library"] == "pydantic"
+    assert manifest["version_old"] == "1.10.15"
+    assert manifest["version_new"] == "2.7.4"
+    assert manifest["source_url"].startswith("https://pydantic.dev/")
+    assert "reproduce plan" in manifest["reproduction_command"]
+    assert manifest["client_file"] == "client.py"
+
+
+def test_pydantic_field_alias_client_compiles() -> None:
+    py_compile.compile(str(CASES_ROOT / "pydantic_field_alias_none" / "client.py"), doraise=True)

@@ -22,7 +22,7 @@ silent-drift-miner ecosystem gates \
   --min-python-cases 3
 ```
 
-当前有 2 个已审计真实 Python 案例，因此 JVM gate 仍应返回 blocked。先继续补 Python 案例数量，而不是提前创建 JVM adapter。
+当前有 3 个已审计真实 Python 案例，因此 JVM gate 已通过。下一步可以开始一个最小、确定性的 JVM adapter，但仍然一次只增加一个生态。
 
 ## CLI/API 形状（CLI/API Shape）
 

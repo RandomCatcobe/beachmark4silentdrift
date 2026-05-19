@@ -1,0 +1,67 @@
+{
+  "candidate_id": "pydantic-field-alias-none",
+  "spec_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\spec.json",
+  "attempt_dir": "data\\reproductions\\pydantic-field-alias-none\\attempt_001",
+  "old_run": {
+    "label": "old",
+    "environment": {
+      "label": "old",
+      "library": "pydantic",
+      "version": "1.10.15",
+      "install_command": [
+        "python",
+        "-m",
+        "pip",
+        "install",
+        "pydantic==1.10.15"
+      ],
+      "python_executable": ".repro_venvs\\pydantic-field-alias-none\\old-pydantic-1.10.15\\Scripts\\python.exe",
+      "package_path": null
+    },
+    "stdout_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\old\\stdout.txt",
+    "stderr_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\old\\stderr.txt",
+    "exit_code_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\old\\exit_code.txt",
+    "run_log_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\old\\run.log",
+    "build_log_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\old\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "new_run": {
+    "label": "new",
+    "environment": {
+      "label": "new",
+      "library": "pydantic",
+      "version": "2.7.4",
+      "install_command": [
+        "python",
+        "-m",
+        "pip",
+        "install",
+        "pydantic==2.7.4"
+      ],
+      "python_executable": ".repro_venvs\\pydantic-field-alias-none\\new-pydantic-2.7.4\\Scripts\\python.exe",
+      "package_path": null
+    },
+    "stdout_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\new\\stdout.txt",
+    "stderr_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\new\\stderr.txt",
+    "exit_code_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\new\\exit_code.txt",
+    "run_log_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\new\\run.log",
+    "build_log_path": "data\\reproductions\\pydantic-field-alias-none\\attempt_001\\new\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "diff": {
+    "stdout_changed": true,
+    "stderr_changed": false,
+    "exit_code_changed": false,
+    "summary": "stdout changed",
+    "details": {
+      "old_exit_code": 0,
+      "new_exit_code": 0
+    }
+  },
+  "keep": true,
+  "drop_reason": null,
+  "schema_version": "1",
+  "created_at": "2026-05-19T07:45:15.187286"
+}

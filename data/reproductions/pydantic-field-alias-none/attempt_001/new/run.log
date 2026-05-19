@@ -1,0 +1,1 @@
+command: .repro_venvs\pydantic-field-alias-none\new-pydantic-2.7.4\Scripts\python.exe cases\pydantic_field_alias_none\client.py

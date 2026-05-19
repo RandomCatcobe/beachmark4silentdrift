@@ -1,0 +1,8 @@
+{
+  "case_id": "pydantic_field_alias_none",
+  "candidate_id": "pydantic-field-alias-none",
+  "keep": true,
+  "diff_summary": "stdout changed",
+  "old_stdout": "{\"alias\": \"name\", \"pydantic_version\": \"1.10.15\"}\n",
+  "new_stdout": "{\"alias\": null, \"pydantic_version\": \"2.7.4\"}\n"
+}
