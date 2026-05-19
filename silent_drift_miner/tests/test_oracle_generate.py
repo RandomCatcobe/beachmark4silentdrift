@@ -56,6 +56,34 @@ def test_oracle_generate_rejects_rejected_case(tmp_path) -> None:
     assert main(["oracle", "generate", "--case", str(case), "--out", str(tmp_path / "oracle")]) == 1
 
 
+def test_oracle_validate_writes_pass_log(tmp_path) -> None:
+    case = _accepted_case(tmp_path)
+    out = tmp_path / "oracle" / "toy_case_001"
+    assert main(["oracle", "generate", "--case", str(case), "--out", str(out)]) == 0
+
+    assert main(["oracle", "validate", "--oracle", str(out / "oracle_spec.yaml"), "--mode", "old"]) == 0
+
+    log = out / "validation" / "old_pass.log"
+    assert log.exists()
+    assert "exit_code: 0" in log.read_text(encoding="utf-8")
+
+
+def test_oracle_validate_writes_fail_log(tmp_path) -> None:
+    case = _accepted_case(tmp_path)
+    out = tmp_path / "oracle" / "toy_case_001"
+    assert main(["oracle", "generate", "--case", str(case), "--out", str(out)]) == 0
+    (out / "hidden" / "test_behavior.py").write_text(
+        "def test_behavior_matches_expected():\n    assert False\n",
+        encoding="utf-8",
+    )
+
+    assert main(["oracle", "validate", "--oracle", str(out / "oracle_spec.yaml"), "--mode", "new"]) == 1
+
+    log = out / "validation" / "new_fail.log"
+    assert log.exists()
+    assert "FAILED" in log.read_text(encoding="utf-8")
+
+
 def _accepted_case(tmp_path: Path) -> Path:
     old_pkg = tmp_path / "old_pkg"
     new_pkg = tmp_path / "new_pkg"

@@ -42,6 +42,8 @@ silent-drift audit case \
   --out data/audit/TASK_ID.json
 ```
 
+`oracle validate` 会运行隐藏 pytest 判定器（Hidden Pytest Oracle），并把日志写入 `validation/<mode>_pass.log` 或 `validation/<mode>_fail.log`。
+
 预期判定器布局（Oracle Layout）：
 
 ```text

@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
@@ -25,6 +27,27 @@ class OracleSpec:
     def to_yaml(self) -> str:
         data = asdict(self)
         return "\n".join(f"{key}: {json.dumps(value, ensure_ascii=False)}" for key, value in data.items()) + "\n"
+
+
+@dataclass
+class OracleValidationResult:
+    case_id: str
+    mode: str
+    pass_: bool
+    exit_code: int
+    log_path: str
+
+    def to_json(self) -> str:
+        return json.dumps(
+            {
+                "case_id": self.case_id,
+                "mode": self.mode,
+                "pass": self.pass_,
+                "exit_code": self.exit_code,
+                "log_path": self.log_path,
+            },
+            ensure_ascii=False,
+        )
 
 
 def generate_pytest_oracle(case_path: Path, out_dir: Path) -> OracleSpec:
@@ -76,6 +99,51 @@ def load_oracle_spec(path: Path) -> OracleSpec:
         key, value = raw.split(":", 1)
         data[key.strip()] = json.loads(value.strip())
     return OracleSpec(**data)
+
+
+def validate_pytest_oracle(oracle_spec_path: Path, mode: str) -> OracleValidationResult:
+    if mode not in {"old", "new", "fixed"}:
+        raise ValueError("mode must be one of: old, new, fixed")
+    spec = load_oracle_spec(oracle_spec_path)
+    hidden_test = Path(spec.hidden_test_path)
+    if not hidden_test.exists():
+        raise ValueError(f"hidden test not found: {hidden_test}")
+
+    command = [sys.executable, "-m", "pytest", str(hidden_test)]
+    completed = subprocess.run(
+        command,
+        cwd=str(hidden_test.parent),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    passed = completed.returncode == 0
+    validation_dir = oracle_spec_path.parent / "validation"
+    validation_dir.mkdir(parents=True, exist_ok=True)
+    log_path = validation_dir / f"{mode}_{'pass' if passed else 'fail'}.log"
+    log_path.write_text(
+        "\n".join(
+            [
+                f"case_id: {spec.case_id}",
+                f"mode: {mode}",
+                f"exit_code: {completed.returncode}",
+                "command: " + " ".join(command),
+                "",
+                "=== stdout ===",
+                completed.stdout,
+                "=== stderr ===",
+                completed.stderr,
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return OracleValidationResult(
+        case_id=spec.case_id,
+        mode=mode,
+        pass_=passed,
+        exit_code=completed.returncode,
+        log_path=str(log_path),
+    )
 
 
 def _hidden_test_template() -> str:

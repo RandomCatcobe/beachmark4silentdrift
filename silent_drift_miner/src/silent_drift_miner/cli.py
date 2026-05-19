@@ -29,7 +29,7 @@ from .audit import audit_package, write_audit_report
 from .bench import create_benchmark_package
 from .curation import CurationDecision, create_curated_case, write_curated_case
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
-from .oracle import generate_pytest_oracle
+from .oracle import generate_pytest_oracle, validate_pytest_oracle
 from .extractors.rules import extract_candidates
 from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
 from .reproduction import (
@@ -607,6 +607,17 @@ def cmd_oracle_generate(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_oracle_validate(args: argparse.Namespace) -> int:
+    oracle_path = artifact_path(args.oracle, args.artifact_root)
+    try:
+        result = validate_pytest_oracle(oracle_path, args.mode)
+    except Exception as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    print(result.to_json())
+    return 0 if result.pass_ else 1
+
+
 def cmd_bench_package(args: argparse.Namespace) -> int:
     case_path = artifact_path(args.case, args.artifact_root)
     oracle_path = artifact_path(args.oracle, args.artifact_root)
@@ -773,6 +784,13 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_oracle_generate.add_argument("--template", default="pytest")
     p_oracle_generate.add_argument("--out", required=True)
     p_oracle_generate.set_defaults(func=cmd_oracle_generate)
+
+    p_oracle_validate = oracle_sub.add_parser("validate", help="run hidden pytest oracle validation")
+    p_oracle_validate.add_argument("--artifact-root", default=None,
+                                   help="artifact root; oracle path must stay inside this directory")
+    p_oracle_validate.add_argument("--oracle", required=True)
+    p_oracle_validate.add_argument("--mode", required=True, choices=["old", "new", "fixed"])
+    p_oracle_validate.set_defaults(func=cmd_oracle_validate)
 
     p_bench = sub.add_parser("bench", help="package benchmark tasks")
     bench_sub = p_bench.add_subparsers(dest="bench_cmd", required=True)
