@@ -9,7 +9,7 @@ from .curation import load_curated_case
 from .oracle import load_oracle_spec
 
 
-LEAK_TERMS = ("expected.json", "hidden", "old output", "new output")
+LEAK_TERMS = ("expected.json", "hidden/", "/hidden", "old_stdout", "new_stdout")
 ALLOWED_LEVELS = {"L1", "L2", "L3"}
 REQUIRED_CASE_PROVENANCE = (
     "source_url",

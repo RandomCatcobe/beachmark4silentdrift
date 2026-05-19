@@ -3,11 +3,19 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, TypedDict
 
 from .schema import DriftCandidate, TriageDecision, utc_now_iso
 
-TriageItem = dict[str, Any]
+
+class TriageItem(TypedDict):
+    candidate_id: str
+    candidate: dict
+    decision: Optional[str]
+    notes: str
+    reviewer: str
+    created_at: str
+    updated_at: str
 
 
 def build_queue_items(candidates: list[DriftCandidate]) -> list[TriageItem]:

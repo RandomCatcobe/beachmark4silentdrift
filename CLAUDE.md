@@ -13,11 +13,20 @@
 ## 产物路径约定（Artifact Paths）
 
 ```
+# 运行时产物（runtime artifacts，mine/triage/reproduce 等命令输出）
 data/
-  candidates/         # mine 命令输出的 JSONL 候选文件
+  candidates/         # mine 命令输出的 JSONL 候选文件（--out 可覆盖）
   triage/             # triage 命令输出的分诊队列文件
-  fixtures/           # 离线测试用 changelog 夹具（不依赖网络）
+  reproductions/      # reproduce 命令输出
+  oracle/             # oracle 生成产物（hidden/ 与 public/ 物理分离）
+  packages/           # bench 打包产物
+  audit/              # audit 报告
   raw_changelogs/     # GitHub API 缓存（不提交到 git）
+
+# 测试夹具（test fixtures，提交到 git，供离线测试使用）
+silent_drift_miner/data/
+  candidates/         # 测试用预置候选文件（如 spring-boot.jsonl）
+  fixtures/           # 离线 changelog 夹具（如 pandas_changelog.md）
 ```
 
 **所有产物必须写到配置的产物根目录（Artifact Root）之内，不能随意写到任意路径。**

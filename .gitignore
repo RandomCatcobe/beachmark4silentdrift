@@ -13,6 +13,7 @@ build/
 .venv/
 venv/
 env/
+.sandbox/
 .repro_venvs/
 
 # Test / coverage
@@ -35,6 +36,9 @@ htmlcov/
 
 # Project: cached changelogs (can be large, rebuilt on demand)
 data/raw_changelogs/
+
+# uv lock file (project uses setuptools/pip; uv.lock is a local tool artifact)
+uv.lock
 
 # OS
 .DS_Store

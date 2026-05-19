@@ -21,3 +21,4 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+testpaths = ["silent_drift_miner/tests"]

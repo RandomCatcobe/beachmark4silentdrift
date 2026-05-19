@@ -184,8 +184,9 @@ class Evidence:
     retrieved_at: str          # ISO timestamp
 
     def truncate(self) -> "Evidence":
-        if len(self.snippet_raw) > 400:
-            self.snippet_raw = self.snippet_raw[:400] + "...[truncated]"
+        _marker = "...[truncated]"
+        if len(self.snippet_raw) > 400 and not self.snippet_raw.endswith(_marker):
+            self.snippet_raw = self.snippet_raw[:400] + _marker
         return self
 
 

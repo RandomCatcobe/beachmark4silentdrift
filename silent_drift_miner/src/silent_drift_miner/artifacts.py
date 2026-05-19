@@ -54,9 +54,11 @@ class ArtifactStore:
 
     def write_jsonl(self, artifact_type: ArtifactType, name: str | Path, rows: Iterable[str]) -> Path:
         path = self.prepare_output_path(self.path_for(artifact_type, name))
-        with path.open("w", encoding="utf-8") as f:
+        tmp = path.with_suffix(".tmp")
+        with tmp.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(row.rstrip("\n") + "\n")
+        tmp.replace(path)
         return path
 
     def relative_to_root(self, path: str | Path) -> str:

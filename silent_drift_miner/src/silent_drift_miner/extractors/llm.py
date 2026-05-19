@@ -115,17 +115,20 @@ class LLMRefiner:
             return candidates
 
         kept: list[DriftCandidate] = []
+        errors = 0
         for i, cand in enumerate(candidates):
             try:
                 refined = self._refine_one(cand)
             except Exception as e:
-                print(f"[llm] error on candidate {cand.candidate_id}: {e}")
+                print(f"[llm] {type(e).__name__} on candidate {cand.candidate_id}: {e}")
                 kept.append(cand)  # keep as WEAK on error rather than lose data
+                errors += 1
                 continue
             if refined is not None:
                 kept.append(refined)
             if (i + 1) % 10 == 0:
                 print(f"[llm] refined {i+1}/{len(candidates)} (kept so far: {len(kept)})")
+        print(f"[llm] done: {len(kept)}/{len(candidates)} kept, {errors} errors")
         return kept
 
     def _refine_one(self, cand: DriftCandidate) -> Optional[DriftCandidate]:
