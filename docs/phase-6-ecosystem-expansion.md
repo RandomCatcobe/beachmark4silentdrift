@@ -1,0 +1,58 @@
+# 阶段 6：生态扩展（Ecosystem Expansion）
+
+## 目标（Goal）
+
+交付 v0.6：只在 Python 生命周期（Python Lifecycle）稳定后扩展到其他生态（Ecosystems）。第一个扩展目标是 JVM；Go 和 Rust 只有在案例流水线确实需要时再加入。
+
+## TODO
+
+- 定义每个生态适配器（Ecosystem Adapter）必须满足的门槛（Adapter Gates）。
+- 一次只增加一个生态适配器。
+- 只有在 Python 已有多个已审计真实案例（Audited Real Cases）后，才开始 JVM。
+- 复用同一生命周期：候选（Candidate）、分诊（Triage）、复现（Reproduction）、整理（Curation）、判定器（Oracle）、打包（Package）、审计（Audit）。
+- 把生态特定环境逻辑（Ecosystem-Specific Environment Logic）限制在适配器边界（Adapter Boundary）内。
+
+## CLI/API 形状（CLI/API Shape）
+
+外部 CLI 应保持一致：
+
+```bash
+silent-drift reproduce plan \
+  --candidate-id CANDIDATE_ID \
+  --ecosystem jvm \
+  --library LIBRARY \
+  --old-version OLD_VERSION \
+  --new-version NEW_VERSION \
+  --client-file examples/reproducers/CANDIDATE_ID/client \
+  --out data/reproductions/CANDIDATE_ID/spec.json
+
+silent-drift reproduce run \
+  --spec data/reproductions/CANDIDATE_ID/spec.json \
+  --out data/reproductions/CANDIDATE_ID/attempt_001/
+```
+
+适配器契约（Adapter Contract）：
+
+```text
+create_old_env(case)
+create_new_env(case)
+install_dependency(version)
+run_client(client_path)
+classify_failure(run_logs)
+generate_oracle_candidate(case)
+```
+
+## 验收标准（Acceptance Criteria）
+
+- 新适配器输出与 Python 相同的复现结果模式（Reproduction Result Schema）。
+- 新适配器尽量记录相同失败类别（Failure Categories）。
+- 新适配器有离线玩具夹具（Offline Toy Fixtures）。
+- 任何生态都不能绕过整理、判定器验证、打包和审计。
+- JVM 先从一个最小、确定性案例（Minimal Deterministic Case）开始。
+
+## 非目标（Non-Goals）
+
+- 不在 Python 证明真实需求前创建空泛抽象适配器（Abstract Adapters）。
+- 不在同一里程碑同时加入 Go/Rust。
+- 第一次扩展不支持统计性或分布式漂移（Statistical or Distributed Drift）。
+- 不把论文式模型比较（Model Comparison）放进生态扩展工作。

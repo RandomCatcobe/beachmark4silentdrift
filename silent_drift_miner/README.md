@@ -1,5 +1,7 @@
 # silent-drift-miner
 
+分阶段实现路线图（Staged Implementation Roadmap）见 [../docs/README.md](../docs/README.md)，术语对齐（Terminology Alignment）见 [../docs/terminology.md](../docs/terminology.md)。
+
 Layer 1 of the silent-drift benchmark pipeline.
 Mines release notes and CHANGELOGs for *silent semantic drift* candidates:
 behavior changes that leave the API call shape (name, parameters, return
