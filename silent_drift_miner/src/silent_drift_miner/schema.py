@@ -10,9 +10,130 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
+
+
+ARTIFACT_SCHEMA_VERSION = "1"
+
+
+def utc_now_iso() -> str:
+    return datetime.now(UTC).replace(tzinfo=None).isoformat()
+
+
+class ArtifactType(str, Enum):
+    """File-based artifact families shared across pipeline stages."""
+
+    CANDIDATE = "candidate"
+    TRIAGE = "triage"
+    REPRODUCTION = "reproduction"
+    CURATION = "curation"
+    ORACLE = "oracle"
+    BENCHMARK_PACKAGE = "benchmark_package"
+    AUDIT_REPORT = "audit_report"
+
+
+class ArtifactStatus(str, Enum):
+    """Lifecycle status for an artifact record."""
+
+    PLANNED = "planned"
+    CREATED = "created"
+    VALIDATED = "validated"
+    FAILED = "failed"
+
+
+@dataclass
+class ArtifactRecord:
+    """A small manifest entry for any file produced by the pipeline."""
+
+    artifact_type: ArtifactType
+    path: str
+    status: ArtifactStatus = ArtifactStatus.CREATED
+    schema_version: str = ARTIFACT_SCHEMA_VERSION
+    created_at: str = field(default_factory=utc_now_iso)
+    producer: str = ""
+    candidate_ids: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_json(self) -> str:
+        d = asdict(self)
+        d["artifact_type"] = self.artifact_type.value
+        d["status"] = self.status.value
+        return json.dumps(d, ensure_ascii=False)
+
+    @classmethod
+    def from_json(cls, text: str) -> "ArtifactRecord":
+        d = json.loads(text)
+        d["artifact_type"] = ArtifactType(d["artifact_type"])
+        d["status"] = ArtifactStatus(d["status"])
+        return cls(**d)
+
+
+class TriageDecision(str, Enum):
+    ACCEPT_FOR_REPRODUCTION = "accept_for_reproduction"
+    REJECT_HARD_BREAK = "reject_hard_break"
+    REJECT_ADDITIVE_FEATURE = "reject_additive_feature"
+    REJECT_BUGFIX_ONLY = "reject_bugfix_only"
+    REJECT_NOT_SILENT = "reject_not_silent"
+    BORDERLINE = "borderline"
+    NEEDS_MORE_CONTEXT = "needs_more_context"
+
+
+@dataclass
+class TriageRecord:
+    candidate_id: str
+    decision: Optional[TriageDecision] = None
+    notes: str = ""
+    reviewer: str = ""
+    created_at: str = field(default_factory=utc_now_iso)
+    updated_at: str = field(default_factory=utc_now_iso)
+
+
+@dataclass
+class ReproductionRecord:
+    candidate_id: str
+    status: ArtifactStatus = ArtifactStatus.PLANNED
+    harness_path: Optional[str] = None
+    result_path: Optional[str] = None
+    created_at: str = field(default_factory=utc_now_iso)
+
+
+@dataclass
+class CurationRecord:
+    candidate_id: str
+    status: ArtifactStatus = ArtifactStatus.PLANNED
+    keep_reason: str = ""
+    drop_reason: str = ""
+    created_at: str = field(default_factory=utc_now_iso)
+
+
+@dataclass
+class OracleRecord:
+    candidate_id: str
+    status: ArtifactStatus = ArtifactStatus.PLANNED
+    public_test_path: Optional[str] = None
+    hidden_test_path: Optional[str] = None
+    created_at: str = field(default_factory=utc_now_iso)
+
+
+@dataclass
+class BenchmarkPackageRecord:
+    package_id: str
+    candidate_ids: list[str] = field(default_factory=list)
+    status: ArtifactStatus = ArtifactStatus.PLANNED
+    package_path: Optional[str] = None
+    created_at: str = field(default_factory=utc_now_iso)
+
+
+@dataclass
+class AuditReportRecord:
+    report_id: str
+    package_id: str
+    status: ArtifactStatus = ArtifactStatus.PLANNED
+    report_path: Optional[str] = None
+    findings: list[str] = field(default_factory=list)
+    created_at: str = field(default_factory=utc_now_iso)
 
 
 class DriftCategory(str, Enum):
@@ -103,7 +224,7 @@ class DriftCandidate:
     # --- pipeline bookkeeping ---
     why_flagged: list[str] = field(default_factory=list)  # rule names that matched
     extracted_by: str = "rule"  # "rule" | "llm" | "human"
-    created_at: str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    created_at: str = field(default_factory=utc_now_iso)
     pipeline_stage: int = 1     # 1=mined, 2=reproduced, 3=oracle_built, 4=human_approved
 
     # --- downstream fields, optional ---

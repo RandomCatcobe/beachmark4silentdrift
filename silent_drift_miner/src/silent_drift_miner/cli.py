@@ -21,13 +21,13 @@ import json
 import sys
 from collections import Counter
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from .artifacts import ArtifactStore
 from .extractors.llm import LLMConfig, LLMRefiner
 from .extractors.rules import extract_candidates
-from .schema import Confidence, DriftCandidate, DriftCategory
+from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, utc_now_iso
 from .sources.github_changelog import (
     GitHubFetcher,
     ReleaseDoc,
@@ -135,7 +135,7 @@ def mine_target(target: Target, fetcher: GitHubFetcher, threshold: int) -> list[
         print(f"[fetch] no documents for {target.library}", file=sys.stderr)
         return []
 
-    now_iso = datetime.utcnow().isoformat()
+    now_iso = utc_now_iso()
     candidates: list[DriftCandidate] = []
     for d in docs:
         if d.source_type == "changelog_file":
@@ -194,6 +194,14 @@ def summarize(cands: list[DriftCandidate]) -> dict:
 
 # ----------------------- CLI -----------------------
 
+def candidate_dir(out_dir: Optional[str], artifact_root: Optional[str]) -> Path:
+    if artifact_root is None:
+        return Path(out_dir or "data/candidates")
+    store = ArtifactStore(artifact_root)
+    if out_dir is None:
+        return store.dir_for(ArtifactType.CANDIDATE)
+    return store.resolve_user_path(out_dir)
+
 def cmd_mine(args: argparse.Namespace) -> int:
     config_path = Path(args.config)
     if not config_path.exists():
@@ -213,7 +221,7 @@ def cmd_mine(args: argparse.Namespace) -> int:
             print(f"[config] skipping disabled targets: {', '.join(disabled)}", file=sys.stderr)
 
     cache_dir = Path(args.cache_dir)
-    out_dir = Path(args.out_dir)
+    out_dir = candidate_dir(args.out_dir, args.artifact_root)
     fetcher = GitHubFetcher(cache_dir=cache_dir)
 
     refiner = LLMRefiner(LLMConfig()) if args.use_llm else None
@@ -243,7 +251,7 @@ def cmd_mine(args: argparse.Namespace) -> int:
 
 
 def cmd_stats(args: argparse.Namespace) -> int:
-    out_dir = Path(args.out_dir)
+    out_dir = candidate_dir(args.out_dir, args.artifact_root)
     all_c: list[DriftCandidate] = []
     for p in sorted(out_dir.glob("*.jsonl")):
         all_c.extend(load_candidates_jsonl(p))
@@ -298,7 +306,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 
 def cmd_show(args: argparse.Namespace) -> int:
-    out_dir = Path(args.out_dir)
+    out_dir = candidate_dir(args.out_dir, args.artifact_root)
     path = out_dir / f"{args.library}.jsonl"
     cands = load_candidates_jsonl(path)
     if args.only_category:
@@ -333,7 +341,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_mine.add_argument("--config", default="configs/targets.yaml")
     p_mine.add_argument("--library", default=None, help="only mine this library from config")
     p_mine.add_argument("--cache-dir", default="data/raw_changelogs")
-    p_mine.add_argument("--out-dir", default="data/candidates")
+    p_mine.add_argument("--artifact-root", default=None,
+                        help="artifact root; when set, outputs cannot escape this directory")
+    p_mine.add_argument("--out-dir", default=None)
     p_mine.add_argument("--threshold", type=int, default=4,
                         help="rule score threshold to emit a WEAK candidate")
     llm_group = p_mine.add_mutually_exclusive_group()
@@ -344,12 +354,16 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_mine.set_defaults(func=cmd_mine)
 
     p_stats = sub.add_parser("stats", help="print summary over all candidates")
-    p_stats.add_argument("--out-dir", default="data/candidates")
+    p_stats.add_argument("--artifact-root", default=None,
+                         help="artifact root; defaults candidate input to <root>/candidates")
+    p_stats.add_argument("--out-dir", default=None)
     p_stats.set_defaults(func=cmd_stats)
 
     p_show = sub.add_parser("show", help="show candidates for one library")
     p_show.add_argument("library")
-    p_show.add_argument("--out-dir", default="data/candidates")
+    p_show.add_argument("--artifact-root", default=None,
+                        help="artifact root; defaults candidate input to <root>/candidates")
+    p_show.add_argument("--out-dir", default=None)
     p_show.add_argument("--limit", type=int, default=20)
     p_show.add_argument("--only-category", default=None)
     p_show.add_argument("--min-confidence", default=None,
