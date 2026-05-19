@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import asdict, dataclass, field
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
 
@@ -19,7 +19,7 @@ ARTIFACT_SCHEMA_VERSION = "1"
 
 
 def utc_now_iso() -> str:
-    return datetime.now(UTC).replace(tzinfo=None).isoformat()
+    return datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
 
 
 class ArtifactType(str, Enum):
