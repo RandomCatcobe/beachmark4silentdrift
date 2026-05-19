@@ -2,7 +2,8 @@
 
 The JVM adapter is the first non-Python adapter implementation. It stays inside
 the ecosystem adapter boundary. The user opened JVM special cases on
-2026-05-19; other non-Python ecosystems remain reserved.
+2026-05-19. JS, PHP, Ruby, .NET, and Go are also active now; Rust remains
+reserved.
 
 Supported shape:
 

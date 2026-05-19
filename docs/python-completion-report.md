@@ -52,4 +52,10 @@ The status check verifies:
 
 ## Current Scope
 
-Do not start JVM, Go, Rust, or other ecosystems in this milestone. The Python lifecycle is the source pattern; multi-language work remains deferred until explicitly requested.
+Python remains the source pattern and mature production path. After explicit
+user requests on 2026-05-19, JVM, JS, PHP, Ruby, .NET, and Go adapters are now
+active for local deterministic reproduction paths. Rust remains reserved until
+explicitly opened.
+
+The Python autodiscovery Markdown loop is prepared in `v0.11.0`, but the real
+search/discovery run has not started.

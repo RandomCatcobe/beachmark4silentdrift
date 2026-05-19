@@ -2,6 +2,10 @@
 
 This brief prepares the next model-guided discovery batch. It does not start the batch.
 
+Release context: `v0.11.0` includes the Markdown memory helpers and this
+pre-run brief. The next action is still waiting for an explicit instruction to
+begin searching.
+
 ## Batch Budget
 - Target discovery attempts: 10
 - Start only when explicitly asked to begin searching.

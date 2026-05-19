@@ -1,5 +1,9 @@
 # Python Autodiscovery Markdown Plan
 
+Release status: implemented in `v0.11.0` as local Markdown memory helpers. This
+plan prepares the workflow, but it does not start the real discovery/search
+batch.
+
 ## Goal
 
 Build a model-driven loop for finding real Python silent-drift cases without
@@ -270,7 +274,7 @@ The Markdown memory is the main product of the failed attempts. It makes the nex
 
 ## Local CLI Support
 
-The first local implementation is intentionally small. It only helps the model
+The `v0.11.0` local implementation is intentionally small. It only helps the model
 write and reread Markdown memory.
 
 Initialize the default files:

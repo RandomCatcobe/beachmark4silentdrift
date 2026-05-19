@@ -1,5 +1,8 @@
 # Python Drift Autodiscovery Readiness
 
+Generated for `v0.11.0` after the Markdown memory helpers were implemented.
+This is a preparation report only; no real discovery/search batch has started.
+
 ## Files
 - Plan: ok - `docs\python-autodiscovery-plan.md`
 - Idea bank: ok - `docs\python-drift-idea-bank.md`

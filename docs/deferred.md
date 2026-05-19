@@ -1,11 +1,17 @@
 # 暂缓事项（Deferred Work）
 
+## 2026-05-19 Update
+
+JVM, JS, PHP, Ruby, .NET, and Go are no longer deferred after explicit
+one-language-at-a-time user requests. They are active only for local
+deterministic adapter/reproduction paths. Rust, cloud-service harnesses,
+distributed systems, statistical oracles, and large-scale benchmark collection
+remain deferred.
+
 以下事项在 `candidate -> reproduction -> curation -> oracle -> package -> audit` 链路稳定前，全部暂缓。
 
 ## 暂缓工程项（Deferred Engineering）
 
-- Python 稳定前的 JVM 支持（JVM Support）。
-- Go 支持（Go Support）。
 - Rust 支持（Rust Support）。
 - L4 盲操作任务（Blind Operation Tasks）。
 - 统计性漂移判定器（Statistical Drift Oracle）。

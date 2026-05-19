@@ -1,5 +1,16 @@
 # silent-drift-miner
 
+Current release: `v0.11.0`.
+
+Current scope:
+
+- Python package lifecycle is mature and has six audited real cases.
+- JVM, JS, PHP, Ruby, .NET, and Go adapters are active for local deterministic
+  reproduction paths.
+- Rust remains reserved.
+- Python autodiscovery has Markdown memory helpers; the real discovery run has
+  not been started.
+
 分阶段实现路线图（Staged Implementation Roadmap）见 [../docs/README.md](../docs/README.md)，术语对齐（Terminology Alignment）见 [../docs/terminology.md](../docs/terminology.md)。
 
 Layer 1 of the silent-drift benchmark pipeline.
@@ -64,6 +75,11 @@ PYTHONPATH=src python -m silent_drift_miner.cli show spring-boot --limit 20
 
 # aggregate stats across all libraries
 PYTHONPATH=src python -m silent_drift_miner.cli stats
+
+# prepare the Python autodiscovery Markdown memory without starting a search
+PYTHONPATH=src python -m silent_drift_miner.cli autodiscovery readiness
+PYTHONPATH=src python -m silent_drift_miner.cli autodiscovery brief \
+    --out ../docs/python-drift-next-run.md
 ```
 
 For GitHub API runs on more than ~60 calls/hour, set `GITHUB_TOKEN` to
@@ -136,11 +152,13 @@ Layer 5 (human approval) move it past stage 3.
 ## Tests
 
 ```bash
-python -m unittest discover -s tests -t .
+python -m pytest tests/ -v
 ```
 
-Nine tests cover rule scoring, chunk splitting, end-to-end extraction,
-and JSONL roundtrip. Run them before changing rules.
+The current full local suite is pytest-based. As of `v0.11.0`, the CI-mode
+suite passes with `102 passed, 6 skipped` when optional real toolchain smoke
+tests are skipped. Run it before changing rules, reproduction behavior,
+adapters, packaging, or autodiscovery helpers.
 
 ## Next steps (Layer 2 sketch)
 

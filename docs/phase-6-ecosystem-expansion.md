@@ -126,3 +126,22 @@ Continuing the one-language-at-a-time expansion, Go is now active under
 `silent_drift_miner.adapters.go` for local deterministic Go CLI package-root
 cases. Required real tool: `go`; network module download is not part of the
 default execution path.
+
+# 2026-05-19 v0.11.0 Status Update
+
+`v0.11.0` keeps Python as the mature production lifecycle and records the
+current non-Python adapter state after the sequential expansion:
+
+| Ecosystem | Status | Required real tool(s) | Default scope |
+| --- | --- | --- | --- |
+| Python | mature | `python`, `pip` | real audited package cases |
+| JVM | active | `java`, `javac` | local deterministic Java source-root cases |
+| JS | active | `node` | local deterministic Node package-root cases |
+| PHP | active | `php` | local deterministic PHP CLI include-path cases |
+| Ruby | active | `ruby` | local deterministic Ruby CLI load-path cases |
+| .NET | active | `dotnet` | local deterministic .NET CLI project-root cases |
+| Go | active | `go` | local deterministic Go CLI package-root cases |
+| Rust | reserved | `cargo`, `rustc` | not opened yet |
+
+Optional package managers remain outside the default path unless a concrete
+future case justifies them.

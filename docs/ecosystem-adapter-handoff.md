@@ -142,4 +142,7 @@ Do not implement any of the following unless the user explicitly asks for that e
 
 ## Handoff Rule
 
-The current repository reserves interfaces only. A future model should treat this as a contract and work queue, not permission to broaden scope.
+The current repository now has active local deterministic adapters for JVM, JS,
+PHP, Ruby, .NET, and Go. A future model should treat those adapters as narrow
+contracts and work queues, not permission to broaden scope. Rust remains
+reserved until the user explicitly opens it.
