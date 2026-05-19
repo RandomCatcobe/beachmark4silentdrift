@@ -59,6 +59,12 @@ def write_curated_case(case: CuratedCase, path: Path) -> None:
     path.write_text(case.to_yaml(), encoding="utf-8")
 
 
+def load_curated_case(path: Path) -> CuratedCase:
+    data = _read_simple_yaml(path)
+    data["decision"] = CurationDecision(data["decision"])
+    return CuratedCase(**data)
+
+
 def _validate_decision_matches_result(
     result: ReproductionResult,
     decision: CurationDecision,
@@ -75,3 +81,22 @@ def _yaml_scalar(value) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
     return json.dumps(value, ensure_ascii=False)
+
+
+def _read_simple_yaml(path: Path) -> dict:
+    data = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        key, value = raw.split(":", 1)
+        value = value.strip()
+        if value == "null":
+            parsed = None
+        elif value == "true":
+            parsed = True
+        elif value == "false":
+            parsed = False
+        else:
+            parsed = json.loads(value)
+        data[key.strip()] = parsed
+    return data

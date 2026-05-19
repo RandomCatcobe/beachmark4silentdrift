@@ -27,6 +27,7 @@ from typing import Optional
 from .artifacts import ArtifactStore
 from .curation import CurationDecision, create_curated_case, write_curated_case
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
+from .oracle import generate_pytest_oracle
 from .extractors.rules import extract_candidates
 from .schema import ArtifactType, Confidence, DriftCandidate, DriftCategory, TriageDecision, utc_now_iso
 from .reproduction import (
@@ -589,6 +590,21 @@ def cmd_curate_create(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_oracle_generate(args: argparse.Namespace) -> int:
+    if args.template != "pytest":
+        print("ERROR only --template pytest is supported", file=sys.stderr)
+        return 2
+    case_path = artifact_path(args.case, args.artifact_root)
+    out_dir = artifact_path(args.out, args.artifact_root)
+    try:
+        generate_pytest_oracle(case_path, out_dir)
+    except Exception as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    print(f"wrote oracle -> {out_dir}")
+    return 0
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     p = argparse.ArgumentParser(prog="silent-drift-miner")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -721,6 +737,17 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_curate_create.add_argument("--case-id", required=True)
     p_curate_create.add_argument("--out", required=True)
     p_curate_create.set_defaults(func=cmd_curate_create)
+
+    p_oracle = sub.add_parser("oracle", help="generate and validate oracles")
+    oracle_sub = p_oracle.add_subparsers(dest="oracle_cmd", required=True)
+
+    p_oracle_generate = oracle_sub.add_parser("generate", help="generate a pytest oracle scaffold")
+    p_oracle_generate.add_argument("--artifact-root", default=None,
+                                   help="artifact root; output cannot escape this directory")
+    p_oracle_generate.add_argument("--case", required=True)
+    p_oracle_generate.add_argument("--template", default="pytest")
+    p_oracle_generate.add_argument("--out", required=True)
+    p_oracle_generate.set_defaults(func=cmd_oracle_generate)
 
     args = p.parse_args(argv)
     return args.func(args)
