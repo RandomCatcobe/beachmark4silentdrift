@@ -27,6 +27,7 @@ class CuratedCase:
     source_url: Optional[str] = None
     source_excerpt: Optional[str] = None
     retrieved_at: Optional[str] = None
+    ecosystem: Optional[str] = None
     version_old: Optional[str] = None
     version_new: Optional[str] = None
     api_surface: list[str] = field(default_factory=list)
@@ -50,6 +51,7 @@ def create_curated_case(
     source_url: str | None = None,
     source_excerpt: str | None = None,
     retrieved_at: str | None = None,
+    ecosystem: str | None = None,
     version_old: str | None = None,
     version_new: str | None = None,
     api_surface: list[str] | None = None,
@@ -68,6 +70,7 @@ def create_curated_case(
         source_url=source_url,
         source_excerpt=source_excerpt,
         retrieved_at=retrieved_at,
+        ecosystem=ecosystem,
         version_old=version_old,
         version_new=version_new,
         api_surface=list(api_surface or []),

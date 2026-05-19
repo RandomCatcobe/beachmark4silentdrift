@@ -6,18 +6,30 @@
 
 ## TODO
 
-- 定义每个生态适配器（Ecosystem Adapter）必须满足的门槛（Adapter Gates）。
+- 定义每个生态适配器（Ecosystem Adapter）必须满足的门槛（Adapter Gates）。✓
 - 一次只增加一个生态适配器。
 - 只有在 Python 已有多个已审计真实案例（Audited Real Cases）后，才开始 JVM。
 - 复用同一生命周期：候选（Candidate）、分诊（Triage）、复现（Reproduction）、整理（Curation）、判定器（Oracle）、打包（Package）、审计（Audit）。
 - 把生态特定环境逻辑（Ecosystem-Specific Environment Logic）限制在适配器边界（Adapter Boundary）内。
+
+## 当前门槛状态（Current Gate Status）
+
+```bash
+silent-drift-miner ecosystem gates \
+  --target jvm \
+  --packages data/packages \
+  --audit data/audit \
+  --min-python-cases 3
+```
+
+当前只有 1 个已审计真实 Python 案例，因此 JVM gate 应返回 blocked。先继续补 Python 案例数量，而不是提前创建 JVM adapter。
 
 ## CLI/API 形状（CLI/API Shape）
 
 外部 CLI 应保持一致：
 
 ```bash
-silent-drift reproduce plan \
+silent-drift-miner reproduce plan \
   --candidate-id CANDIDATE_ID \
   --ecosystem jvm \
   --library LIBRARY \
@@ -26,7 +38,7 @@ silent-drift reproduce plan \
   --client-file examples/reproducers/CANDIDATE_ID/client \
   --out data/reproductions/CANDIDATE_ID/spec.json
 
-silent-drift reproduce run \
+silent-drift-miner reproduce run \
   --spec data/reproductions/CANDIDATE_ID/spec.json \
   --out data/reproductions/CANDIDATE_ID/attempt_001/
 ```

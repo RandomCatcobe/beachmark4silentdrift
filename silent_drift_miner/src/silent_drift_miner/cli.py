@@ -30,6 +30,7 @@ from .audit import audit_package, write_audit_report
 from .bench import create_benchmark_package
 from .client_generation import write_client_generation_artifacts
 from .curation import CurationDecision, create_curated_case, write_curated_case
+from .ecosystems import evaluate_adapter_gates
 from .extractors.llm import LLMConfig, LLMRefiner, OfflineLLMFilter
 from .oracle import generate_pytest_oracle, validate_pytest_oracle
 from .extractors.rules import extract_candidates
@@ -631,6 +632,7 @@ def cmd_curate_create(args: argparse.Namespace) -> int:
             source_url=args.source_url,
             source_excerpt=args.source_excerpt,
             retrieved_at=args.retrieved_at,
+            ecosystem=args.ecosystem,
             version_old=args.version_old,
             version_new=args.version_new,
             api_surface=args.api_surface,
@@ -693,6 +695,22 @@ def cmd_audit_case(args: argparse.Namespace) -> int:
     write_audit_report(report, out_path)
     print(json.dumps(report, indent=2, ensure_ascii=False))
     return 0 if report["pass"] else 1
+
+
+def cmd_ecosystem_gates(args: argparse.Namespace) -> int:
+    report = evaluate_adapter_gates(
+        packages_root=Path(args.packages),
+        audit_root=Path(args.audit),
+        target_ecosystem=args.target,
+        required_python_cases=args.min_python_cases,
+    )
+    text = report.to_json()
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text + "\n", encoding="utf-8")
+    print(text)
+    return 0 if report.pass_ else 1
 
 
 def main(argv: Optional[list[str]] = None) -> int:
@@ -864,6 +882,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_curate_create.add_argument("--source-url", default=None)
     p_curate_create.add_argument("--source-excerpt", default=None)
     p_curate_create.add_argument("--retrieved-at", default=None)
+    p_curate_create.add_argument("--ecosystem", default=None)
     p_curate_create.add_argument("--version-old", default=None)
     p_curate_create.add_argument("--version-new", default=None)
     p_curate_create.add_argument("--api-surface", action="append", default=[])
@@ -910,6 +929,17 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_audit_case.add_argument("--package", required=True)
     p_audit_case.add_argument("--out", required=True)
     p_audit_case.set_defaults(func=cmd_audit_case)
+
+    p_ecosystem = sub.add_parser("ecosystem", help="inspect ecosystem expansion gates")
+    ecosystem_sub = p_ecosystem.add_subparsers(dest="ecosystem_cmd", required=True)
+
+    p_ecosystem_gates = ecosystem_sub.add_parser("gates", help="check whether a new adapter can be enabled")
+    p_ecosystem_gates.add_argument("--target", required=True, help="target ecosystem, e.g. jvm")
+    p_ecosystem_gates.add_argument("--packages", default="data/packages")
+    p_ecosystem_gates.add_argument("--audit", default="data/audit")
+    p_ecosystem_gates.add_argument("--min-python-cases", type=int, default=3)
+    p_ecosystem_gates.add_argument("--out", default=None)
+    p_ecosystem_gates.set_defaults(func=cmd_ecosystem_gates)
 
     args = p.parse_args(argv)
     return args.func(args)
