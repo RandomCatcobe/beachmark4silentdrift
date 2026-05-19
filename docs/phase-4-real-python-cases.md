@@ -6,8 +6,8 @@
 
 ## TODO
 
-- 选择一个旧/新版本稳定的真实 Python 候选（Real Python Candidate）。
-- 编写人工客户端（Hand-Authored `client.py`）。
+- 选择一个旧/新版本稳定的真实 Python 候选（Real Python Candidate）。✓
+- 编写人工客户端（Hand-Authored `client.py`）。✓
 - 运行旧/新复现（Old/New Reproduction），记录观察到的差异（Observed Diff）。
 - 用明确溯源（Provenance）和审阅笔记（Review Notes）整理案例（Curate Case）。
 - 生成并验证 pytest 判定器（Pytest Oracle）。
