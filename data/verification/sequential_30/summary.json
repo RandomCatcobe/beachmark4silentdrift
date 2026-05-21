@@ -1,0 +1,43 @@
+{
+  "run_id": "run-20260521-sequential-30",
+  "requested_count": 30,
+  "verified_keep": 16,
+  "no_behavior_diff": 3,
+  "blocked": 11,
+  "verified_ids": [
+    "DOTNET-05",
+    "DOTNET-09",
+    "GO-001",
+    "GO-003",
+    "GO-006",
+    "GO-007",
+    "JS-01",
+    "JS-02",
+    "JS-03",
+    "JS-04",
+    "JS-05",
+    "JS-10",
+    "JVM-JAVA-01",
+    "JVM-JAVA-02",
+    "JVM-JAVA-03",
+    "JVM-JAVA-04"
+  ],
+  "no_behavior_diff_ids": [
+    "DOTNET-10",
+    "GO-008",
+    "JS-08"
+  ],
+  "blocked_ids": [
+    "DOTNET-01",
+    "DOTNET-02",
+    "DOTNET-03",
+    "DOTNET-04",
+    "DOTNET-06",
+    "DOTNET-07",
+    "GO-004",
+    "GO-005",
+    "GO-009",
+    "GO-010",
+    "JS-07"
+  ]
+}

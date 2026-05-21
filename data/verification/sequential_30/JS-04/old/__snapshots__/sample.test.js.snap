@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot shape 1`] = `
+Object {
+  "nested": Object {
+    "value": 1,
+  },
+  "text": "line
+break",
+}
+`;
