@@ -32,7 +32,8 @@ hidden/
 - `env.md`: runtime, package versions, install/switching method, adapter/API
   surface, environment caveats, and probe invocation shape. No expected output.
 - `metadata.json`: machine-readable registry entry. No legacy `data/` artifact
-  paths.
+  paths as canonical content; one read-only `provenance` pointer to the
+  reproduction artifact is allowed.
 - `client/`: minimal probe source and required build definition files only.
 
 ## Hidden Files
@@ -97,4 +98,6 @@ obj/
 ```
 
 `field` is a simple dotted key path. It is not JSONPath and does not support
-array indexes in schema version 1.
+array indexes in schema version 1. Schema version 1 is provisional: a case whose
+drift cannot be expressed this way may instead ship an executable
+`hidden/test_behavior.py` as the authoritative checker.

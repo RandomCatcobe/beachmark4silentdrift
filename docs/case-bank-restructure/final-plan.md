@@ -149,6 +149,7 @@ Contains:
   requirements
 - probe invocation shape, such as "accepts one string argument and emits JSON to
   stdout"
+- exact reproduction command shape (no literal expected outputs or stdout dumps)
 
 Must not contain:
 
@@ -158,8 +159,10 @@ Must not contain:
 ### `metadata.json` (public)
 
 Machine-readable registry entry used for index generation, status filtering, and
-evaluation packaging. It references oracle material by `case_id` only and must
-not contain paths into legacy `data/` reproduction artifacts.
+evaluation packaging. It references oracle material by `case_id` only. A legacy
+`data/` path must never be used as canonical case content, but a single read-only
+`provenance` pointer to the reproduction artifact the case was reduced from is
+allowed and recommended.
 
 Example:
 
@@ -182,7 +185,11 @@ Example:
   "new_version": "9.0.0",
   "source_urls": [
     "https://docs.fluentvalidation.net/en/latest/upgrading-to-9.html"
-  ]
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/dotnet_fluentvalidation_email/attempt_003/result.json",
+    "verified_at": "2026-05-21"
+  }
 }
 ```
 
@@ -227,6 +234,12 @@ Uses one shared outer schema so the checker does not need case-specific parsers:
 support array indexes in the first schema version; if array checks are needed,
 split them into named assertions.
 
+`schema_version` 1 is provisional. When a flat dotted-key assertion cannot
+express the drift (for example nested array shapes), the case may instead ship an
+executable `hidden/test_behavior.py` as the authoritative checker, reusing the
+existing `silent_drift_miner/oracle.py` machinery. `expected.json` and any
+executable checker must stay consistent.
+
 ## Submission Flow After Reproduction
 
 Commit into the case folder:
@@ -248,6 +261,8 @@ Do not commit into the case folder:
 `expected.json` is a lossy reduction of raw logs. Noise, timestamps, irrelevant
 lines, and environment chatter are discarded. `oracle.md` must document allowed
 noise because the committed assertion file only retains judgment-relevant data.
+Reduce `expected.json` from the artifact named in
+`metadata.provenance.reproduction_result`.
 
 ## Evaluation Packaging
 
@@ -361,6 +376,26 @@ policy shift needs direction.
 - `mockable-service`
 - `requires-live-credential`
 
+## Current State To Target Mapping
+
+This plan is designed on top of assets that already exist. Resolve the following
+explicitly before any migration runs, so the result is not a second parallel
+case bank:
+
+- Existing root `cases/`: the top-level `cases/` directory already holds per-case
+  `client/`, `candidate.json`, and `README.md`. Decide whether it is folded into
+  `docs/case-bank/cases/` or retired.
+- Existing oracle products `data/oracle/<case>/`: these already implement
+  `hidden/expected.json`, `hidden/test_behavior.py`, `oracle_spec.yaml`, and
+  `public/`. The new layout reuses this split rather than reinventing it.
+- Tooling: `case_bank index build` and `pack` must reuse or extend the existing
+  `silent_drift_miner/bench.py` (packaging) and `silent_drift_miner/oracle.py`
+  (oracle generation) instead of duplicating them. State the reuse-vs-replace
+  decision before Phase 2.
+- Provenance: verified reproduction evidence lives under
+  `data/verification/<case>/`; `metadata.provenance.reproduction_result` points
+  there.
+
 ## Migration Phases
 
 ### Phase 1: Lock Schema
@@ -389,18 +424,19 @@ Requirements:
 Only migrate `verified_keep` cases first. Confirm `primary_scenario` before
 creating the folder.
 
-Suggested initial mapping:
+Suggested initial mapping (canonical IDs/slugs from
+`docs/language-drift-verification-log.md`):
 
-| Old slug | Suggested `primary_scenario` |
-|---|---|
-| `py-sd-010-attrs-nan-equality` | `runtime-semantics` |
-| `js-06-zod-optional-defaults` | `validation-and-policy` |
-| `js-09-dotenv-hash-comments` | `parsing-and-ingestion` |
-| `go-002-timer-channel-capacity` | `state-and-lifecycle` |
-| `rb-rack-005-semicolon-query` | `parsing-and-ingestion` |
-| `php-07-carbon-timestamp-timezone` | `time-and-localization` |
-| `jvm-java-07-commons-csv-enum-header` | `parsing-and-ingestion` |
-| `dotnet-08-fluentvalidation-email` | `validation-and-policy` |
+| Case ID | Slug | Suggested `primary_scenario` |
+|---|---|---|
+| PY-SD-010 | `py-attrs-nan-equality` | `runtime-semantics` |
+| JS-06 | `js-zod-optional-defaults` | `validation-and-policy` |
+| JS-09 | `js-dotenv-hash-comments` | `parsing-and-ingestion` |
+| GO-002 | `go-timer-channel-capacity` | `state-and-lifecycle` |
+| RB-RACK-005 | `ruby-rack-semicolon-query` | `parsing-and-ingestion` |
+| PHP-07 | `php-carbon-timestamp-timezone` | `time-and-localization` |
+| JVM-JAVA-07 | `jvm-commons-csv-enum-header` | `parsing-and-ingestion` |
+| DOTNET-08 | `dotnet-08-fluentvalidation-email` | `validation-and-policy` |
 
 A case is migrated only when all required files exist:
 
@@ -434,7 +470,7 @@ Do not make this decision earlier.
 | `oracle.md` flat in case folder | `oracle.md` under `hidden/` |
 | `reproduction.md` with stdout summary | removed; stdout assertions live in `hidden/expected.json` |
 | no `env.md` | `env.md` owns dependency and environment instructions |
-| `metadata.json` included `data/` file paths | `metadata.json` contains no legacy artifact paths |
+| `metadata.json` included `data/` file paths | `metadata.json` carries no legacy `data/` path as canonical content; one advisory `provenance` pointer allowed |
 | no probe source | `client/` contains minimal probe source |
 | manual indexes allowed | generator CLI required before migration |
 | both `default-changed` and `default-policy-changed` existed | only `default-changed`; validator direction uses validation tags |

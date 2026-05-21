@@ -9,6 +9,12 @@ Canonical reference: `final-plan.md`.
 - Do not migrate cases until `index build` and `pack` exist.
 - Do not modify legacy idea-bank Markdown files during planning.
 - Use `origin/main` at `643b608` as the full snapshot source.
+- Verified reproduction evidence lives under `data/verification/<case>/`;
+  `metadata.provenance.reproduction_result` points there and is the reduce
+  source for `hidden/expected.json`.
+- Reconcile with existing assets before migrating: fold or retire the top-level
+  `cases/` directory, and reuse `silent_drift_miner/bench.py` and
+  `silent_drift_miner/oracle.py` rather than duplicating packaging/oracle logic.
 
 ## Phase 1: Lock Schema
 
@@ -38,16 +44,16 @@ Requirements:
 Migrate only `verified_keep` cases first. Confirm `primary_scenario` before
 creating the folder.
 
-| Old slug | Suggested `primary_scenario` |
-|---|---|
-| `py-sd-010-attrs-nan-equality` | `runtime-semantics` |
-| `js-06-zod-optional-defaults` | `validation-and-policy` |
-| `js-09-dotenv-hash-comments` | `parsing-and-ingestion` |
-| `go-002-timer-channel-capacity` | `state-and-lifecycle` |
-| `rb-rack-005-semicolon-query` | `parsing-and-ingestion` |
-| `php-07-carbon-timestamp-timezone` | `time-and-localization` |
-| `jvm-java-07-commons-csv-enum-header` | `parsing-and-ingestion` |
-| `dotnet-08-fluentvalidation-email` | `validation-and-policy` |
+| Case ID | Slug | Suggested `primary_scenario` |
+|---|---|---|
+| PY-SD-010 | `py-attrs-nan-equality` | `runtime-semantics` |
+| JS-06 | `js-zod-optional-defaults` | `validation-and-policy` |
+| JS-09 | `js-dotenv-hash-comments` | `parsing-and-ingestion` |
+| GO-002 | `go-timer-channel-capacity` | `state-and-lifecycle` |
+| RB-RACK-005 | `ruby-rack-semicolon-query` | `parsing-and-ingestion` |
+| PHP-07 | `php-carbon-timestamp-timezone` | `time-and-localization` |
+| JVM-JAVA-07 | `jvm-commons-csv-enum-header` | `parsing-and-ingestion` |
+| DOTNET-08 | `dotnet-08-fluentvalidation-email` | `validation-and-policy` |
 
 Completion criteria for each migrated case:
 
