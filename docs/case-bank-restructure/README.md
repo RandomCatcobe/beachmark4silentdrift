@@ -1,16 +1,32 @@
-# Case Bank Restructure Proposal
+# Case Bank Restructure
 
-This folder is a branch-local planning area for the next case-bank structure.
-It does not migrate or rewrite the current idea-bank Markdown files.
+This folder contains the final planning proposal for the next case-bank layout.
+It is plan-only: it does not create `docs/case-bank/`, migrate cases, implement
+CLI commands, or modify the legacy idea-bank Markdown files.
 
-## Intent
+Canonical plan:
 
-The future bank should be a case registry, not a set of language-only notes.
-Language remains a first-class tag, but the primary browsing path should support
-application scenarios such as data import, validation, order state sync, routing,
-serialization, time handling, and observability.
+- `final-plan.md`
 
-## Proposed Root
+Supporting views:
+
+- `case-folder-contract.md`: per-case file contract and client directory rules.
+- `plan.md`: migration phases and approval gates.
+- `tag-taxonomy.md`: allowed scenario, drift-pattern, failure-mode, and
+  construction tags.
+
+## Core Decisions
+
+- A case folder is self-contained and can be copied independently.
+- Minimal probe source code is committed.
+- Dependency products are not committed.
+- Oracle content is physically isolated under `hidden/`.
+- Evaluation packaging strips `hidden/` as a directory, with no file-content
+  parsing.
+- Raw logs do not enter the case bank; `hidden/expected.json` stores only the
+  lossy structured assertions needed by the checker.
+
+## Proposed Target Root
 
 ```text
 docs/case-bank/
@@ -26,22 +42,13 @@ docs/case-bank/
       <case-id-slug>/
         case.md
         evidence.md
-        reproduction.md
-        oracle.md
+        env.md
         metadata.json
+        client/
+          .gitignore
+          probe.{ext}
+          [build-def-file]
+        hidden/
+          oracle.md
+          expected.json
 ```
-
-The required three-level shape is:
-
-```text
-case-bank root -> primary scenario folder -> individual case folder
-```
-
-The case folder is the unit of ownership. Indexes are generated or maintained as
-views over metadata, not as the canonical source of case details.
-
-## Planning Files
-
-- `plan.md`: phased migration plan and approval gates.
-- `case-folder-contract.md`: required files for every individual case folder.
-- `tag-taxonomy.md`: proposed application scenario tags and cross-cutting tags.

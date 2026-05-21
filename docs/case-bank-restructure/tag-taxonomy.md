@@ -1,34 +1,54 @@
 # Tag Taxonomy
 
-The folder path gives one primary browse path. Tags provide all other views.
+Canonical reference: `final-plan.md`.
 
-## Primary Scenario Tags
+## Primary Scenario
 
-Use one as `primary_scenario` for the case folder path.
+Exactly one value becomes the case folder path segment:
 
-- `validation-and-policy`: validators, business-rule checks, allow/reject changes.
-- `parsing-and-ingestion`: CSV, query strings, dotenv, XML/JSON parsing, imports.
-- `serialization-and-binding`: serializers, config binders, object mapping, shape changes.
-- `time-and-localization`: timezones, timestamps, locale, charset, calendars, ICU.
-- `state-and-lifecycle`: async ordering, callbacks, webhook delivery, object lifecycle.
-- `routing-and-identity`: path matching, entity IDs, SKU/store IDs, identity resolution.
-- `commerce-order-flow`: order sync, refund, shipment, payment, ERP state propagation.
-- `inventory-and-fulfillment`: stock updates, warehouse routing, oversell prevention.
-- `observability-and-logging`: log format, tracing, monitoring, silent success signals.
-- `runtime-semantics`: language/runtime behavior not tied to one business domain.
+- `validation-and-policy`
+- `parsing-and-ingestion`
+- `serialization-and-binding`
+- `time-and-localization`
+- `state-and-lifecycle`
+- `routing-and-identity`
+- `commerce-order-flow`
+- `inventory-and-fulfillment`
+- `observability-and-logging`
+- `runtime-semantics`
 
-## Ecosystem And Language Tags
+## Ecosystem And Language
 
-Use both when useful:
+Recommended ecosystem values:
 
-- `ecosystems`: `python`, `js`, `go`, `ruby`, `php`, `jvm`, `dotnet`, `api-platform`
-- `languages`: `python`, `javascript`, `typescript`, `go`, `ruby`, `php`, `java`,
-  `kotlin`, `scala`, `csharp`, `fsharp`, `vb`
+- `python`
+- `js`
+- `go`
+- `ruby`
+- `php`
+- `jvm`
+- `dotnet`
+- `api-platform`
 
-For platform API cases, the ecosystem can be `api-platform` and the platform can
-be recorded separately, for example `platforms: ["taobao", "jd", "shopify"]`.
+Recommended language values:
 
-## API Surface Tags
+- `python`
+- `javascript`
+- `typescript`
+- `go`
+- `ruby`
+- `php`
+- `java`
+- `kotlin`
+- `scala`
+- `csharp`
+- `fsharp`
+- `vb`
+
+For platform API cases, use `api-platform` as an ecosystem and record platform
+names separately when the schema adds a `platforms` field.
+
+## API Surface
 
 - `library-api`
 - `runtime-api`
@@ -46,10 +66,9 @@ be recorded separately, for example `platforms: ["taobao", "jd", "shopify"]`.
 - `router`
 - `logger`
 
-## Drift Pattern Tags
+## Drift Pattern
 
 - `default-changed`
-- `default-policy-changed`
 - `field-semantics-changed`
 - `field-removed-or-masked`
 - `type-or-shape-changed`
@@ -63,7 +82,9 @@ be recorded separately, for example `platforms: ["taobao", "jd", "shopify"]`.
 - `out-of-order-event`
 - `old-state-overwrite`
 
-## Failure Mode Tags
+Do not use `default-policy-changed`; it is merged into `default-changed`.
+
+## Failure Mode
 
 - `silent-value-change`
 - `silent-acceptance-change`
@@ -80,27 +101,11 @@ be recorded separately, for example `platforms: ["taobao", "jd", "shopify"]`.
 - `wrong-fulfillment`
 - `wrong-refund-or-payment-state`
 
-## Benchmark Construction Tags
+## Determinism / Benchmark Construction
 
-- `local-deterministic`: no network/service needed during reproduction.
-- `package-cache`: needs locally installed package versions.
-- `runtime-pair`: needs old/new runtime versions.
-- `service-contract`: source is a platform or SaaS API contract.
-- `mockable-service`: can be reproduced with mocks/history capture.
-- `requires-live-credential`: not suitable until reduced or mocked.
-
-## Example Classification
-
-```json
-{
-  "case_id": "PHP-07",
-  "primary_scenario": "time-and-localization",
-  "application_scenarios": ["time-and-localization", "runtime-semantics"],
-  "ecosystems": ["php"],
-  "languages": ["php"],
-  "api_surfaces": ["library-api", "runtime-api"],
-  "drift_patterns": ["default-changed"],
-  "failure_modes": ["wrong-timezone", "silent-value-change"],
-  "benchmark_construction": ["local-deterministic", "package-cache"]
-}
-```
+- `local-deterministic`
+- `package-cache`
+- `runtime-pair`
+- `service-contract`
+- `mockable-service`
+- `requires-live-credential`

@@ -1,78 +1,70 @@
-# Restructure Plan
+# Migration Plan
+
+Canonical reference: `final-plan.md`.
 
 ## Guardrails
 
-- Keep existing idea-bank Markdown files untouched until the new structure is
-  approved.
-- Do not run new reproductions during the restructure.
-- Treat the already pushed branch `codex/safety-pre-bank-restructure` as the
-  rollback point.
-- Build the new structure under a separate root, then migrate cases one by one.
+- This branch contains only the restructure proposal.
+- Do not create `docs/case-bank/` until the schema is approved.
+- Do not migrate cases until `index build` and `pack` exist.
+- Do not modify legacy idea-bank Markdown files during planning.
+- Use `origin/main` at `643b608` as the full snapshot source.
 
-## Phase 1: Approve Shape
+## Phase 1: Lock Schema
 
-Deliverables:
+- finalize `metadata.json` field names and types
+- write JSON Schema validation
+- allow additive fields later, but no renames or removals after lock
 
-- proposed root: `docs/case-bank/`
-- primary path: `cases/<primary-scenario>/<case-id-slug>/`
-- required case files
-- tag taxonomy
-- metadata contract
+## Phase 2: Implement Generators And Packaging
 
-Approval gate:
+Required commands:
 
-- user confirms the path shape and tag taxonomy.
+```bash
+python -m case_bank index build --out docs/case-bank/indexes/
+python -m case_bank pack --src docs/case-bank/cases/ --out eval_package/
+```
 
-## Phase 2: Create Empty Skeleton
+Requirements:
 
-Deliverables:
+- `index build` handles an empty `cases/` directory
+- `pack` copies cases and strips `hidden/`
+- package validation proves there are no `hidden/`, `oracle.md`, or
+  `expected.json` files in the eval package
+- every packaged case still contains `client/`
 
-- `docs/case-bank/README.md`
-- `docs/case-bank/indexes/`
-- `docs/case-bank/cases/`
-- one empty template case folder under `_template/`
+## Phase 3: Migrate Verified Cases
 
-No existing case migration in this phase.
+Migrate only `verified_keep` cases first. Confirm `primary_scenario` before
+creating the folder.
 
-## Phase 3: Migrate Verified Cases First
+| Old slug | Suggested `primary_scenario` |
+|---|---|
+| `py-sd-010-attrs-nan-equality` | `runtime-semantics` |
+| `js-06-zod-optional-defaults` | `validation-and-policy` |
+| `js-09-dotenv-hash-comments` | `parsing-and-ingestion` |
+| `go-002-timer-channel-capacity` | `state-and-lifecycle` |
+| `rb-rack-005-semicolon-query` | `parsing-and-ingestion` |
+| `php-07-carbon-timestamp-timezone` | `time-and-localization` |
+| `jvm-java-07-commons-csv-enum-header` | `parsing-and-ingestion` |
+| `dotnet-08-fluentvalidation-email` | `validation-and-policy` |
 
-Initial migration set:
+Completion criteria for each migrated case:
 
-- `py-sd-010-attrs-nan-equality`
-- `js-06-zod-optional-defaults`
-- `js-09-dotenv-hash-comments`
-- `go-002-timer-channel-capacity`
-- `rb-rack-005-semicolon-query`
-- `php-07-carbon-timestamp-timezone`
-- `jvm-java-07-commons-csv-enum-header`
-- `dotnet-08-fluentvalidation-email`
+- `case.md`
+- `evidence.md`
+- `env.md`
+- `metadata.json`
+- `client/` with minimal probe
+- `hidden/oracle.md`
+- `hidden/expected.json`
 
-Each migrated case must include:
+## Phase 4: Maintain Indexes
 
-- complete `metadata.json`
-- evidence URLs
-- reproduction result path
-- oracle
-- primary scenario and secondary scenario tags
+- run `index build` after every case addition or metadata update
+- add the check to pre-commit or CI
 
-## Phase 4: Generate Or Maintain Index Views
+## Phase 5: Decide Legacy Idea-Bank Fate
 
-Indexes should be views over `metadata.json`, not duplicate canonical content:
-
-- by scenario
-- by language/ecosystem
-- by drift pattern
-- by API surface
-- by status
-
-Manual indexes are acceptable first. A generator can come later.
-
-## Phase 5: Decide Legacy Markdown Fate
-
-Options:
-
-- keep current idea banks as legacy snapshots
-- replace them with links into `docs/case-bank/`
-- move them under `docs/legacy/`
-
-This decision should wait until the first migrated cases look right.
+After the first five migrated cases look right, decide whether to keep legacy
+Markdown as snapshots, redirect them, or move them under `docs/legacy/`.
