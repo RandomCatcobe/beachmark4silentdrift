@@ -22,6 +22,15 @@ Independent language idea bank for local, deterministic JavaScript/Node silent-d
 | JS-09 | dotenv | `.env` parser, `dotenv.parse` / `config` | dotenv 14.x -> 15.x | https://github.com/motdotla/dotenv#comments | Inline `#` starts a comment unless the value is quoted, so unquoted secret values containing `#` are truncated. | Parsing succeeds and env vars are set; only parsed value changes. | Parse `SECRET=abc#def`; compare preserved vs truncated value. | High |
 | JS-10 | Handlebars | Template property/method resolution | Handlebars 4.5.3 -> 4.6.0+ | https://handlebarsjs.com/api-reference/runtime-options.html#options-to-control-prototype-access | Prototype property/method access is forbidden by default, changing templates that read class or built-in prototype members. | Template rendering often completes with blank output or warning rather than a compile-time break. | Render `start{{aString.trim}}end` with `{ aString: "  abc  " }`; compare output. | High |
 
+## RUN-20260521-001: Web/API Line Triage
+
+- Source draft: `C:/Users/canglan/Downloads/javascript.md`.
+- Full artifact: [js-web-api-line-triage-20260521.md](js-web-api-line-triage-20260521.md).
+- Scope: 26 JavaScript/web API drift leads from draft lines 11-299.
+- Result: 6 promotion-ready leads, 8 boundary leads, 2 historical controls, 4 low-confidence leads, and 6 excludes.
+- Promotion queue: A1 Gemini alias grounding behavior, A3 Office.js HTML attribute omission, A4 Twitter/X `widgets.js` fallback change, A5 Office.js dialog behavior, B1 Mapbox GL JS language config no-op, and B2 Apollo `useLazyQuery` cache/network semantics.
+- Important correction: B9 Google Maps JavaScript API Geocoder default-region release note date is 2022-11-17.
+
 ## Verification Log
 
 | Date | ID | Status | Evidence |
