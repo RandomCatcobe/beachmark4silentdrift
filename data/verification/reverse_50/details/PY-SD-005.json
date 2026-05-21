@@ -1,0 +1,34 @@
+{
+  "case_id": "PY-SD-005",
+  "python_runtime": "C:\\ProgramData\\anaconda3\\python.exe",
+  "old_packages": [
+    "polars==0.19.19"
+  ],
+  "new_packages": [
+    "polars==0.20.0"
+  ],
+  "old_setup": {},
+  "new_setup": {},
+  "old": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"rows\": [{\"k\": null, \"lv\": \"left_null\", \"rv\": \"right_null\"}, {\"k\": 1, \"lv\": \"left_one\", \"rv\": \"right_one\"}], \"shape\": [2, 3]}\n",
+    "stderr": "",
+    "elapsed_sec": 1.673,
+    "command": [
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\_venvs\\PY-SD-005-old\\Scripts\\python.exe",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\PY-SD-005_probe.py"
+    ]
+  },
+  "new": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"rows\": [{\"k\": 1, \"lv\": \"left_one\", \"rv\": \"right_one\"}], \"shape\": [1, 3]}\n",
+    "stderr": "",
+    "elapsed_sec": 1.624,
+    "command": [
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\_venvs\\PY-SD-005-new\\Scripts\\python.exe",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\PY-SD-005_probe.py"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "PY-SD-008",
+  "python_runtime": "C:\\ProgramData\\anaconda3\\python.exe",
+  "old_packages": [
+    "SQLAlchemy==1.4.54"
+  ],
+  "new_packages": [
+    "SQLAlchemy==2.0.0"
+  ],
+  "old_setup": {},
+  "new_setup": {},
+  "old": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"count_after_reopen\": 1}\n",
+    "stderr": "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\PY-SD-008_probe.py:8: RemovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to \"sqlalchemy<2.0\". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)\n  conn.execute(text(\"create table t (x int)\"))\n",
+    "elapsed_sec": 1.797,
+    "command": [
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\_venvs\\PY-SD-008-old\\Scripts\\python.exe",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\PY-SD-008_probe.py"
+    ]
+  },
+  "new": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"count_after_reopen\": 0}\n",
+    "stderr": "",
+    "elapsed_sec": 1.997,
+    "command": [
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\_venvs\\PY-SD-008-new\\Scripts\\python.exe",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\PY-SD-008_probe.py"
+    ]
+  }
+}

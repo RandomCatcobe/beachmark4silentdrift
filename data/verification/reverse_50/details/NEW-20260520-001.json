@@ -1,0 +1,8 @@
+{
+  "case_id": "NEW-20260520-001",
+  "source": "https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/ecpay/order/order-sync",
+  "http_status": 200,
+  "final_url": "https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/ecpay/order/order-sync",
+  "content_type": "text/html; charset=UTF-8",
+  "sample_bytes": 512
+}

@@ -1,0 +1,8 @@
+{
+  "case_id": "NEW-20260520-002",
+  "source": "https://developer-docs.amazon.com/sp-api/docs/submit-a-feed",
+  "http_status": 200,
+  "final_url": "https://developer-docs.amazon.com/sp-api/docs/submit-a-feed",
+  "content_type": "text/html; charset=utf-8",
+  "sample_bytes": 512
+}

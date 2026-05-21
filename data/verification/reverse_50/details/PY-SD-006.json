@@ -1,0 +1,6 @@
+{
+  "case_id": "PY-SD-006",
+  "status": "blocked_dependency_or_runtime",
+  "blocked_step": "dependency_acquired",
+  "note": "Heavy or compiler/runtime-sensitive Python pair left at first blocked step in this batch."
+}

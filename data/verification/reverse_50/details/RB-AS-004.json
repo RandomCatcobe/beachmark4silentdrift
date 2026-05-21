@@ -1,0 +1,6 @@
+{
+  "case_id": "RB-AS-004",
+  "status": "blocked_dependency_or_runtime",
+  "blocked_step": "dependency_acquired",
+  "note": "Gem pair not cached locally or requires heavier Rails/Sidekiq/Nokogiri setup; deferred at dependency acquisition."
+}

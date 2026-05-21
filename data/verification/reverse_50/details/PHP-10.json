@@ -1,0 +1,6 @@
+{
+  "case_id": "PHP-10",
+  "status": "blocked_dependency_or_runtime",
+  "blocked_step": "dependency_acquired",
+  "note": "Package pair not cached locally; deferred instead of broad Composer dependency fetch in this batch."
+}

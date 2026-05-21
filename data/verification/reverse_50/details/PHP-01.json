@@ -1,0 +1,6 @@
+{
+  "case_id": "PHP-01",
+  "status": "blocked_dependency_or_runtime",
+  "blocked_step": "dependency_acquired",
+  "note": "Host PHP is 8.2 only; no PHP 7.4/8.0 pair is installed for core-language comparison."
+}

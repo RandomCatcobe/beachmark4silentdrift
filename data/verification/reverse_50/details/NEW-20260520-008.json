@@ -1,0 +1,5 @@
+{
+  "case_id": "NEW-20260520-008",
+  "source": "https://developer.alibaba.com/docs/doc.htm?articleId=120175&docType=1&source=search&treeId=796",
+  "error": "URLError: <urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>"
+}

@@ -1,0 +1,5 @@
+{
+  "case_id": "RB-FAR-007",
+  "reason": "Existing local check rejected this lead: Faraday 1.0.0 and 1.0.1 both returned q=a+b.",
+  "provenance": "docs/ruby-drift-idea-bank.md"
+}

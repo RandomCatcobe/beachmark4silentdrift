@@ -1,0 +1,5 @@
+{
+  "case_id": "SEED-20260520-004",
+  "source": "https://opendoc.jd.com/isp_all/api/interfacelist/014-commonnotifyorderstatus.html",
+  "error": "URLError: <urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>"
+}

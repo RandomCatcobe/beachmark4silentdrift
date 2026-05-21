@@ -1,0 +1,31 @@
+{
+  "case_id": "PHP-08",
+  "composer_setup": {
+    "copied_from": "data/verification/composer/carbon3",
+    "patched": "vendor/composer/autoload_real.php platform_check include removed"
+  },
+  "old": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"forward\":0,\"reverse\":0,\"forward_type\":\"integer\",\"reverse_type\":\"integer\"}\n",
+    "stderr": "",
+    "elapsed_sec": 0.381,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\shims\\php.EXE",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\php_carbon_diff_probe.php",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\composer\\carbon2\\vendor\\autoload.php"
+    ]
+  },
+  "new": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"forward\":0.5,\"reverse\":-0.5,\"forward_type\":\"double\",\"reverse_type\":\"double\"}\n",
+    "stderr": "",
+    "elapsed_sec": 0.352,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\shims\\php.EXE",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\php_carbon_diff_probe.php",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\composer\\carbon3-no-platform-check\\vendor\\autoload.php"
+    ]
+  }
+}

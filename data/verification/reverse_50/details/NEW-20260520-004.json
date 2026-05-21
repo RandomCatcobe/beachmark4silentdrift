@@ -1,0 +1,8 @@
+{
+  "case_id": "NEW-20260520-004",
+  "source": "https://developer.adobe.com/commerce/webapi/rest/use-rest/bulk-endpoints/",
+  "http_status": 200,
+  "final_url": "https://developer.adobe.com/commerce/webapi/rest/use-rest/bulk-endpoints/",
+  "content_type": "text/html",
+  "sample_bytes": 512
+}

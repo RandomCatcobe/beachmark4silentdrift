@@ -1,0 +1,61 @@
+{
+  "case_id": "RB-RSP-009",
+  "old_install": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "Successfully installed rspec-expectations-3.10.0\n1 gem installed\n",
+    "stderr": "",
+    "elapsed_sec": 4.993,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\apps\\ruby\\current\\bin\\gem.CMD",
+      "install",
+      "rspec-expectations",
+      "-v",
+      "3.10.0",
+      "--install-dir",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\gems\\rspec-expectations-3.10.0",
+      "--no-document"
+    ]
+  },
+  "new_install": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "Successfully installed rspec-expectations-3.11.0\n1 gem installed\n",
+    "stderr": "",
+    "elapsed_sec": 3.91,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\apps\\ruby\\current\\bin\\gem.CMD",
+      "install",
+      "rspec-expectations",
+      "-v",
+      "3.11.0",
+      "--install-dir",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\gems\\rspec-expectations-3.11.0",
+      "--no-document"
+    ]
+  },
+  "old": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "nil\n",
+    "stderr": "",
+    "elapsed_sec": 0.642,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\apps\\ruby\\current\\bin\\ruby.EXE",
+      "-e",
+      "require 'rspec/expectations'; include RSpec::Matchers; p aggregate_failures { expect(1).to eq(1) }"
+    ]
+  },
+  "new": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "true\n",
+    "stderr": "",
+    "elapsed_sec": 0.636,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\apps\\ruby\\current\\bin\\ruby.EXE",
+      "-e",
+      "require 'rspec/expectations'; include RSpec::Matchers; p aggregate_failures { expect(1).to eq(1) }"
+    ]
+  }
+}

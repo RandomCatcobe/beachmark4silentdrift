@@ -1,0 +1,8 @@
+{
+  "case_id": "NEW-20260520-006",
+  "source": "https://global-selling.mercadolibre.com/devsite/api-docs/receive-notifications",
+  "http_status": 200,
+  "final_url": "https://global-selling.mercadolibre.com/devsite/api-docs/receive-notifications",
+  "content_type": "text/html; charset=utf-8",
+  "sample_bytes": 512
+}

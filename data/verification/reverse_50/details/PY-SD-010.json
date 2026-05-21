@@ -1,0 +1,5 @@
+{
+  "case_id": "PY-SD-010",
+  "reason": "Existing Python reproduction pipeline verified this case.",
+  "provenance": "data/verification/python_attrs_nan_equality/attempt_003/result.json"
+}

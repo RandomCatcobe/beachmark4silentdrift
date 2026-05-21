@@ -1,0 +1,5 @@
+{
+  "case_id": "NEW-20260520-007",
+  "source": "https://open.fliggy.com/docs/doc.htm?articleId=10687&docType=2&treeId=568",
+  "error": "URLError: <urlopen error [WinError 10054] 远程主机强迫关闭了一个现有的连接。>"
+}

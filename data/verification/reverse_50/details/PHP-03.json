@@ -1,0 +1,5 @@
+{
+  "case_id": "PHP-03",
+  "reason": "Semantic duplicate of already verified PHP-12 htmlspecialchars default-flags case.",
+  "provenance": "data/verification/php_htmlspecialchars_default_flags/attempt_001/result.json"
+}

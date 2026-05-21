@@ -1,0 +1,6 @@
+{
+  "case_id": "PHP-05",
+  "status": "blocked_dependency_or_runtime",
+  "blocked_step": "dependency_acquired",
+  "note": "Laravel app-level fixture is too large for this reverse batch; needs a minimized in-process fixture."
+}

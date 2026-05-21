@@ -1,0 +1,31 @@
+{
+  "case_id": "RB-RACK-006",
+  "old": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "[\"Content-Type\", \"X-Test\"]\n",
+    "stderr": "",
+    "elapsed_sec": 0.653,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\apps\\ruby\\current\\bin\\ruby.EXE",
+      "-I",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\gems\\rack229\\gems\\rack-2.2.9\\lib",
+      "-e",
+      "require 'rack'; h={'Content-Type'=>'text/plain','X-Test'=>'1'}; r=Rack::Response.new([],200,h); p r.headers.keys"
+    ]
+  },
+  "new": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "[\"content-type\", \"x-test\"]\n",
+    "stderr": "",
+    "elapsed_sec": 0.726,
+    "command": [
+      "C:\\Users\\canglan\\scoop\\apps\\ruby\\current\\bin\\ruby.EXE",
+      "-I",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\gems\\rack310\\gems\\rack-3.1.0\\lib",
+      "-e",
+      "require 'rack'; h={'Content-Type'=>'text/plain','X-Test'=>'1'}; r=Rack::Response.new([],200,h); p r.headers.keys"
+    ]
+  }
+}

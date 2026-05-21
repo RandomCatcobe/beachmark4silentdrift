@@ -1,0 +1,6 @@
+{
+  "case_id": "JVM-JAVA-10",
+  "status": "blocked_dependency_or_runtime",
+  "blocked_step": "dependency_acquired",
+  "note": "Host has JDK 17 only; JDK 18+ comparison runtime is not installed."
+}

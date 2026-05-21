@@ -1,0 +1,34 @@
+{
+  "case_id": "PY-SD-007",
+  "python_runtime": "C:\\ProgramData\\anaconda3\\python.exe",
+  "old_packages": [
+    "pydantic==1.10.15"
+  ],
+  "new_packages": [
+    "pydantic==2.0.3"
+  ],
+  "old_setup": {},
+  "new_setup": {},
+  "old": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"x\": {\"a\": 1, \"b\": 2}}\n",
+    "stderr": "",
+    "elapsed_sec": 0.638,
+    "command": [
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\_venvs\\PY-SD-007-old\\Scripts\\python.exe",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\PY-SD-007_probe.py"
+    ]
+  },
+  "new": {
+    "ok": true,
+    "returncode": 0,
+    "stdout": "{\"x\": {\"a\": 1}}\n",
+    "stderr": "",
+    "elapsed_sec": 1.209,
+    "command": [
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\_venvs\\PY-SD-007-new\\Scripts\\python.exe",
+      "D:\\myproject\\bench2\\beachmark4silentdrift\\data\\verification\\reverse_50\\PY-SD-007_probe.py"
+    ]
+  }
+}

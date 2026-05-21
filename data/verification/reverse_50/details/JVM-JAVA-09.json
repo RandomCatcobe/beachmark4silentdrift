@@ -1,0 +1,6 @@
+{
+  "case_id": "JVM-JAVA-09",
+  "status": "blocked_dependency_or_runtime",
+  "blocked_step": "dependency_acquired",
+  "note": "Host has Maven 3.9.16 only; Maven 3.8.x comparison runtime is not installed."
+}
