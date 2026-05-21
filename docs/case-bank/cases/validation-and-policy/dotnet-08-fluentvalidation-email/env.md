@@ -5,4 +5,4 @@
 - Version switching: set DOTNET_ADAPTER_PACKAGE_PATH to the selected NuGet package root.
 - Adapter/API surface: library-api, validator.
 - Probe shape: run the console project and parse one JSON object from stdout.
-- Command shape: DOTNET_ADAPTER_PACKAGE_PATH=<old-or-new-package-root> dotnet run --project client/probe.csproj --.
+- Command shape: DOTNET_ADAPTER_PACKAGE_PATH=<old-or-new-package-root> dotnet run --project client/probe.csproj.

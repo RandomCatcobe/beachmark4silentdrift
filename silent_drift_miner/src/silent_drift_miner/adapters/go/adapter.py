@@ -247,8 +247,13 @@ def _run_one_side(
     build_log_path.write_text(_build_log(environment), encoding="utf-8")
     dockerfile_path.write_text(_dockerfile(spec, environment), encoding="utf-8")
     command = _run_command_line(spec, environment)
-    run_log_path.write_text("command: " + " ".join(command) + "\n", encoding="utf-8")
-    run = _run_command(command, timeout_s, environment)
+    cwd = _run_working_dir(spec)
+    cache_dir = out_dir / "gocache"
+    run_log_path.write_text(
+        f"cwd: {cwd if cwd else Path.cwd()}\ncommand: " + " ".join(command) + "\n",
+        encoding="utf-8",
+    )
+    run = _run_command(command, timeout_s, environment, cwd, cache_dir)
     stdout_path.write_text(run["stdout"], encoding="utf-8")
     stderr_path.write_text(run["stderr"], encoding="utf-8")
     exit_code_path.write_text(str(run["exit_code"]) + "\n", encoding="utf-8")
@@ -266,16 +271,31 @@ def _run_one_side(
 
 
 def _run_command_line(spec: GoReproductionSpec, environment: GoEnvironmentDefinition) -> list[str]:
+    client_path = Path(spec.client_file)
+    run_target = "." if client_path.is_dir() else spec.client_file
     return [
         environment.go_executable,
         "run",
         *environment.go_args,
-        spec.client_file,
+        run_target,
         *environment.program_args,
     ]
 
 
-def _run_command(command: list[str], timeout_s: int, environment: GoEnvironmentDefinition) -> dict[str, Any]:
+def _run_working_dir(spec: GoReproductionSpec) -> Path | None:
+    client_path = Path(spec.client_file)
+    if client_path.is_dir():
+        return client_path
+    return None
+
+
+def _run_command(
+    command: list[str],
+    timeout_s: int,
+    environment: GoEnvironmentDefinition,
+    cwd: Path | None,
+    cache_dir: Path,
+) -> dict[str, Any]:
     env = os.environ.copy()
     env.update(environment.env)
     package_paths = os.pathsep.join(_package_paths(environment))
@@ -283,6 +303,8 @@ def _run_command(command: list[str], timeout_s: int, environment: GoEnvironmentD
     env["GO_ADAPTER_PACKAGE_PATHS"] = package_paths
     env["GO_ADAPTER_LIBRARY"] = environment.library
     env["GO_ADAPTER_VERSION"] = environment.version
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    env.setdefault("GOCACHE", str(cache_dir))
     if environment.no_network:
         env.setdefault("GOPROXY", "off")
         env.setdefault("GOSUMDB", "off")
@@ -293,6 +315,7 @@ def _run_command(command: list[str], timeout_s: int, environment: GoEnvironmentD
             text=True,
             timeout=timeout_s,
             env=env,
+            cwd=cwd,
             check=False,
         )
         return {"stdout": completed.stdout, "stderr": completed.stderr, "exit_code": completed.returncode}

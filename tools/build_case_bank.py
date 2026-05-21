@@ -286,7 +286,7 @@ CASES = [
             "Version switching: compile and run with the selected commons-csv jar or Maven dependency version.",
             "Adapter/API surface: library-api, parser.",
             "Probe shape: run the Java probe and parse one JSON object from stdout.",
-            "Command shape: mvn -Dcommons.csv.version=<old-or-new> -f client/pom.xml exec:java.",
+            "Command shape: mvn -Dcommons.csv.version=<old-or-new> -f client/pom.xml compile exec:java.",
         ],
         "client": ("data/verification/jvm_commons_csv_enum_header/DriftClient.java", "probe/src/main/java/probe/Probe.java"),
         "jvm": True,
@@ -325,7 +325,7 @@ CASES = [
             "Version switching: set DOTNET_ADAPTER_PACKAGE_PATH to the selected NuGet package root.",
             "Adapter/API surface: library-api, validator.",
             "Probe shape: run the console project and parse one JSON object from stdout.",
-            "Command shape: DOTNET_ADAPTER_PACKAGE_PATH=<old-or-new-package-root> dotnet run --project client/probe.csproj --.",
+            "Command shape: DOTNET_ADAPTER_PACKAGE_PATH=<old-or-new-package-root> dotnet run --project client/probe.csproj.",
         ],
         "client": ("data/verification/dotnet_fluentvalidation_email/client/Program.cs", "Program.cs"),
         "extra_client": [("data/verification/dotnet_fluentvalidation_email/client/DotnetFluentValidationEmail.csproj", "probe.csproj")],
@@ -562,6 +562,19 @@ def jvm_pom() -> str:
       <version>${commons.csv.version}</version>
     </dependency>
   </dependencies>
+  <build>
+    <sourceDirectory>probe/src/main/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <mainClass>probe.Probe</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
 """
 

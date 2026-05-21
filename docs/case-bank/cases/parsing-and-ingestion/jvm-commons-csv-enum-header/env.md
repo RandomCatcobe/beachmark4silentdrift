@@ -5,4 +5,4 @@
 - Version switching: compile and run with the selected commons-csv jar or Maven dependency version.
 - Adapter/API surface: library-api, parser.
 - Probe shape: run the Java probe and parse one JSON object from stdout.
-- Command shape: mvn -Dcommons.csv.version=<old-or-new> -f client/pom.xml exec:java.
+- Command shape: mvn -Dcommons.csv.version=<old-or-new> -f client/pom.xml compile exec:java.

@@ -62,7 +62,20 @@
     "application_scenarios": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "commerce-order-flow",
+          "identity-and-contact-data",
+          "inventory-and-fulfillment",
+          "observability-and-logging",
+          "parsing-and-ingestion",
+          "routing-and-identity",
+          "runtime-semantics",
+          "serialization-and-binding",
+          "state-and-lifecycle",
+          "time-and-localization",
+          "validation-and-policy"
+        ]
       }
     },
     "ecosystems": {

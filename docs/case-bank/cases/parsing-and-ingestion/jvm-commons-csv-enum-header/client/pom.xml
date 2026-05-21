@@ -17,4 +17,17 @@
       <version>${commons.csv.version}</version>
     </dependency>
   </dependencies>
+  <build>
+    <sourceDirectory>probe/src/main/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <mainClass>probe.Probe</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

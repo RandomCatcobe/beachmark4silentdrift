@@ -27,6 +27,10 @@ PRIMARY_SCENARIOS = {
     "runtime-semantics",
 }
 
+APPLICATION_SCENARIOS = PRIMARY_SCENARIOS | {
+    "identity-and-contact-data",
+}
+
 DRIFT_PATTERNS = {
     "default-changed",
     "field-semantics-changed",
@@ -111,7 +115,12 @@ def validate_metadata(data: dict[str, Any], path: Path | None = None) -> None:
     if data["primary_scenario"] not in data["application_scenarios"]:
         raise ValueError(f"{label}: primary_scenario must appear in application_scenarios")
 
-    _validate_string_list(label, "application_scenarios", data["application_scenarios"])
+    _validate_values(
+        label,
+        "application_scenarios",
+        data["application_scenarios"],
+        APPLICATION_SCENARIOS,
+    )
     _validate_values(label, "drift_patterns", data["drift_patterns"], DRIFT_PATTERNS)
     _validate_values(label, "failure_modes", data["failure_modes"], FAILURE_MODES)
     if data["determinism"] not in DETERMINISM_VALUES:
@@ -131,7 +140,10 @@ def metadata_json_schema() -> dict[str, Any]:
     }
     properties["status"]["enum"] = sorted(STATUS_VALUES)
     properties["primary_scenario"]["enum"] = sorted(PRIMARY_SCENARIOS)
-    properties["application_scenarios"]["items"] = {"type": "string"}
+    properties["application_scenarios"]["items"] = {
+        "type": "string",
+        "enum": sorted(APPLICATION_SCENARIOS),
+    }
     properties["drift_patterns"]["items"] = {"type": "string", "enum": sorted(DRIFT_PATTERNS)}
     properties["failure_modes"]["items"] = {"type": "string", "enum": sorted(FAILURE_MODES)}
     properties["determinism"]["enum"] = sorted(DETERMINISM_VALUES)

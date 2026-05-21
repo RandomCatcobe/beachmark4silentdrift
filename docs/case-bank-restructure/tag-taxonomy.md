@@ -48,6 +48,13 @@ Recommended language values:
 For platform API cases, use `api-platform` as an ecosystem and record platform
 names separately when the schema adds a `platforms` field.
 
+## Application Scenario Extensions
+
+Application scenarios may include primary scenarios plus domain-oriented
+secondary tags:
+
+- `identity-and-contact-data`
+
 ## API Surface
 
 - `library-api`

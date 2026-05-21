@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 from case_bank.__main__ import main as case_bank_main
@@ -16,6 +19,24 @@ def test_case_bank_index_build_succeeds_on_empty_cases_dir(tmp_path: Path) -> No
 
     assert len(written) == 5
     assert (indexes / "by-status.md").read_text(encoding="utf-8").startswith("# Cases By Status")
+
+
+def test_case_bank_module_entrypoint_runs_from_repo_root() -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+
+    completed = subprocess.run(
+        [sys.executable, "-B", "-m", "case_bank", "--help"],
+        cwd=repo_root,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert "{index,pack}" in completed.stdout
 
 
 def test_case_bank_pack_strips_hidden_files(tmp_path: Path) -> None:
@@ -65,3 +86,19 @@ def test_committed_case_bank_has_initial_verified_cases() -> None:
         expected = json.loads((case_dir / "hidden" / "expected.json").read_text(encoding="utf-8"))
         assert expected["case_id"] == case["case_id"]
         assert expected["assertions"]
+
+
+def test_committed_case_bank_public_command_shapes_are_runnable() -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    jvm_case = repo_root / "docs" / "case-bank" / "cases" / "parsing-and-ingestion" / "jvm-commons-csv-enum-header"
+    dotnet_case = repo_root / "docs" / "case-bank" / "cases" / "validation-and-policy" / "dotnet-08-fluentvalidation-email"
+
+    pom = (jvm_case / "client" / "pom.xml").read_text(encoding="utf-8")
+    jvm_env = (jvm_case / "env.md").read_text(encoding="utf-8")
+    dotnet_env = (dotnet_case / "env.md").read_text(encoding="utf-8")
+
+    assert "<sourceDirectory>probe/src/main/java</sourceDirectory>" in pom
+    assert "<mainClass>probe.Probe</mainClass>" in pom
+    assert "compile exec:java" in jvm_env
+    assert "dotnet run --project client/probe.csproj." in dotnet_env
+    assert "--." not in dotnet_env
