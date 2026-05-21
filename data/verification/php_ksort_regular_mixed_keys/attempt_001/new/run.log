@@ -1,0 +1,1 @@
+command: C:\Users\canglan\scoop\apps\php82\current\php.exe -d include_path=data\verification\php_core\php82 data\verification\php_ksort_regular_mixed_keys\client.php

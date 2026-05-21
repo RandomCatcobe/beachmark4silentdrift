@@ -654,6 +654,8 @@ def cmd_reproduce_plan(args: argparse.Namespace) -> int:
             "old_program_args": args.old_program_arg,
             "new_program_args": args.new_program_arg,
             "php_executable": args.php_executable,
+            "old_php_executable": args.old_php_executable,
+            "new_php_executable": args.new_php_executable,
         }
         try:
             PhpAdapter().plan(
@@ -1362,6 +1364,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_reproduce_plan.add_argument("--new-php-arg", action="append", default=[],
                                   help="PHP new-only argument")
     p_reproduce_plan.add_argument("--php-executable", default="php")
+    p_reproduce_plan.add_argument("--old-php-executable", default=None)
+    p_reproduce_plan.add_argument("--new-php-executable", default=None)
     p_reproduce_plan.add_argument("--load-path", action="append", default=[],
                                   help="Ruby shared load path added to RUBYLIB/-I")
     p_reproduce_plan.add_argument("--old-load-path", action="append", default=[],

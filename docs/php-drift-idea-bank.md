@@ -32,3 +32,30 @@ Independent language idea bank for local, deterministic PHP silent-drift candida
 - Old behavior: with PHP default timezone set to `America/New_York`, `Carbon::createFromTimestamp(0)` outputs timezone `America/New_York` and `1969-12-31T19:00:00-05:00`.
 - New behavior: same call outputs timezone `+00:00` and `1970-01-01T00:00:00+00:00`.
 - Verdict: keep. True silent drift, both sides exit 0.
+
+### 2026-05-21: PHP-11 call_user_func_array named arguments
+
+- Pipeline result: `data\verification\php_call_user_func_array_named_args\attempt_001\result.json`
+- Runtime pair: PHP 7.4.33 and PHP 8.0.30.
+- Source checked against PHP 8 named-parameters migration notes and `call_user_func_array` documentation.
+- Old behavior: string keys in the argument array are ignored; values bind by insertion order, producing `{"first":"B","second":"A"}`.
+- New behavior: the same string keys bind as named parameters, producing `{"first":"A","second":"B"}`.
+- Verdict: keep. True silent drift, both sides exit 0.
+
+### 2026-05-21: PHP-12 htmlspecialchars default flags
+
+- Pipeline result: `data\verification\php_htmlspecialchars_default_flags\attempt_001\result.json`
+- Runtime pair: PHP 8.0.30 and PHP 8.1.34.
+- Source checked against PHP 8.1 migration notes and PHP.Watch.
+- Old behavior: `htmlspecialchars("Tom's <tag>")` outputs `Tom's &lt;tag&gt;`.
+- New behavior: the same call outputs `Tom&#039;s &lt;tag&gt;`.
+- Verdict: keep. True silent drift, both sides exit 0.
+
+### 2026-05-21: PHP-13 ksort SORT_REGULAR mixed keys
+
+- Pipeline result: `data\verification\php_ksort_regular_mixed_keys\attempt_001\result.json`
+- Runtime pair: PHP 8.1.34 and PHP 8.2.31.
+- Source checked against PHP.Watch and `ksort` documentation.
+- Old behavior: `ksort($items, SORT_REGULAR)` orders mixed keys as `["a","b",1,2]`.
+- New behavior: the same call orders mixed keys as `[1,2,"a","b"]`.
+- Verdict: keep. True silent drift, both sides exit 0.

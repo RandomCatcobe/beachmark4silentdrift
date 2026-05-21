@@ -12,5 +12,8 @@ Generated from `docs/case-bank/cases/**/metadata.json`.
 | `JS-09` | dotenv starts treating unquoted hash text as comments | `verified_keep` | js | `parsing-and-ingestion/js-dotenv-hash-comments` |
 | `JVM-JAVA-07` | Commons CSV enum header lookup changed from toString to name | `verified_keep` | jvm | `parsing-and-ingestion/jvm-commons-csv-enum-header` |
 | `PHP-07` | Carbon timestamp creation defaults to UTC | `verified_keep` | php | `time-and-localization/php-carbon-timestamp-timezone` |
+| `PHP-11` | call_user_func_array binds string keys as named arguments | `verified_keep` | php | `serialization-and-binding/php-call-user-func-array-named-args` |
+| `PHP-12` | htmlspecialchars default flags escape single quotes | `verified_keep` | php | `serialization-and-binding/php-htmlspecialchars-default-flags` |
+| `PHP-13` | ksort SORT_REGULAR orders numeric keys before string keys | `verified_keep` | php | `parsing-and-ingestion/php-ksort-regular-mixed-keys` |
 | `PY-SD-010` | attrs generated equality changed for shared NaN values | `verified_keep` | python | `runtime-semantics/py-attrs-nan-equality` |
 | `RB-RACK-005` | Rack stops treating semicolons as query separators | `verified_keep` | ruby | `parsing-and-ingestion/ruby-rack-semicolon-query` |

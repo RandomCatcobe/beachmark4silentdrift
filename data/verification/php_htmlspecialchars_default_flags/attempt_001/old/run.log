@@ -1,0 +1,1 @@
+command: C:\Users\canglan\scoop\apps\php80\php.exe -d include_path=data\verification\php_core\php80 data\verification\php_htmlspecialchars_default_flags\client.php

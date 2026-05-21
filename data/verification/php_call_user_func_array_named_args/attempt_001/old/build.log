@@ -1,0 +1,7 @@
+offline PHP package path configured; using include_path instead of composer install
+package_paths: data\verification\php_core\php74
+include_paths: <none>
+php_args: <none>
+program_args: <none>
+library: php-core
+version: 7.4.33

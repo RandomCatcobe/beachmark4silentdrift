@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "case_id": "PHP-13",
+  "assertions": [
+    {
+      "name": "sorted key order changed",
+      "field": "sorted_keys",
+      "old": [
+        "a",
+        "b",
+        1,
+        2
+      ],
+      "new": [
+        1,
+        2,
+        "a",
+        "b"
+      ]
+    },
+    {
+      "name": "sorted value order changed",
+      "field": "sorted_values",
+      "old": [
+        "letter-a",
+        "letter-b",
+        "number-one",
+        "number-two"
+      ],
+      "new": [
+        "number-one",
+        "number-two",
+        "letter-a",
+        "letter-b"
+      ]
+    }
+  ]
+}

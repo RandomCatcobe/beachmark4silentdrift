@@ -1,0 +1,1 @@
+{"php_version":"8.1.34","default_htmlspecialchars":"Tom&#039;s &lt;tag&gt;","explicit_old_flags":"Tom's &lt;tag&gt;","explicit_new_flags":"Tom&#039;s &lt;tag&gt;"}

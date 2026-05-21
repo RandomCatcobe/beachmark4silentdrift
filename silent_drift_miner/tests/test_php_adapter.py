@@ -142,6 +142,41 @@ def test_php_adapter_records_php_inputs(tmp_path) -> None:
     assert result["keep"] is True
 
 
+def test_php_adapter_supports_side_specific_php_executables(tmp_path) -> None:
+    old_php = _fake_php_with_output(tmp_path, "old-php", "old")
+    new_php = _fake_php_with_output(tmp_path, "new-php", "new")
+    adapter = PhpAdapter()
+
+    spec_path = adapter.plan(
+        AdapterPlanRequest(
+            candidate_id="php-side-specific-executables",
+            ecosystem="php",
+            library="toy-drift",
+            old_version="1.0.0",
+            new_version="2.0.0",
+            client_file=str(FIXTURE_ROOT / "client.php"),
+            out_path=str(tmp_path / "spec.json"),
+            metadata={
+                "old_package_path": str(FIXTURE_ROOT / "old"),
+                "new_package_path": str(FIXTURE_ROOT / "new"),
+                "php_executable": "unused-shared-php",
+                "old_php_executable": str(old_php),
+                "new_php_executable": str(new_php),
+            },
+        )
+    )
+
+    result_path = adapter.run(AdapterRunRequest(spec_path=str(spec_path), out_dir=str(tmp_path / "repro")))
+
+    spec_payload = json.loads(spec_path.read_text(encoding="utf-8"))
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    assert spec_payload["old_environment"]["php_executable"] == str(old_php)
+    assert spec_payload["new_environment"]["php_executable"] == str(new_php)
+    assert Path(result["old_run"]["stdout_path"]).read_text(encoding="utf-8").strip() == "old"
+    assert Path(result["new_run"]["stdout_path"]).read_text(encoding="utf-8").strip() == "new"
+    assert result["keep"] is True
+
+
 def test_php_reproduce_cli_plans_and_runs_php_spec(tmp_path) -> None:
     php = _fake_php(tmp_path)
     spec_path = tmp_path / "spec.json"
@@ -288,5 +323,17 @@ def _fake_php(tmp_path: Path) -> Path:
         "esac\n",
         encoding="utf-8",
     )
+    os.chmod(php, 0o755)
+    return php
+
+
+def _fake_php_with_output(tmp_path: Path, name: str, output: str) -> Path:
+    if sys.platform == "win32":
+        php = tmp_path / f"{name}.cmd"
+        php.write_text(f"@echo off\r\necho {output}\r\nexit /b 0\r\n", encoding="utf-8")
+        return php
+
+    php = tmp_path / name
+    php.write_text(f"#!/usr/bin/env sh\necho {output}\n", encoding="utf-8")
     os.chmod(php, 0o755)
     return php

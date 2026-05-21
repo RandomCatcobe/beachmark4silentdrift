@@ -1,0 +1,41 @@
+{
+  "case_id": "PHP-11",
+  "slug": "php-call-user-func-array-named-args",
+  "title": "call_user_func_array binds string keys as named arguments",
+  "status": "verified_keep",
+  "primary_scenario": "serialization-and-binding",
+  "application_scenarios": [
+    "serialization-and-binding",
+    "runtime-semantics"
+  ],
+  "ecosystems": [
+    "php"
+  ],
+  "languages": [
+    "php"
+  ],
+  "api_surfaces": [
+    "runtime-api",
+    "library-api"
+  ],
+  "drift_patterns": [
+    "field-semantics-changed",
+    "type-or-shape-changed"
+  ],
+  "failure_modes": [
+    "silent-value-change"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "runtime-pair",
+  "old_version": "7.4.33",
+  "new_version": "8.0.30",
+  "source_urls": [
+    "https://www.php.net/manual/en/function.call-user-func-array.php",
+    "https://www.php.net/manual/en/migration80.incompatible.php",
+    "https://php.watch/versions/8.0/named-parameters"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/php_call_user_func_array_named_args/attempt_001/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

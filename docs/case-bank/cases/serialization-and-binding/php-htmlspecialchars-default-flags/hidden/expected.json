@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "case_id": "PHP-12",
+  "assertions": [
+    {
+      "name": "default escaped text changed",
+      "field": "default_htmlspecialchars",
+      "old": "Tom's &lt;tag&gt;",
+      "new": "Tom&#039;s &lt;tag&gt;"
+    }
+  ]
+}

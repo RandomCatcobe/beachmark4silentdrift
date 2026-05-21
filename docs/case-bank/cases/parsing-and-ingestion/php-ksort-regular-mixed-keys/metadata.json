@@ -1,0 +1,40 @@
+{
+  "case_id": "PHP-13",
+  "slug": "php-ksort-regular-mixed-keys",
+  "title": "ksort SORT_REGULAR orders numeric keys before string keys",
+  "status": "verified_keep",
+  "primary_scenario": "parsing-and-ingestion",
+  "application_scenarios": [
+    "parsing-and-ingestion",
+    "serialization-and-binding"
+  ],
+  "ecosystems": [
+    "php"
+  ],
+  "languages": [
+    "php"
+  ],
+  "api_surfaces": [
+    "runtime-api",
+    "library-api"
+  ],
+  "drift_patterns": [
+    "ordering-changed"
+  ],
+  "failure_modes": [
+    "wrong-order",
+    "silent-value-change"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "runtime-pair",
+  "old_version": "8.1.34",
+  "new_version": "8.2.31",
+  "source_urls": [
+    "https://php.watch/versions/8.2/ksort-SORT_REGULAR-order-changes",
+    "https://www.php.net/ksort"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/php_ksort_regular_mixed_keys/attempt_001/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

@@ -76,6 +76,9 @@ def test_committed_case_bank_has_initial_verified_cases() -> None:
         "GO-002",
         "RB-RACK-005",
         "PHP-07",
+        "PHP-11",
+        "PHP-12",
+        "PHP-13",
         "JVM-JAVA-07",
         "DOTNET-08",
     }

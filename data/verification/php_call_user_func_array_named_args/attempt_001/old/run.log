@@ -1,0 +1,1 @@
+command: C:\Users\canglan\scoop\apps\php74\php.exe -d include_path=data\verification\php_core\php74 data\verification\php_call_user_func_array_named_args\client.php

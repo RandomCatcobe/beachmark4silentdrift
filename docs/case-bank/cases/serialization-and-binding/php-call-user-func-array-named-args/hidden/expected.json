@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "case_id": "PHP-11",
+  "assertions": [
+    {
+      "name": "first parameter binding changed",
+      "field": "call_user_func_array.first",
+      "old": "B",
+      "new": "A"
+    },
+    {
+      "name": "second parameter binding changed",
+      "field": "call_user_func_array.second",
+      "old": "A",
+      "new": "B"
+    }
+  ]
+}

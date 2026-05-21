@@ -1,0 +1,39 @@
+{
+  "case_id": "PHP-12",
+  "slug": "php-htmlspecialchars-default-flags",
+  "title": "htmlspecialchars default flags escape single quotes",
+  "status": "verified_keep",
+  "primary_scenario": "serialization-and-binding",
+  "application_scenarios": [
+    "serialization-and-binding",
+    "validation-and-policy"
+  ],
+  "ecosystems": [
+    "php"
+  ],
+  "languages": [
+    "php"
+  ],
+  "api_surfaces": [
+    "runtime-api",
+    "library-api"
+  ],
+  "drift_patterns": [
+    "default-changed"
+  ],
+  "failure_modes": [
+    "silent-value-change"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "runtime-pair",
+  "old_version": "8.0.30",
+  "new_version": "8.1.34",
+  "source_urls": [
+    "https://www.php.net/manual/en/migration81.incompatible.php",
+    "https://php.watch/versions/8.1/html-entity-default-value-changes"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/php_htmlspecialchars_default_flags/attempt_001/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

@@ -78,6 +78,8 @@ def create_php_reproduction_spec(
     new_program_args: list[str] | None = None,
     old_env: dict[str, str] | None = None,
     new_env: dict[str, str] | None = None,
+    old_php_executable: str | None = None,
+    new_php_executable: str | None = None,
 ) -> PhpReproductionSpec:
     old_package_paths = _metadata_list(old_package_path)
     new_package_paths = _metadata_list(new_package_path)
@@ -97,7 +99,7 @@ def create_php_reproduction_spec(
             version=old_version,
             package_path=str(Path(old_package_paths[0])),
             package_paths=[str(Path(path)) for path in old_package_paths],
-            php_executable=php_executable,
+            php_executable=old_php_executable or php_executable,
             include_paths=list(old_include_paths or []),
             php_args=list(old_php_args or []),
             program_args=list(old_program_args or []),
@@ -109,7 +111,7 @@ def create_php_reproduction_spec(
             version=new_version,
             package_path=str(Path(new_package_paths[0])),
             package_paths=[str(Path(path)) for path in new_package_paths],
-            php_executable=php_executable,
+            php_executable=new_php_executable or php_executable,
             include_paths=list(new_include_paths or []),
             php_args=list(new_php_args or []),
             program_args=list(new_program_args or []),
@@ -197,6 +199,8 @@ class PhpAdapter:
             new_program_args=shared_program_args + _metadata_list(metadata.get("new_program_args")),
             old_env={**shared_env, **_metadata_env(metadata.get("old_env"))},
             new_env={**shared_env, **_metadata_env(metadata.get("new_env"))},
+            old_php_executable=_metadata_optional_str(metadata.get("old_php_executable")),
+            new_php_executable=_metadata_optional_str(metadata.get("new_php_executable")),
         )
         out_path = Path(request.out_path)
         write_php_reproduction_spec(spec, out_path)
@@ -297,12 +301,16 @@ def _run_command(command: list[str], timeout_s: int, environment: PhpEnvironment
 
 
 def _build_log(environment: PhpEnvironmentDefinition) -> str:
+    package_paths = os.pathsep.join(environment.package_paths) or "<none>"
+    include_paths = os.pathsep.join(environment.include_paths) or "<none>"
+    php_args = " ".join(environment.php_args) or "<none>"
+    program_args = " ".join(environment.program_args) or "<none>"
     return (
         "offline PHP package path configured; using include_path instead of composer install\n"
-        f"package_paths: {os.pathsep.join(environment.package_paths)}\n"
-        f"include_paths: {os.pathsep.join(environment.include_paths)}\n"
-        f"php_args: {' '.join(environment.php_args)}\n"
-        f"program_args: {' '.join(environment.program_args)}\n"
+        f"package_paths: {package_paths}\n"
+        f"include_paths: {include_paths}\n"
+        f"php_args: {php_args}\n"
+        f"program_args: {program_args}\n"
         f"library: {environment.library}\n"
         f"version: {environment.version}\n"
     )
@@ -386,6 +394,12 @@ def _metadata_env(value: Any) -> dict[str, str]:
     if not isinstance(value, dict):
         raise ValueError("PHP env metadata must be a mapping")
     return {str(key): str(item) for key, item in value.items()}
+
+
+def _metadata_optional_str(value: Any) -> str | None:
+    if value in (None, ""):
+        return None
+    return str(value)
 
 
 def _require_existing_path(path: Path, label: str) -> None:
