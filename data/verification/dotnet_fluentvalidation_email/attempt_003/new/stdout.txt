@@ -1,0 +1,1 @@
+{"results":{"a@b":true,"x@y.z":true,"plainaddress":false,"@missing-local":false,"x y@example.com":true}}

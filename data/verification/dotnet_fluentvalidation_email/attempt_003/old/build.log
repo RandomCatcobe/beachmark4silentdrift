@@ -1,0 +1,8 @@
+offline .NET package path configured; using DOTNET_ADAPTER_PACKAGE_PATHS instead of NuGet install
+package_paths: C:\Users\canglan\.nuget\packages\fluentvalidation\8.6.2
+reference_paths: 
+dotnet_args: --verbosity quiet
+program_args: 
+no_restore: False
+library: FluentValidation
+version: 8.6.2

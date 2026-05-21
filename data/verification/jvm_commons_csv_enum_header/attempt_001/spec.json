@@ -1,0 +1,45 @@
+{
+  "candidate_id": "JVM-JAVA-07-commons-csv-enum-header",
+  "library": "org.apache.commons:commons-csv",
+  "old_version": "1.9.0",
+  "new_version": "1.10.0",
+  "client_file": "data\\verification\\jvm_commons_csv_enum_header\\DriftClient.java",
+  "old_environment": {
+    "label": "old",
+    "library": "org.apache.commons:commons-csv",
+    "version": "1.9.0",
+    "source_path": "data\\verification\\jvm_commons_csv_enum_header\\oldsrc",
+    "source_paths": [
+      "data\\verification\\jvm_commons_csv_enum_header\\oldsrc"
+    ],
+    "java_executable": "java",
+    "javac_executable": "javac",
+    "classpath": [
+      "C:\\Users\\canglan\\.m2\\repository\\org\\apache\\commons\\commons-csv\\1.9.0\\commons-csv-1.9.0.jar"
+    ],
+    "resource_paths": [],
+    "jvm_args": [],
+    "program_args": []
+  },
+  "new_environment": {
+    "label": "new",
+    "library": "org.apache.commons:commons-csv",
+    "version": "1.10.0",
+    "source_path": "data\\verification\\jvm_commons_csv_enum_header\\newsrc",
+    "source_paths": [
+      "data\\verification\\jvm_commons_csv_enum_header\\newsrc"
+    ],
+    "java_executable": "java",
+    "javac_executable": "javac",
+    "classpath": [
+      "C:\\Users\\canglan\\.m2\\repository\\org\\apache\\commons\\commons-csv\\1.10.0\\commons-csv-1.10.0.jar"
+    ],
+    "resource_paths": [],
+    "jvm_args": [],
+    "program_args": []
+  },
+  "main_class": "DriftClient",
+  "ecosystem": "jvm",
+  "schema_version": "1",
+  "created_at": "2026-05-21T00:16:52.004938"
+}

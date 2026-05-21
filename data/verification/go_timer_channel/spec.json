@@ -1,0 +1,40 @@
+{
+  "candidate_id": "go-timer-channel-capacity",
+  "library": "go-stdlib-time",
+  "old_version": "1.22",
+  "new_version": "1.23",
+  "client_file": "data\\verification\\go_timer_channel\\client\\main.go",
+  "old_environment": {
+    "label": "old",
+    "library": "go-stdlib-time",
+    "version": "1.22",
+    "package_path": "data\\verification\\go_timer_channel\\old",
+    "package_paths": [
+      "data\\verification\\go_timer_channel\\old"
+    ],
+    "go_executable": "data\\verification\\go_timer_channel\\go-wrapper.cmd",
+    "module_paths": [],
+    "go_args": [],
+    "program_args": [],
+    "env": {},
+    "no_network": true
+  },
+  "new_environment": {
+    "label": "new",
+    "library": "go-stdlib-time",
+    "version": "1.23",
+    "package_path": "data\\verification\\go_timer_channel\\new",
+    "package_paths": [
+      "data\\verification\\go_timer_channel\\new"
+    ],
+    "go_executable": "data\\verification\\go_timer_channel\\go-wrapper.cmd",
+    "module_paths": [],
+    "go_args": [],
+    "program_args": [],
+    "env": {},
+    "no_network": true
+  },
+  "ecosystem": "go",
+  "schema_version": "1",
+  "created_at": "2026-05-20T16:46:05.453593"
+}

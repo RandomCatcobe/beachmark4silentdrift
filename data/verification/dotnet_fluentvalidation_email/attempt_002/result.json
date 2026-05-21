@@ -1,0 +1,69 @@
+{
+  "candidate_id": "DOTNET-08-fluentvalidation-email",
+  "spec_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\spec.json",
+  "attempt_dir": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002",
+  "old_run": {
+    "label": "old",
+    "environment": {
+      "label": "old",
+      "library": "FluentValidation",
+      "version": "8.6.2",
+      "install_command": [
+        "C:\\Users\\canglan\\scoop\\apps\\dotnet-sdk\\current\\dotnet.exe",
+        "run",
+        "--project",
+        "data\\verification\\dotnet_fluentvalidation_email\\client",
+        "--"
+      ],
+      "python_executable": "C:\\Users\\canglan\\scoop\\apps\\dotnet-sdk\\current\\dotnet.exe",
+      "package_path": "C:\\Users\\canglan\\.nuget\\packages\\fluentvalidation\\8.6.2"
+    },
+    "stdout_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\old\\stdout.txt",
+    "stderr_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\old\\stderr.txt",
+    "exit_code_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\old\\exit_code.txt",
+    "run_log_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\old\\run.log",
+    "build_log_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\old\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "new_run": {
+    "label": "new",
+    "environment": {
+      "label": "new",
+      "library": "FluentValidation",
+      "version": "9.0.0",
+      "install_command": [
+        "C:\\Users\\canglan\\scoop\\apps\\dotnet-sdk\\current\\dotnet.exe",
+        "run",
+        "--project",
+        "data\\verification\\dotnet_fluentvalidation_email\\client",
+        "--"
+      ],
+      "python_executable": "C:\\Users\\canglan\\scoop\\apps\\dotnet-sdk\\current\\dotnet.exe",
+      "package_path": "C:\\Users\\canglan\\.nuget\\packages\\fluentvalidation\\9.0.0"
+    },
+    "stdout_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\new\\stdout.txt",
+    "stderr_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\new\\stderr.txt",
+    "exit_code_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\new\\exit_code.txt",
+    "run_log_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\new\\run.log",
+    "build_log_path": "data\\verification\\dotnet_fluentvalidation_email\\attempt_002\\new\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "diff": {
+    "stdout_changed": true,
+    "stderr_changed": false,
+    "exit_code_changed": false,
+    "summary": "stdout changed",
+    "details": {
+      "old_exit_code": 0,
+      "new_exit_code": 0,
+      "raw_stdout_changed": true,
+      "stdout_compared_after_version_metadata": false
+    }
+  },
+  "keep": true,
+  "drop_reason": null,
+  "schema_version": "1",
+  "created_at": "2026-05-21T00:20:26.657780"
+}

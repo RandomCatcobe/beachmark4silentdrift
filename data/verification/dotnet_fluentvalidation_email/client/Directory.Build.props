@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <AdapterVersion Condition="'$(DOTNET_ADAPTER_VERSION)' == ''">local</AdapterVersion>
+    <BaseOutputPath>bin\$(AdapterVersion)\</BaseOutputPath>
+    <BaseIntermediateOutputPath>obj\$(AdapterVersion)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+</Project>

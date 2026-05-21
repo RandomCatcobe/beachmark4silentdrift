@@ -1,0 +1,1 @@
+command: ruby -I data\verification\ruby_rack_semicolon_query\old -I data\verification\gems\rack229\gems\rack-2.2.9\lib data\verification\ruby_rack_semicolon_query\client.rb

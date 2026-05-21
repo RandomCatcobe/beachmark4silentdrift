@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "zklZ0WQ76Gw=",
+  "success": true,
+  "projectFilePath": "D:\\myproject\\beach\\data\\verification\\nuget_fetch\\fv8\\fv8.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\canglan\\.nuget\\packages\\fluentvalidation\\8.6.2\\fluentvalidation.8.6.2.nupkg.sha512",
+    "C:\\Users\\canglan\\.nuget\\packages\\system.componentmodel.annotations\\4.4.1\\system.componentmodel.annotations.4.4.1.nupkg.sha512"
+  ],
+  "logs": []
+}

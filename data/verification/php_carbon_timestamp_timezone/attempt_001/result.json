@@ -1,0 +1,67 @@
+{
+  "candidate_id": "PHP-07-carbon-timestamp-timezone",
+  "spec_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\spec.json",
+  "attempt_dir": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001",
+  "old_run": {
+    "label": "old",
+    "environment": {
+      "label": "old",
+      "library": "nesbot/carbon",
+      "version": "2.73.0",
+      "install_command": [
+        "php",
+        "-d",
+        "include_path=data\\verification\\composer\\carbon2",
+        "data\\verification\\php_carbon_timestamp_timezone\\client.php"
+      ],
+      "python_executable": "php",
+      "package_path": "data\\verification\\composer\\carbon2"
+    },
+    "stdout_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\old\\stdout.txt",
+    "stderr_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\old\\stderr.txt",
+    "exit_code_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\old\\exit_code.txt",
+    "run_log_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\old\\run.log",
+    "build_log_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\old\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "new_run": {
+    "label": "new",
+    "environment": {
+      "label": "new",
+      "library": "nesbot/carbon",
+      "version": "3.11.4",
+      "install_command": [
+        "php",
+        "-d",
+        "include_path=data\\verification\\composer\\carbon3",
+        "data\\verification\\php_carbon_timestamp_timezone\\client.php"
+      ],
+      "python_executable": "php",
+      "package_path": "data\\verification\\composer\\carbon3"
+    },
+    "stdout_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\new\\stdout.txt",
+    "stderr_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\new\\stderr.txt",
+    "exit_code_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\new\\exit_code.txt",
+    "run_log_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\new\\run.log",
+    "build_log_path": "data\\verification\\php_carbon_timestamp_timezone\\attempt_001\\new\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "diff": {
+    "stdout_changed": true,
+    "stderr_changed": false,
+    "exit_code_changed": false,
+    "summary": "stdout changed",
+    "details": {
+      "old_exit_code": 0,
+      "new_exit_code": 0,
+      "raw_stdout_changed": true,
+      "stdout_compared_after_version_metadata": true
+    }
+  },
+  "keep": true,
+  "drop_reason": null,
+  "schema_version": "1",
+  "created_at": "2026-05-21T00:13:53.310542"
+}

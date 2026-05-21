@@ -1,0 +1,1 @@
+command: node data\verification\js_dotenv_hash_comments\client.js

@@ -14,6 +14,7 @@
   - [Python Drift Next-Run Brief](python-drift-next-run.md)
   - [Python Drift Readiness](python-drift-readiness.md)
   - [Python Autodiscovery Handoff](python-autodiscovery-handoff.md)
+  - [CSV Case Coverage Audit](csv-case-coverage-audit.md)
 
 SilentDrift 当前不是一套已经成型的论文基准（Paper Benchmark），而是一个案例发现与复现库（Case Discovery and Reproduction Library）。近期目标是搭建可靠的产物工厂（Artifact Factory），让每条候选案例（Candidate）都能从来源证据（Source Evidence）推进到可复现、可人审、可打包、可审计的案例（Case）。
 

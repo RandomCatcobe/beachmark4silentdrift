@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "DotnetFluentValidationEmail/1.0.0": {
+        "dependencies": {
+          "FluentValidation": "8.0.0.0"
+        },
+        "runtime": {
+          "DotnetFluentValidationEmail.dll": {}
+        }
+      },
+      "FluentValidation/8.0.0.0": {
+        "runtime": {
+          "FluentValidation.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.6.2.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DotnetFluentValidationEmail/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FluentValidation/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

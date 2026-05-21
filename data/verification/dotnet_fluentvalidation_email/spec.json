@@ -1,0 +1,46 @@
+{
+  "candidate_id": "DOTNET-08-fluentvalidation-email",
+  "library": "FluentValidation",
+  "old_version": "8.6.2",
+  "new_version": "9.0.0",
+  "client_file": "data\\verification\\dotnet_fluentvalidation_email\\client",
+  "old_environment": {
+    "label": "old",
+    "library": "FluentValidation",
+    "version": "8.6.2",
+    "package_path": "C:\\Users\\canglan\\.nuget\\packages\\fluentvalidation\\8.6.2",
+    "package_paths": [
+      "C:\\Users\\canglan\\.nuget\\packages\\fluentvalidation\\8.6.2"
+    ],
+    "dotnet_executable": "C:\\Users\\canglan\\scoop\\apps\\dotnet-sdk\\current\\dotnet.exe",
+    "reference_paths": [],
+    "dotnet_args": [
+      "--verbosity",
+      "quiet"
+    ],
+    "program_args": [],
+    "env": {},
+    "no_restore": false
+  },
+  "new_environment": {
+    "label": "new",
+    "library": "FluentValidation",
+    "version": "9.0.0",
+    "package_path": "C:\\Users\\canglan\\.nuget\\packages\\fluentvalidation\\9.0.0",
+    "package_paths": [
+      "C:\\Users\\canglan\\.nuget\\packages\\fluentvalidation\\9.0.0"
+    ],
+    "dotnet_executable": "C:\\Users\\canglan\\scoop\\apps\\dotnet-sdk\\current\\dotnet.exe",
+    "reference_paths": [],
+    "dotnet_args": [
+      "--verbosity",
+      "quiet"
+    ],
+    "program_args": [],
+    "env": {},
+    "no_restore": false
+  },
+  "ecosystem": "dotnet",
+  "schema_version": "1",
+  "created_at": "2026-05-21T00:21:09.251459"
+}

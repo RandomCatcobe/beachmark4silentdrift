@@ -1,0 +1,12 @@
+{
+  "stdout_changed": false,
+  "stderr_changed": false,
+  "exit_code_changed": false,
+  "summary": "no observed difference",
+  "details": {
+    "old_exit_code": 1,
+    "new_exit_code": 1,
+    "raw_stdout_changed": false,
+    "stdout_compared_after_version_metadata": false
+  }
+}

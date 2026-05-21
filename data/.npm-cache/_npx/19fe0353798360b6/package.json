@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "_npx": {
+    "packages": [
+      "zod@3.25.76"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+isolated install requested; creating a virtual environment
+venv_dir: data\verification\venvs\py-attrs-nan-equality\new-attrs-24.1.0
+base_python: python
+venv create command: python -m venv data\verification\venvs\py-attrs-nan-equality\new-attrs-24.1.0
+venv create exit_code: 0
+
+
+install command: data\verification\venvs\py-attrs-nan-equality\new-attrs-24.1.0\Scripts\python.exe -m pip install attrs==24.1.0
+install exit_code: 1
+
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x0000015F237B5880>: Failed to establish a new connection: [WinError 10013] 以一种访问权限不允许的方式做了一个访问套接字的尝试。')': /simple/attrs/
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x0000015F22A01CD0>: Failed to establish a new connection: [WinError 10013] 以一种访问权限不允许的方式做了一个访问套接字的尝试。')': /simple/attrs/
+WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x0000015F240248C0>: Failed to establish a new connection: [WinError 10013] 以一种访问权限不允许的方式做了一个访问套接字的尝试。')': /simple/attrs/
+WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x0000015F24024800>: Failed to establish a new connection: [WinError 10013] 以一种访问权限不允许的方式做了一个访问套接字的尝试。')': /simple/attrs/
+WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x0000015F24024A70>: Failed to establish a new connection: [WinError 10013] 以一种访问权限不允许的方式做了一个访问套接字的尝试。')': /simple/attrs/
+ERROR: Could not find a version that satisfies the requirement attrs==24.1.0 (from versions: none)
+ERROR: No matching distribution found for attrs==24.1.0
+

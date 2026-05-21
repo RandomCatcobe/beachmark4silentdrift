@@ -1,0 +1,1 @@
+command: C:\Users\canglan\scoop\apps\dotnet-sdk\current\dotnet.exe run --project data\verification\dotnet_fluentvalidation_email\client --

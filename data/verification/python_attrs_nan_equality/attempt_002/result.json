@@ -1,0 +1,69 @@
+{
+  "candidate_id": "py-attrs-nan-equality",
+  "spec_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\spec.json",
+  "attempt_dir": "data\\verification\\python_attrs_nan_equality\\attempt_002",
+  "old_run": {
+    "label": "old",
+    "environment": {
+      "label": "old",
+      "library": "attrs",
+      "version": "23.2.0",
+      "install_command": [
+        "python",
+        "-m",
+        "pip",
+        "install",
+        "attrs==23.2.0"
+      ],
+      "python_executable": "data\\verification\\venvs\\py-attrs-nan-equality\\old-attrs-23.2.0\\Scripts\\python.exe",
+      "package_path": null
+    },
+    "stdout_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\old\\stdout.txt",
+    "stderr_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\old\\stderr.txt",
+    "exit_code_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\old\\exit_code.txt",
+    "run_log_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\old\\run.log",
+    "build_log_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\old\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "new_run": {
+    "label": "new",
+    "environment": {
+      "label": "new",
+      "library": "attrs",
+      "version": "24.1.0",
+      "install_command": [
+        "python",
+        "-m",
+        "pip",
+        "install",
+        "attrs==24.1.0"
+      ],
+      "python_executable": "data\\verification\\venvs\\py-attrs-nan-equality\\new-attrs-24.1.0\\Scripts\\python.exe",
+      "package_path": null
+    },
+    "stdout_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\new\\stdout.txt",
+    "stderr_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\new\\stderr.txt",
+    "exit_code_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\new\\exit_code.txt",
+    "run_log_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\new\\run.log",
+    "build_log_path": "data\\verification\\python_attrs_nan_equality\\attempt_002\\new\\build.log",
+    "exit_code": 0,
+    "build_exit_code": 0
+  },
+  "diff": {
+    "stdout_changed": true,
+    "stderr_changed": false,
+    "exit_code_changed": false,
+    "summary": "stdout changed",
+    "details": {
+      "old_exit_code": 0,
+      "new_exit_code": 0,
+      "raw_stdout_changed": true,
+      "stdout_compared_after_version_metadata": true
+    }
+  },
+  "keep": true,
+  "drop_reason": null,
+  "schema_version": "1",
+  "created_at": "2026-05-20T10:34:03.688709"
+}

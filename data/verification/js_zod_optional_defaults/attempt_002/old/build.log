@@ -1,0 +1,7 @@
+offline JS package path configured; using NODE_PATH instead of npm install
+package_paths: data\verification\npm\zod3\node_modules
+module_paths: 
+node_args: 
+program_args: 
+library: zod
+version: 3.25.76

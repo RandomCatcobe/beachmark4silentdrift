@@ -1,0 +1,15 @@
+offline JVM source path configured; compiling with javac
+source_paths: data\verification\jvm_commons_csv_enum_header\newsrc
+classpath: C:\Users\canglan\.m2\repository\org\apache\commons\commons-csv\1.10.0\commons-csv-1.10.0.jar
+resource_paths: 
+jvm_args: 
+program_args: 
+library: org.apache.commons:commons-csv
+version: 1.10.0
+compile command: javac -d data\verification\jvm_commons_csv_enum_header\attempt_001\new\classes -cp C:\Users\canglan\.m2\repository\org\apache\commons\commons-csv\1.10.0\commons-csv-1.10.0.jar data\verification\jvm_commons_csv_enum_header\DriftClient.java
+compile exit_code: 0
+=== stdout ===
+
+=== stderr ===
+注: data\verification\jvm_commons_csv_enum_header\DriftClient.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。

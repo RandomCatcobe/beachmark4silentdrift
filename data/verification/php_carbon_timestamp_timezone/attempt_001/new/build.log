@@ -1,0 +1,7 @@
+offline PHP package path configured; using include_path instead of composer install
+package_paths: data\verification\composer\carbon3
+include_paths: 
+php_args: 
+program_args: 
+library: nesbot/carbon
+version: 3.11.4

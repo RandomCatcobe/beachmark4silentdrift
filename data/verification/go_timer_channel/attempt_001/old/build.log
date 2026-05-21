@@ -1,0 +1,8 @@
+offline Go package path configured; using GO_ADAPTER_PACKAGE_PATHS instead of go get
+package_paths: data\verification\go_timer_channel\old
+module_paths: 
+go_args: 
+program_args: 
+no_network: True
+library: go-stdlib-time
+version: 1.22

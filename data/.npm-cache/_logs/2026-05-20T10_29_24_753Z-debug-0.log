@@ -1,0 +1,30 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.9.0
+2 info using node@v25.6.1
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:D:\myproject\beach\data\verification\npm\dotenv15\.npmrc
+5 silly config load:file:C:\Users\canglan\.npmrc
+6 silly config load:file:D:\myproject\beach\data\verification\npm\dotenv15\etc\npmrc
+7 verbose title npm install dotenv@15.0.1
+8 verbose argv "install" "--prefix" "data\\verification\\npm\\dotenv15" "dotenv@15.0.1" "--no-audit" "--no-fund"
+9 verbose logfile logs-max:10 dir:D:\myproject\beach\data\.npm-cache\_logs\2026-05-20T10_29_24_753Z-
+10 verbose logfile D:\myproject\beach\data\.npm-cache\_logs\2026-05-20T10_29_24_753Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly idealTree buildDeps
+14 silly fetch manifest dotenv@15.0.1
+15 silly packumentCache full:https://registry.npmmirror.com/dotenv cache-miss
+16 http cache https://registry.npmmirror.com/dotenv 22ms (cache hit)
+17 silly packumentCache full:https://registry.npmmirror.com/dotenv set size:256270 disposed:false
+18 silly placeDep ROOT dotenv@15.0.1 OK for:  want: 15.0.1
+19 silly reify moves {}
+20 http cache dotenv@https://registry.npmmirror.com/dotenv/-/dotenv-15.0.1.tgz 0ms (cache hit)
+21 silly tarball no local data for dotenv@https://registry.npmmirror.com/dotenv/-/dotenv-15.0.1.tgz. Extracting by manifest.
+22 http fetch GET 200 https://cdn.npmmirror.com/packages/dotenv/15.0.1/dotenv-15.0.1.tgz 7824ms (cache miss)
+23 silly ADD node_modules/dotenv
+24 verbose cwd D:\myproject\beach
+25 verbose os Windows_NT 10.0.19045
+26 verbose node v25.6.1
+27 verbose npm  v11.9.0
+28 verbose exit 0
+29 info ok

@@ -1,0 +1,1 @@
+command: data\verification\go_timer_channel\go-wrapper.cmd run data\verification\go_timer_channel\client\main.go

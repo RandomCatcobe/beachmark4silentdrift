@@ -1,0 +1,1 @@
+command: php -d include_path=data\verification\composer\carbon3 data\verification\php_carbon_timestamp_timezone\client.php

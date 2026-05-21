@@ -1,0 +1,1 @@
+{"enumName":"X","enumToString":"Y","headerXIndex":0,"headerYIndex":1,"viaEnum":"right","viaName":"left","viaToString":"right"}

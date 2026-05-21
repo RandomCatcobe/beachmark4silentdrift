@@ -1,0 +1,7 @@
+offline Ruby package path configured; using RUBYLIB/-I instead of bundle install
+package_paths: data\verification\ruby_rack_semicolon_query\new
+load_paths: data\verification\gems\rack310\gems\rack-3.1.0\lib
+ruby_args: 
+program_args: 
+library: rack
+version: 3.1.0

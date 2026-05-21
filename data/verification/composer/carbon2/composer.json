@@ -1,0 +1,8 @@
+{
+    "config": {
+        "disable-tls": true
+    },
+    "require": {
+        "nesbot/carbon": "^2"
+    }
+}

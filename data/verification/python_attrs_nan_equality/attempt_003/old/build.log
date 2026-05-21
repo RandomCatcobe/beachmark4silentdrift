@@ -1,0 +1,15 @@
+isolated install requested; creating a virtual environment
+venv_dir: data\verification\venvs\py-attrs-nan-equality\old-attrs-23.2.0
+base_python: python
+venv create command: python -m venv data\verification\venvs\py-attrs-nan-equality\old-attrs-23.2.0
+venv create exit_code: 0
+
+
+install command: data\verification\venvs\py-attrs-nan-equality\old-attrs-23.2.0\Scripts\python.exe -m pip install attrs==23.2.0
+install exit_code: 0
+Requirement already satisfied: attrs==23.2.0 in d:\myproject\beach\data\verification\venvs\py-attrs-nan-equality\old-attrs-23.2.0\lib\site-packages (23.2.0)
+
+
+[notice] A new release of pip is available: 24.0 -> 26.1.1
+[notice] To update, run: D:\myproject\beach\data\verification\venvs\py-attrs-nan-equality\old-attrs-23.2.0\Scripts\python.exe -m pip install --upgrade pip
+

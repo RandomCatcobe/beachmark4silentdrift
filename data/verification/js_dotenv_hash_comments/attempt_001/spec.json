@@ -1,0 +1,38 @@
+{
+  "candidate_id": "js-dotenv-hash-comments",
+  "library": "dotenv",
+  "old_version": "14.3.2",
+  "new_version": "15.0.1",
+  "client_file": "data\\verification\\js_dotenv_hash_comments\\client.js",
+  "old_environment": {
+    "label": "old",
+    "library": "dotenv",
+    "version": "14.3.2",
+    "package_path": "data\\verification\\npm\\dotenv14\\node_modules",
+    "package_paths": [
+      "data\\verification\\npm\\dotenv14\\node_modules"
+    ],
+    "node_executable": "node",
+    "module_paths": [],
+    "node_args": [],
+    "program_args": [],
+    "env": {}
+  },
+  "new_environment": {
+    "label": "new",
+    "library": "dotenv",
+    "version": "15.0.1",
+    "package_path": "data\\verification\\npm\\dotenv15\\node_modules",
+    "package_paths": [
+      "data\\verification\\npm\\dotenv15\\node_modules"
+    ],
+    "node_executable": "node",
+    "module_paths": [],
+    "node_args": [],
+    "program_args": [],
+    "env": {}
+  },
+  "ecosystem": "js",
+  "schema_version": "1",
+  "created_at": "2026-05-20T10:30:01.845473"
+}
