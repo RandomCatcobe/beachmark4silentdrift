@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "case_id": "GO-002",
+  "assertions": [
+    {
+      "name": "timer channel capacity changed",
+      "field": "cap",
+      "old": 1,
+      "new": 0
+    }
+  ]
+}

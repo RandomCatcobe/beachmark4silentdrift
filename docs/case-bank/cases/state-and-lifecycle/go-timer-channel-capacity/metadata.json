@@ -1,0 +1,38 @@
+{
+  "case_id": "GO-002",
+  "slug": "go-timer-channel-capacity",
+  "title": "Go timer channels changed observable capacity",
+  "status": "verified_keep",
+  "primary_scenario": "state-and-lifecycle",
+  "application_scenarios": [
+    "state-and-lifecycle",
+    "runtime-semantics"
+  ],
+  "ecosystems": [
+    "go"
+  ],
+  "languages": [
+    "go"
+  ],
+  "api_surfaces": [
+    "runtime-api",
+    "library-api"
+  ],
+  "drift_patterns": [
+    "field-semantics-changed"
+  ],
+  "failure_modes": [
+    "silent-value-change"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "runtime-pair",
+  "old_version": "1.22",
+  "new_version": "1.23",
+  "source_urls": [
+    "https://go.dev/doc/go1.23"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/go_timer_channel/attempt_001/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

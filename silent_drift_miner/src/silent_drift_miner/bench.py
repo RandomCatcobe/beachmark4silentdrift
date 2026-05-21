@@ -8,6 +8,8 @@ from pathlib import Path
 from .curation import load_curated_case
 from .oracle import load_oracle_spec
 
+CASE_BANK_STRIPPED_NAMES = {"hidden", "oracle.md", "expected.json"}
+
 
 def create_benchmark_package(
     case_path: Path,
@@ -46,6 +48,62 @@ def create_benchmark_package(
         encoding="utf-8",
     )
     return package_dir
+
+
+def create_case_bank_eval_package(src_root: Path, out_root: Path) -> Path:
+    """Copy case-bank public files while stripping hidden oracle material."""
+    if not src_root.exists():
+        raise ValueError(f"case bank source not found: {src_root}")
+    if not src_root.is_dir():
+        raise ValueError(f"case bank source must be a directory: {src_root}")
+    if out_root.exists() and any(out_root.iterdir()):
+        raise ValueError(f"package output already exists and is not empty: {out_root}")
+
+    out_root.mkdir(parents=True, exist_ok=True)
+    for metadata_path in sorted(src_root.rglob("metadata.json")):
+        case_dir = metadata_path.parent
+        relative_case_dir = case_dir.relative_to(src_root)
+        _copy_case_bank_case(case_dir, out_root / relative_case_dir)
+
+    findings = validate_case_bank_eval_package(out_root)
+    if findings:
+        raise ValueError("; ".join(findings))
+    return out_root
+
+
+def validate_case_bank_eval_package(package_root: Path) -> list[str]:
+    findings: list[str] = []
+    if not package_root.exists():
+        findings.append(f"package root does not exist: {package_root}")
+        return findings
+
+    for path in package_root.rglob("*"):
+        if "hidden" in path.parts:
+            findings.append(f"hidden path leaked into package: {path}")
+        if path.name in {"oracle.md", "expected.json"}:
+            findings.append(f"oracle file leaked into package: {path}")
+
+    for metadata_path in package_root.rglob("metadata.json"):
+        case_dir = metadata_path.parent
+        if not (case_dir / "client").is_dir():
+            findings.append(f"packaged case is missing client/: {case_dir}")
+    return findings
+
+
+def _copy_case_bank_case(case_dir: Path, package_dir: Path) -> None:
+    package_dir.mkdir(parents=True, exist_ok=True)
+    for child in case_dir.iterdir():
+        if child.name in CASE_BANK_STRIPPED_NAMES:
+            continue
+        destination = package_dir / child.name
+        if child.is_dir():
+            shutil.copytree(
+                child,
+                destination,
+                ignore=shutil.ignore_patterns(*CASE_BANK_STRIPPED_NAMES),
+            )
+        else:
+            shutil.copy2(child, destination)
 
 
 def _resolve_link(base_file: Path, value: str) -> Path:

@@ -1,8 +1,8 @@
 # Case Bank Restructure
 
 This folder contains the final planning proposal for the next case-bank layout.
-It is plan-only: it does not create `docs/case-bank/`, migrate cases, implement
-CLI commands, or modify the legacy idea-bank Markdown files.
+The implemented case bank now lives at `docs/case-bank/`, with indexing and
+packaging commands exposed through `python -m case_bank`.
 
 Canonical plan:
 

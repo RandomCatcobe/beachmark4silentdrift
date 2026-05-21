@@ -15,6 +15,7 @@ dev = ["pytest>=7"]
 
 [project.scripts]
 silent-drift-miner = "silent_drift_miner.cli:main"
+case-bank = "case_bank.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

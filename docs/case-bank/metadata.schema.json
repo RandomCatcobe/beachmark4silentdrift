@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://silentdrift.local/case-bank/metadata.schema.json",
+  "title": "SilentDrift Case Bank Metadata",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "api_surfaces",
+    "application_scenarios",
+    "case_id",
+    "determinism",
+    "drift_patterns",
+    "ecosystems",
+    "external_dependencies",
+    "failure_modes",
+    "languages",
+    "new_version",
+    "old_version",
+    "primary_scenario",
+    "provenance",
+    "slug",
+    "source_urls",
+    "status",
+    "title"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "blocked_dependency",
+        "blocked_runtime",
+        "idea_only",
+        "needs_source",
+        "rejected_no_diff",
+        "verified_keep"
+      ]
+    },
+    "primary_scenario": {
+      "type": "string",
+      "enum": [
+        "commerce-order-flow",
+        "inventory-and-fulfillment",
+        "observability-and-logging",
+        "parsing-and-ingestion",
+        "routing-and-identity",
+        "runtime-semantics",
+        "serialization-and-binding",
+        "state-and-lifecycle",
+        "time-and-localization",
+        "validation-and-policy"
+      ]
+    },
+    "application_scenarios": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ecosystems": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "api_surfaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "drift_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "bundled-data-changed",
+          "default-changed",
+          "field-removed-or-masked",
+          "field-semantics-changed",
+          "old-state-overwrite",
+          "ordering-changed",
+          "out-of-order-event",
+          "parser-rule-changed",
+          "runtime-locale-changed",
+          "success-but-no-effect",
+          "type-or-shape-changed",
+          "validation-relaxed",
+          "validation-strictness-increased"
+        ]
+      }
+    },
+    "failure_modes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "missing-field",
+          "silent-acceptance-change",
+          "silent-rejection-change",
+          "silent-value-change",
+          "stale-state",
+          "wrong-entity",
+          "wrong-fulfillment",
+          "wrong-inventory",
+          "wrong-locale",
+          "wrong-order",
+          "wrong-refund-or-payment-state",
+          "wrong-route",
+          "wrong-timezone",
+          "wrong-type"
+        ]
+      }
+    },
+    "determinism": {
+      "type": "string",
+      "enum": [
+        "local-deterministic",
+        "mockable-service",
+        "package-cache",
+        "requires-live-credential",
+        "runtime-pair",
+        "service-contract"
+      ]
+    },
+    "external_dependencies": {
+      "type": "string",
+      "enum": [
+        "local-deterministic",
+        "mockable-service",
+        "package-cache",
+        "requires-live-credential",
+        "runtime-pair",
+        "service-contract"
+      ]
+    },
+    "old_version": {
+      "type": "string"
+    },
+    "new_version": {
+      "type": "string"
+    },
+    "source_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "case_id": "DOTNET-08",
+  "slug": "dotnet-08-fluentvalidation-email",
+  "title": "FluentValidation default EmailAddress behavior changed",
+  "status": "verified_keep",
+  "primary_scenario": "validation-and-policy",
+  "application_scenarios": [
+    "validation-and-policy",
+    "identity-and-contact-data"
+  ],
+  "ecosystems": [
+    "dotnet"
+  ],
+  "languages": [
+    "csharp"
+  ],
+  "api_surfaces": [
+    "library-api",
+    "validator"
+  ],
+  "drift_patterns": [
+    "default-changed",
+    "validation-relaxed"
+  ],
+  "failure_modes": [
+    "silent-acceptance-change"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "package-cache",
+  "old_version": "8.6.2",
+  "new_version": "9.0.0",
+  "source_urls": [
+    "https://docs.fluentvalidation.net/en/latest/upgrading-to-9.html"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/dotnet_fluentvalidation_email/attempt_003/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

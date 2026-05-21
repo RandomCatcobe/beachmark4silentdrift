@@ -1,0 +1,37 @@
+{
+  "case_id": "PY-SD-010",
+  "slug": "py-attrs-nan-equality",
+  "title": "attrs generated equality changed for shared NaN values",
+  "status": "verified_keep",
+  "primary_scenario": "runtime-semantics",
+  "application_scenarios": [
+    "runtime-semantics",
+    "state-and-lifecycle"
+  ],
+  "ecosystems": [
+    "python"
+  ],
+  "languages": [
+    "python"
+  ],
+  "api_surfaces": [
+    "library-api"
+  ],
+  "drift_patterns": [
+    "field-semantics-changed"
+  ],
+  "failure_modes": [
+    "silent-value-change"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "package-cache",
+  "old_version": "23.2.0",
+  "new_version": "24.1.0",
+  "source_urls": [
+    "https://www.attrs.org/en/24.1.0/changelog.html"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/python_attrs_nan_equality/attempt_003/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

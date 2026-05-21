@@ -1,0 +1,40 @@
+{
+  "case_id": "JS-06",
+  "slug": "js-zod-optional-defaults",
+  "title": "Zod optional defaults are applied inside object parsing",
+  "status": "verified_keep",
+  "primary_scenario": "validation-and-policy",
+  "application_scenarios": [
+    "validation-and-policy",
+    "serialization-and-binding"
+  ],
+  "ecosystems": [
+    "js"
+  ],
+  "languages": [
+    "javascript"
+  ],
+  "api_surfaces": [
+    "library-api",
+    "validator"
+  ],
+  "drift_patterns": [
+    "default-changed",
+    "type-or-shape-changed"
+  ],
+  "failure_modes": [
+    "missing-field",
+    "silent-value-change"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "package-cache",
+  "old_version": "3.25.76",
+  "new_version": "4.1.12",
+  "source_urls": [
+    "https://zod.dev/v4/changelog"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/js_zod_optional_defaults/attempt_002/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

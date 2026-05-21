@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "case_id": "JS-09",
+  "assertions": [
+    {
+      "name": "unquoted hash value truncates",
+      "field": "parsed.SECRET",
+      "old": "abc#def",
+      "new": "abc"
+    }
+  ]
+}

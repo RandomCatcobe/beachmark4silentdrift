@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "case_id": "DOTNET-08",
+  "assertions": [
+    {
+      "name": "borderline short-domain email acceptance changed",
+      "field": "results.a@b",
+      "old": false,
+      "new": true
+    },
+    {
+      "name": "space-containing email acceptance changed",
+      "field": "results.x y@example.com",
+      "old": false,
+      "new": true
+    }
+  ]
+}

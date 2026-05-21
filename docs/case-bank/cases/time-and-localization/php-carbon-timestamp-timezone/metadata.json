@@ -1,0 +1,37 @@
+{
+  "case_id": "PHP-07",
+  "slug": "php-carbon-timestamp-timezone",
+  "title": "Carbon timestamp creation defaults to UTC",
+  "status": "verified_keep",
+  "primary_scenario": "time-and-localization",
+  "application_scenarios": [
+    "time-and-localization",
+    "serialization-and-binding"
+  ],
+  "ecosystems": [
+    "php"
+  ],
+  "languages": [
+    "php"
+  ],
+  "api_surfaces": [
+    "library-api"
+  ],
+  "drift_patterns": [
+    "default-changed"
+  ],
+  "failure_modes": [
+    "wrong-timezone"
+  ],
+  "determinism": "local-deterministic",
+  "external_dependencies": "package-cache",
+  "old_version": "2.73.0",
+  "new_version": "3.11.4",
+  "source_urls": [
+    "https://carbon.nesbot.com/docs/#api-carbon-3"
+  ],
+  "provenance": {
+    "reproduction_result": "data/verification/php_carbon_timestamp_timezone/attempt_001/result.json",
+    "verified_at": "2026-05-21"
+  }
+}

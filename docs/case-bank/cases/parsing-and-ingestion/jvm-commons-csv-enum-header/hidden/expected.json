@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "case_id": "JVM-JAVA-07",
+  "assertions": [
+    {
+      "name": "enum header lookup target changed",
+      "field": "viaEnum",
+      "old": "right",
+      "new": "left"
+    }
+  ]
+}

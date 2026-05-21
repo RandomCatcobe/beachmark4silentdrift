@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "case_id": "PY-SD-010",
+  "assertions": [
+    {
+      "name": "shared NaN equality changed",
+      "field": "equal",
+      "old": true,
+      "new": false
+    }
+  ]
+}

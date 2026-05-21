@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "probe": "node probe.js"
+  },
+  "silentDrift": {
+    "package": "zod",
+    "old": "3.25.76",
+    "new": "4.1.12"
+  }
+}

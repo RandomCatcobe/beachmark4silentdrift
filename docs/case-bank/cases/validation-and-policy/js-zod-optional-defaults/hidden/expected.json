@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "case_id": "JS-06",
+  "assertions": [
+    {
+      "name": "optional default key presence changed",
+      "field": "parsed.a",
+      "old": "<missing>",
+      "new": "tuna"
+    }
+  ]
+}
